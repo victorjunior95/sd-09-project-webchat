@@ -1,9 +1,9 @@
 const { Router } = require('express');
 
-const user = require('../controllers/chatControllers');
+const chat = require('../controllers/chatControllers');
 
 const router = Router();
 
-router.route('/').get(user);
+router.route('/').get(chat.getUsers);
 
 module.exports = router;

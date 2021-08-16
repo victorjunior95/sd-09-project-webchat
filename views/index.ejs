@@ -4,25 +4,34 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
   <title>Webchat Project</title>
 </head>
 <body>
-  <h1>Webchat</h1>
-  <main id="container">
-    <div>
-      <form action="">
-        <input type="text" placeholder="Nickname">
-        <button type="submit">Salvar</button>
-      </form>
-      <div>
-        <h3>Users</h3>
-        <ul></ul>
+  <header>
+    <h1>Webchat</h1>
+  </header>
+  <main class="container">
+    <form action="" class="nickname">
+      <input type="text" placeholder="Nickname">
+      <button type="submit">Salvar</button>
+    </form>
+    <div class="container-user">
+      <div class="left">
+        <div class="users">
+          <h3>Users</h3>
+          <ul>
+            <% users.forEach(user => { %>
+              <li>User: <%= user %> </li>
+            <% }) %> 
+          </ul>
+        </div>
+      </div>
+      <div class="history">
+  
       </div>
     </div>
-    <div class="messages">
-
-    </div>
-    <form action="">
+    <form action="" class="messages">
       <input type="text" placeholder="Digite uma nova mensagem aqui">
       <button type="submit">Enviar</button>
     </form>
