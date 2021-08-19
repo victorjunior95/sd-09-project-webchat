@@ -5,14 +5,95 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-  <title>Document</title>
+  <title>Web Chat Trybe</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    html,
+    body {
+      height: 100%;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    #chat {
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    input {
+      width: 600px;
+      border: 1px solid #ddd;
+      height: 50px;
+      padding: 0 20px;
+      font-size: 14px;
+    }
+
+    button {
+      width: 600px;
+      height: 50px;
+      font-size: 14px;
+      background: #069;
+      text-align: center;
+      line-height: 50px;
+      font-weight: bold;
+      color: #FFF;
+      margin-top: 10px;
+    }
+
+    .messages {
+      width: 600px;
+      height: 400px;
+      margin: 20px 0;
+      border: 1px solid #ddd;
+      padding: 20px;
+    }
+  </style>
 </head>
 
 <body>
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
+  <form id="chat">
+    <input type="text" name="username" id="username" placeholder="Digite seu nickname">
+    <ul id="list-user"></ul>
+    <button type="submit" id="send">Send</button>
+    <div class="messages"></div>
+    <input type="text" name="message" id="message" placeholder="Digite sua mensagem">
+    <button type="submit" id="enviar">Enviar</button>
+  </form>
+  <script type="text/javascript">
     const socket = io();
+
+    const form = document.querySelector('form');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const inputNickname = document.querySelector('#username');
+      const inputMessage = document.querySelector('#message');
+
+      const messageObj = {
+        nickname: inputNickname.value,
+        chatMessage: inputMessage.value,
+      }
+      socket.emit('message', messageObj)
+    })
+
+
+    // socket.on('connection', (client) => {
+    //   const userUl = document.querySelector('#list-user');
+    //   console.log(userUl);
+    //   const li = document.createElement(li)
+    //   li.innerText = `connected with Id: ${client.id}`
+    //   console.log(li);
+    //   userUl.appendChild(li)
+    // });
+
   </script>
 </body>
 
