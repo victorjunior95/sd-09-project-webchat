@@ -9,6 +9,11 @@ const date = () => {
 
 module.exports = (io) => {
   io.on('connection', async (socket) => {
+    socket.on('nickname', (data) => {
+      socket.broadcast.emit('name', data);
+      socket.emit('name', data);
+    });
+
     socket.on('message', (data) => {
       const novaData = `${date()} ${data.nickname}:${data.chatMessage}`;
       socket.broadcast.emit('message', novaData);

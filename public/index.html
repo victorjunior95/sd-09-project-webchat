@@ -15,33 +15,49 @@
     <section class="main-container">
       
       <div class="content-left">
-        <input type="text" id="inpName" placeholder="Insira seu nickname ">
-        <button>Salvar</button>
+        <input type="text" data-testid="nickname-box"  id="inpName" placeholder="Insira seu nickname ">
+        <button data-testid="nickname-button" >Salvar</button>
+        <div>
+          <ul id="nameAll"></ul>
+        </div>
       </div>
       <div class="content-right">
-        <ul id="messageAll"></ul>
+        <ul id="messageAll" data-testid="message"></ul>
       </div>
-      <input type="text" id="inpMessage" placeholder="Digite uma nova mensagem aqui">
-      <button id="bt-enviar">Enviar</button>
+      <input type="text" data-testid="message-box" id="inpMessage" placeholder="Digite uma nova mensagem aqui">
+      <button id="bt-enviar"  data-testid="send-button">Enviar</button>
       
     </section>
 
     <script>
       const socket = io('http://localhost:3000');
+
       const btEnviar = document.getElementById('bt-enviar');
       btEnviar.addEventListener('click', () => {
-        console.log('sdfasfdsa', messageAllId);
         const messageInput = document.getElementById('inpMessage');
-        socket.emit('message', { nickname: socket.id, chatMessage: messageInput.value });
+        socket.emit('message', { nickname: socket.id.slice(0,16), chatMessage: messageInput.value });
+
+        const nameAllId = document.getElementById('nameAll');
+
+        socket.emit('nickname', {nickname: socket.id.slice(0,16)});
+        socket.on('name', (data)=>{
+          const addli = document.createElement('li');
+          addli.appendChild(document.createTextNode(data.nickname));
+          nameAllId.appendChild(addli);
+          console.log(data);
+        })
       });
 
+      
+    
       const messageAllId = document.getElementById('messageAll');
       socket.on('message', (data) => {
         const addli = document.createElement('li');
-        console.log(data);
         addli.appendChild(document.createTextNode(data));
         messageAllId.appendChild(addli);
       });
+
+
 
     </script>
   </body>
