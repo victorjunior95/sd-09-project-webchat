@@ -20,15 +20,15 @@ infosUser.addEventListener('submit', (event) => {
   socket.emit('changeName', nickname);
 });
 
-const formChat = document.querySelector('#chatForm');
-const inputMessage = document.querySelector('#message-box');
+const chatInfos = document.querySelector('#chatForm');
+const messageReceive = document.querySelector('#message-box');
 
-formChat.addEventListener('submit', (event) => {
+chatInfos.addEventListener('submit', (event) => {
   event.preventDefault();
-  const chatMessage = inputMessage.value;
+  const chatMessage = messageReceive.value;
   const nickname = userIdentification;
   socket.emit('message', { chatMessage, nickname });
-  inputMessage.value = '';
+  messageReceive.value = '';
   return false;
 });
 
