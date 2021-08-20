@@ -25,6 +25,9 @@
     <button id="bt-enviar" data-testid="send-button">Enviar</button>
   </section>
   <script>
+// adriano me ajudou com as logicas
+// github.com/adrianoforcellini
+
     const socket = io('http://localhost:3000');
     let myNickName = "";
     socket.on('nickname', () => socket.emit('nickname', socket.id))
