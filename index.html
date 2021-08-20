@@ -54,45 +54,79 @@
       margin: 20px 0;
       border: 1px solid #ddd;
       padding: 20px;
+      list-style: none;
     }
   </style>
 </head>
 
 <body>
   <form id="chat">
-    <input type="text" name="username" id="username" placeholder="Digite seu nickname">
-    <ul id="list-user"></ul>
-    <button type="submit" id="send">Send</button>
-    <div class="messages"></div>
-    <input type="text" name="message" id="message" placeholder="Digite sua mensagem">
-    <button type="submit" id="enviar">Enviar</button>
+    <input type="text" name="username" id="nickname-box" placeholder="Digite seu nickname" data-testid="nickname-box">
+    <button id="nickname-button" data-testid="nickname-button">
+      Send
+    </button>
+    <ul id="userList"></ul>
+    <div type="text" class="messages"></div>
+    <input type="text" name="message" id="message" placeholder="Digite sua mensagem" data-testid="message-box">
+    <button type="submit" id="send-button" data-testid="send-button">Enviar</button>
   </form>
   <script type="text/javascript">
+
     const socket = io();
 
-    const form = document.querySelector('form');
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
+    let nickname;
+    socket.on('connect', () => {
+      nickname = socket.id.substring(0, 16)
+      socket.emit('sendUser', nickname);
+    })
 
-      const inputNickname = document.querySelector('#username');
+    socket.on('login', (usersOnline) => {
+      const userUl = document.querySelector('#userList');
+      userUl.innerText = ''
+
+      usersOnline.forEach(({nickname}) => {
+        const li = document.createElement('li');
+        li.setAttribute("data-testid", "online-user");
+        li.innerText = nickname;
+        userUl.appendChild(li);
+      });
+    })
+
+    const messageBtn = document.querySelector('#send-button');
+      messageBtn.addEventListener('click', (event) => {
+      event.preventDefault();
+
+      const inputNickname = document.querySelector('#nickname-box');
       const inputMessage = document.querySelector('#message');
 
       const messageObj = {
-        nickname: inputNickname.value,
+        nickname,
         chatMessage: inputMessage.value,
       }
+
       socket.emit('message', messageObj)
     })
 
+    const nicknameBtn = document.querySelector('#nickname-button');
+      nicknameBtn.addEventListener('click', (event) => {
+      event.preventDefault();
 
-    // socket.on('connection', (client) => {
-    //   const userUl = document.querySelector('#list-user');
-    //   console.log(userUl);
-    //   const li = document.createElement(li)
-    //   li.innerText = `connected with Id: ${client.id}`
-    //   console.log(li);
-    //   userUl.appendChild(li)
-    // });
+      const inputNickname = document.querySelector('#nickname-box')
+      nickname = inputNickname.value
+
+      socket.emit('updateNickname', nickname);
+
+    })
+
+    const createMessage = (message) => {
+      const messagesUl = document.querySelector('.messages');
+      const li = document.createElement('li');
+      li.setAttribute("data-testid", "message");
+      li.innerText = message;
+      messagesUl.appendChild(li);
+    };
+
+    socket.on('message', (message) => createMessage(message));
 
   </script>
 </body>

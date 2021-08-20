@@ -6,11 +6,32 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
 const { PORT } = process.env || 3000;
-// app.set('view engine', 'ejs');
-// app.set('views', path.join(__dirname, '/index.html'));
 
+let usersOnline = [];
+
+// eslint-disable-next-line max-lines-per-function
 io.on('connection', (socket) => {
-  console.log(`New connection: ${socket.id}`);
+  socket.on('sendUser', (nickname) => {
+    usersOnline.push({
+      id: socket.id,
+      nickname,
+    });
+    io.emit('login', usersOnline);
+  });
+
+  socket.on('updateNickname', (newNickname) => {
+    usersOnline = usersOnline.map((user) => {
+      if (user.id === socket.id) {
+        return {
+          id: socket.id,
+          nickname: newNickname,
+        };
+      }
+      return user;
+    });
+
+    io.emit('login', usersOnline);
+  });
 
   socket.on('message', (messageObj) => {
     const message = `${moment()
