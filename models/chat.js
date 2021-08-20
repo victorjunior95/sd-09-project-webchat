@@ -16,3 +16,5 @@ module.exports = {
   getAll,
   create,
 };
+
+/* feito junto com minha trinca JVRM */
