@@ -30,4 +30,3 @@ module.exports = (io) => io.on('connection', async (socket) => {
   
     socket.on('disconnect', () => { userList.delete(random); io.emit('offline', [...userList]); });
   });
-  

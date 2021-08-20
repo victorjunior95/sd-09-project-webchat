@@ -25,6 +25,6 @@ app.get('/', (_req, res) => {
 
 scktValue(io, { auth: false });
 
-http.listen(PORT, () => {
+http.listen(PORTA, () => {
     console.log(`Narguileira na porta ${PORTA}`);
 });
