@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO - trybe</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <header class="header">
+      Chat da Trybeol
+    </header>
+    <main class="main">
+      <div class="main-side">
+        <label >Seja bem vindo <span id="labelName"></span></label>
+        <input data-testid="nickname-box" class="name-input" type="text" id="inputNickName" placeholder="Digite seu nickname">
+        <button data-testid="nickname-button" class="name-button" id="changeNickButton">MUDAR</button>
+        <ul id="usersList"></ul>
+      </div>
+      <div class="main-content">
+        <div class="main-chat">
+          <ul id='messages'></ul>
+        </div>
+        <div class="main-send">
+          <input data-testid="message-box" type="text" id="inputMessage"/>
+          <button data-testid="send-button" id='sendButton'>ENVIAR</button>
+        </div>
+      </div>
+    </main>
+    <footer class="footer">
+      Desenvolvido por Daniel
+    </footer>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./script.js"></script>
+  </body>
+</html> 
