@@ -7,7 +7,7 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const model = require('./models/chatModel');
 
-const { PORT } = process.env;
+const PORT = process.env.PORT || 3000;
 
 let users = [];
 const getNames = () => users.map(({ nickname }) => nickname);
@@ -49,5 +49,3 @@ app.use('/', (req, res) => {
 });
 
 server.listen(PORT, () => console.log(`${PORT}`));
-
-//
