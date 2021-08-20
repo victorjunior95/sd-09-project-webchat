@@ -3,16 +3,16 @@ const socket = window.io();
 window.onload = () => {
   socket.emit('newUser');
 };
-
-const formUser = document.querySelector('#chatUser');
-const inputNickname = document.querySelector('#nickname-box');
-const nicknamesList = document.querySelector('#nickname-list');
+// FEITO COM A TRINCA DE 9 E WAR ROOM JRVM / INSTRUTORES
+const userFormData = document.querySelector('#chatUser');
+const nickName = document.querySelector('#nickname-box');
+const nameList = document.querySelector('#nickname-list');
 
 let userName = '';
 
-formUser.addEventListener('submit', (event) => {
+userFormData.addEventListener('submit', (event) => {
   event.preventDefault();
-  const nickname = inputNickname.value;
+  const nickname = nickName.value;
   localStorage.setItem('nickname', nickname);
 
   userName = nickname;
@@ -45,10 +45,10 @@ const addUser = async (user) => {
   li.setAttribute('data-testid', 'online-user');
   li.className = user;
   li.innerText = user;
-  nicknamesList.appendChild(li);
+  nameList.appendChild(li);
   return null;
 };
-
+// FEITO COM A TRINCA DE 9 E WAR ROOM JRVM / INSTRUTORES
 socket.on('restoreChat', (messageList) => {
   if (!messageList) return 0;
   console.log(messageList);
@@ -61,18 +61,18 @@ socket.on('restoreChat', (messageList) => {
 socket.on('message', (message) => createMessage(message));
 
 socket.on('newUser', (userList) => {
-  nicknamesList.innerHTML = '';
+  nameList.innerHTML = '';
   userList.map((user) => addUser(user[1]));
   return 0;
 });
 
 socket.on('changeName', (userList) => {
-  nicknamesList.innerHTML = '';
+  nameList.innerHTML = '';
   userList.map((user) => addUser(user[1]));
 });
 
 socket.on('online', (userList) => {
-  nicknamesList.innerHTML = '';
+  nameList.innerHTML = '';
   const userId = userList[userList.length - 1];
   userList.pop();
   const newList = [userId, ...userList];
@@ -81,6 +81,6 @@ socket.on('online', (userList) => {
 });
 
 socket.on('offline', (userList) => {
-  nicknamesList.innerHTML = '';
+  nameList.innerHTML = '';
   userList.map((user) => addUser(user[1]));
 });

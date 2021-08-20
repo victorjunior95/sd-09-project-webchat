@@ -4,9 +4,8 @@ const Messages = require('../models/chat');
 moment.defaultFormat = 'DD-MM-yyyy HH:mm:ss'; 
 
 const userList = new Map();
-
+// FEITO COM A TRINCA DE 9 E WAR ROOM JRVM / INSTRUTORES
 module.exports = (io) => io.on('connection', async (socket) => {
-    // https://tsh.io/blog/socket-io-tutorial-real-time-communication/
     const { id } = socket;
     const random = id.slice(0, -4);
     
