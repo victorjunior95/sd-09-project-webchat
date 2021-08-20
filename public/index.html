@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous"> -->
-  <link rel="stylesheet" href="styles.css">
+  <!-- <link rel="stylesheet" href="styles.css"> -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
   <title>WebChat Trybe</title>
 </head>
@@ -19,7 +19,7 @@
       </div>
     </div>
     <div class="content-right">
-      <ul id="messageAll" data-testid="message"></ul>
+      <ul id="messageAll" ></ul>
     </div>
     <input type="text" data-testid="message-box" id="inpMessage" placeholder="Digite uma nova mensagem aqui">
     <button id="bt-enviar" data-testid="send-button">Enviar</button>
@@ -27,7 +27,7 @@
   <script>
     const socket = io('http://localhost:3000');
     let myNickName = "";
-    socket.on('nickname', () => socket.emit('nickname', socket.id.slice(0, 16)))
+    socket.on('nickname', () => socket.emit('nickname', socket.id))
     socket.on('name', (data) => myNickName = data);
     const btEnviar = document.getElementById('bt-enviar');
     btEnviar.addEventListener('click', () => {
@@ -56,12 +56,19 @@
       myNickName = inpName.value;
     })
     const messageAllId = document.getElementById('messageAll');
-    socket.on('message', (data) => {
+    const renderMessages = (data) => {
       const addli = document.createElement('li');
       addli.setAttribute("data-testid", "message")
       addli.appendChild(document.createTextNode(data));
       messageAllId.appendChild(addli);
+    }
+    socket.on('message', (data) => {
+      renderMessages(data)
     });
+    socket.on('oldMessages', () => socket.emit('oldMessages'))
+    socket.on('sendOldMessages', (messages) => {
+      messages.forEach((obj) => renderMessages(obj.message))
+    })
   </script>
 </body>
 </html>
