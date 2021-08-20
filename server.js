@@ -2,11 +2,10 @@ const { instrument } = require('@socket.io/admin-ui');
 const express = require('express');
 require('dotenv').config();
 
-const scktValue = instrument;
 const app = express();
 const http = require('http').createServer(app);
 
-const PORTA = 3000; 
+const PORT = 3000; 
 
 const io = require('socket.io')(http, {
     cors: {
@@ -23,8 +22,8 @@ app.get('/', (_req, res) => {
     res.sendFile(`${__dirname}/web/index.html`);
 });
 
-scktValue(io, { auth: false });
+instrument(io, { auth: false });
 
-http.listen(PORTA, () => {
-    console.log(`Narguileira na porta ${PORTA}`);
+http.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
 });

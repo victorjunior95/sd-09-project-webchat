@@ -6,7 +6,7 @@ moment.defaultFormat = 'DD-MM-yyyy HH:mm:ss';
 const userList = new Map();
 
 module.exports = (io) => io.on('connection', async (socket) => {
-    // JVRM TRINCA DE 9
+    // https://tsh.io/blog/socket-io-tutorial-real-time-communication/
     const { id } = socket;
     const random = id.slice(0, -4);
     
