@@ -1,106 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Projeto WebChat</title>
- 
- <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <form id="chat">
-    <div class="top-itens">
-      <input type="text" name="username" placeholder="Digite um nick" id="input-nick" data-testid="nickname-box">
-      <button data-testid="nickname-button" id="salva-nick">Salvar</button>
-    </div>
-    <div class="horizon">
-      <div class="nick" id="nicks" data-testid="online-user"></div>
-      <div class="divmessages" id="mess"></div>
-    </div>
-    <div class="botom-itens">
-      <input type="text" name="message" placeholder="Digite sua mensagem" id="input-message" data-testid="message-box">
-      <button data-testid="send-button">Enviar</button>
-    </div>
-  </form>
-</body>
-<script src="/socket.io/socket.io.js"></script>
-<script type="text/javascript">
-  
-  const socket = io('http://localhost:3000');
-  const frm = document.getElementById('chat');
-  const nicks = document.getElementById('nicks');
-  const messagebox = document.getElementById('mess');
-  const inputMess = document.getElementById('input-message');
-  const btnSalvar = document.getElementById('salva-nick');
-  const inputNick = document.getElementById('input-nick');
-  const horizon = document.getElementsByClassName('horizon');
-  
-  
-  const  renderMessage = (mess) => {
-    let newelEmente = document.createElement('div');
-    newelEmente.setAttribute('data-testid', 'message')
-    newelEmente.innerText = mess;
-    messagebox.appendChild(newelEmente);
-  }; 
-  
-  socket.on('previousmessage', (messages) => {
-      if(messages.length >= 1){ messages.forEach(oneMessage => {
-      renderMessage(oneMessage);
-    })};
-  });
-  
-  socket.on('message', (message)=>{renderMessage(message)})
-  
-  socket.on('newnick', (nick)=>{
-    const ne = document.createElement('div');
-    ne.innerText = nick;
-    nicks.appendChild(ne);
-  });
 
-  socket.on('sendonline',(online) => {
-    nicks.innerHTML = '';
-    online.forEach((e)=> { 
-      const di = document.createElement('div');
-      di.innerText = e; 
-      nicks.appendChild(di); });
-  });
-  socket.on('changnick', ({neo, old}) => {
-    nicks.childNodes.forEach((e) => { if(e.innerText === old){ e.innerText = neo } }   
-    ); 
-  });
-  // logout
-   socket.on('userexit', (o) => {
-    nicks.innerHTML ='';
-    o.forEach((e) => { 
-      const ndiv = document.createElement('div');
-      ndiv.innerText = e;
-      nicks.appendChild(ndiv) }); 
-  });
+ <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto WebChat</title>
+
+    <link rel="stylesheet" href="styles.css">
+  </head>
+
+  <body>
+    <form id="chat">
+      <div class="top-itens">
+        <input type="text" name="username" placeholder="Digite um nick" id="input-nick" data-testid="nickname-box">
+        <button data-testid="nickname-button" id="salva-nick">Salvar</button>
+      </div>
+      <div class="horizon">
+        <div class="nick" id="nicks"></div>
+        <div class="divmessages" id="mess"></div>
+      </div>
+      <div class="botom-itens">
+        <input type="text" name="message" placeholder="Digite sua mensagem" id="input-message" data-testid="message-box">
+        <button data-testid="send-button">Enviar</button>
+      </div>
+    </form>
+  </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="text/javascript">
+
+    const socket = io('http://localhost:3000');
+
+    const frm = document.getElementById('chat');
+    const nicks = document.getElementById('nicks');
+    const messagebox = document.getElementById('mess');
+    const inputMess = document.getElementById('input-message');
+    const btnSalvar = document.getElementById('salva-nick');
+    const inputNick = document.getElementById('input-nick');
+    const horizon = document.getElementsByClassName('horizon');
 
 
-  btnSalvar.addEventListener('click', (e)=>{
-    e.preventDefault();
-    nicks.childNodes.forEach(
-      (e)=>{ if(e.innerText === socket.id.slice(0,16)){e.innerText = inputNick.value} }
-    );
-    socket.emit('nickchanged', { neo: inputNick.value, old: socket.id.slice(0,16) });
-  })
+    const renderMessage = (mess) => {
+      let newelEmente = document.createElement('div');
+      newelEmente.setAttribute('data-testid', 'message')
+      newelEmente.innerText = mess;
+      messagebox.appendChild(newelEmente);
+    };
 
-  frm.addEventListener( 'submit', (e)=> {
-    e.preventDefault();
-    
-    const nickname = document.getElementById('input-nick').value;
-    const chatMessage = document.getElementById('input-message').value;
-    const time = new Date();
-    const timeLocal = time.toLocaleString('pt-BR').replace(' ', '/').split('/').join('-');
-    let messageObject = { nickname, chatMessage };
-    let messageText= `${timeLocal} - ${nickname}: ${chatMessage}`;
-    
-    socket.emit('message', messageObject);
-    inputMess.value = '';
-    
-    
-  }); 
+    socket.on('previousmessage', (messages) => {
+      if (messages.length >= 1) {
+        messages.forEach(oneMessage => {
+          renderMessage(oneMessage);
+        })
+      };
+    });
+
+    socket.on('message', (message) => { renderMessage(message) })
+
+    socket.on('newnick', (nick) => {
+      const ne = document.createElement('div');
+      ne.setAttribute('data-testid', 'online-user')
+      ne.innerText = nick;
+      nicks.appendChild(ne);
+    });
+
+    socket.on('sendonline', (online) => {
+      nicks.innerHTML = '';
+      online.forEach((e) => {
+        const di = document.createElement('div');
+        di.setAttribute('data-testid', 'online-user');
+        di.innerText = e;
+        nicks.appendChild(di);
+      });
+    });
+
+    socket.on('changnick', ({ neo, old }) => {
+      console.log('neo - old', neo, old);
+      nicks.childNodes.forEach(
+        (e) => { if (e.innerText === old) { e.innerText = neo } }
+      );
+    });
+
+    btnSalvar.addEventListener('click', (e) => {
+      e.preventDefault();
+        nicks.childNodes.forEach(
+        (elem)=>{ if(elem.innerText === socket.id.slice(0,16)){elem.innerText = inputNick.value} }
+      );
+      socket.emit('nickchanged', { neo: inputNick.value, old: socket.id.slice(0,16) });
+    });
+
+    // logout
+    socket.on('userexit', (o) => {
+      nicks.innerHTML = '';
+      o.forEach((e) => {
+        const ndiv = document.createElement('div');
+        ndiv.innerText = e;
+        ndiv.setAttribute('data-testid', 'online-user');
+        nicks.appendChild(ndiv)
+      });
+    });
+
+
+      frm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const nickname = document.getElementById('input-nick').value;
+        const chatMessage = document.getElementById('input-message').value;
+        const time = new Date();
+        const timeLocal = time.toLocaleString('pt-BR').replace(' ', '/').split('/').join('-');
+        let messageObject = { nickname, chatMessage };
+        let messageText = `${timeLocal} - ${nickname}: ${chatMessage}`;
+
+        socket.emit('message', messageObject);
+        inputMess.value = '';
+
+
+      });
+
   </script>
+
 </html>

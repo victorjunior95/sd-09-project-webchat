@@ -28,33 +28,39 @@ app.use('/', (_req, res) => {
 res.render('index.html');
 });
 
+// eslint-disable-next-line max-lines-per-function
 io.on('connection', async (socket) => {
   // console.log(`socket conectado com o ID: ${socket.id}`);
   const message = await fromDb();
-  socket.on('disconnect', () => {
-    const sliced = socket.id.slice(0, 16); 
-    const ativo = online.filter((e) => e !== sliced); online = ativo;
-    console.log('saiu', sliced);
-    io.emit('userexit', online); 
-  });
- 
   // gerando nick para o req2
   online.push(socket.id.slice(0, 16));
-  io.emit('sendonline', online);
   console.log('online', online);
+  io.emit('sendonline', online);
   // enviando historico de mensagens ao front.
-    socket.emit('previousmessage', message);
-
-  socket.on('nickchanged', ({ old, neo }) => { socket.broadcast.emit('changnick', { neo, old }); });
+  socket.emit('previousmessage', message);
 
   // esperando evento message in
   socket.on('message', ({ chatMessage, nickname }) => { 
     const payload = `${timeLocal} - ${nickname}: ${chatMessage}`;
     const objmess = { timestamp: timeLocal, nickname, message: chatMessage };
     insertOne(objmess);
-   
+    
     // message out a todos os clientes
     io.emit('message', payload);
+  });
+    
+  socket.on('nickchanged', ({ old, neo }) => {
+    online.forEach((e, i) => { 
+      if (e === old) { online[i] = neo; console.log('dentro do if', online); }
+    });
+      socket.broadcast.emit('changnick', { neo, old });
+  });
+  
+  socket.on('disconnect', () => {
+    const sliced = socket.id.slice(0, 16); 
+    const ativo = online.filter((e) => e !== sliced); online = ativo;
+    console.log('saiu', sliced);
+    io.emit('userexit', online); 
   });
 });
   // a porta deve ser atribuida por process.env?
