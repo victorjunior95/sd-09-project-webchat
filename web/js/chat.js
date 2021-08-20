@@ -4,18 +4,19 @@ window.onload = () => {
   socket.emit('newUser');
 };
 
-const formUser = document.querySelector('#chatUser');
-const inputNickname = document.querySelector('#nickname-box');
-const nicknamesList = document.querySelector('#nickname-list');
+/* by: JVRM e Ric */
+const infosUser = document.querySelector('#chatUser');
+const nickReceive = document.querySelector('#nickname-box');
+const listName = document.querySelector('#nickname-list');
 
-let userName = '';
+let userIdentification = '';
 
-formUser.addEventListener('submit', (event) => {
+infosUser.addEventListener('submit', (event) => {
   event.preventDefault();
-  const nickname = inputNickname.value;
+  const nickname = nickReceive.value;
   localStorage.setItem('nickname', nickname);
 
-  userName = nickname;
+  userIdentification = nickname;
   socket.emit('changeName', nickname);
 });
 
@@ -25,7 +26,7 @@ const inputMessage = document.querySelector('#message-box');
 formChat.addEventListener('submit', (event) => {
   event.preventDefault();
   const chatMessage = inputMessage.value;
-  const nickname = userName;
+  const nickname = userIdentification;
   socket.emit('message', { chatMessage, nickname });
   inputMessage.value = '';
   return false;
@@ -40,12 +41,12 @@ const createMessage = (message) => {
   return 0;
 };
 
-const addUser = (user) => {
+const addUser = async (user) => {
   const li = document.createElement('li');
   li.setAttribute('data-testid', 'online-user');
   li.className = user;
   li.innerText = user;
-  nicknamesList.appendChild(li);
+  listName.appendChild(li);
   return null;
 };
 
@@ -61,18 +62,18 @@ socket.on('restoreChat', (messageList) => {
 socket.on('message', (message) => createMessage(message));
 
 socket.on('newUser', (userList) => {
-  nicknamesList.innerHTML = '';
+  listName.innerHTML = '';
   userList.map((user) => addUser(user[1]));
   return 0;
 });
 
 socket.on('changeName', (userList) => {
-  nicknamesList.innerHTML = '';
+  listName.innerHTML = '';
   userList.map((user) => addUser(user[1]));
 });
 
 socket.on('online', (userList) => {
-  nicknamesList.innerHTML = '';
+  listName.innerHTML = '';
   const userId = userList[userList.length - 1];
   userList.pop();
   const newList = [userId, ...userList];
@@ -81,6 +82,7 @@ socket.on('online', (userList) => {
 });
 
 socket.on('offline', (userList) => {
-  nicknamesList.innerHTML = '';
+  listName.innerHTML = '';
   userList.map((user) => addUser(user[1]));
 });
+/* by: JVRM e Ric */
