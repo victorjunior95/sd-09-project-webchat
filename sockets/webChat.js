@@ -1,5 +1,5 @@
 const moment = require('moment');
-const Messages = require('../models/chat');
+const messageModel = require('../models/chat');
 
 moment.defaultFormat = 'DD-MM-yyyy HH:mm:ss'; 
 
@@ -14,7 +14,7 @@ module.exports = (io) => io.on('connection', async (socket) => {
       socket.broadcast.emit('newUser', [...userList]);
       socket.emit('online', [...userList]);
     });
-    const messageList = await Messages.getAll();
+    const messageList = await messageModel.getAll();
     io.emit('restoreChat', messageList); 
   
     socket.on('changeName', (nickname) => {
@@ -23,7 +23,7 @@ module.exports = (io) => io.on('connection', async (socket) => {
     });
   
     socket.on('message', ({ chatMessage, nickname }) => {
-      Messages.create(chatMessage, userList.get(random) || random, moment().format());
+      messageModel.newCreate(chatMessage, userList.get(random) || random, moment().format());
       io.emit('message', `${moment().format()} ${nickname || userList.get(random)}:${chatMessage}`);
     });
   

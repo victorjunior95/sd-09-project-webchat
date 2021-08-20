@@ -8,11 +8,12 @@ const getAll = async () => connection()
     timestamp,
   })));
 
-const create = async (message, nickname, timestamp) => connection()
+const newCreate = async (message, nickname, timestamp) => connection()
   .then((db) => db.collection('messages').insertOne({ message, nickname, timestamp }))
   .then(() => ({ message, nickname, timestamp }));
 
 module.exports = {
   getAll,
-  create,
+  newCreate,
 };
+// FEITO COM A TRINCA DE 9 E WAR ROOM JRVM / INSTRUTORES
