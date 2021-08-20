@@ -52,6 +52,8 @@
 
         e.preventDefault();
 
+        randomUserName = userNameInput.value;
+
         socket.emit('updateUserName', userNameInput.value);
 
         userNameInput.value = ''
@@ -60,9 +62,17 @@
 
       const showUserName = (users) => {
         const userList = document.querySelector('#users');
+
+        const userListLi = document.createElement('li');
         userList.innerHTML = '';
-        users.map((user) => {
-          const userList = document.querySelector('#users');
+        userListLi.classList.add('userName');
+        userListLi.setAttribute('data-testid', 'online-user');
+        userListLi.setAttribute('id', socket.id);
+        userListLi.innerText = randomUserName;
+        userList.appendChild(userListLi);
+
+        users.forEach((user) => {
+          if (user.userId === socket.id) return;
           const userListLi = document.createElement('li');
 
           userListLi.classList.add('userName');
@@ -71,7 +81,6 @@
           userListLi.innerText = user.nickname;
           userList.appendChild(userListLi);
         });
-
 
       }
 
@@ -89,12 +98,12 @@
 
       socket.on('userLogin', (users) => {
         showUserName(users);
-        orderUserList(users, socket.id);
+        // orderUserList(users, socket.id);
       });
 
       socket.on('updateUserName', (users) => {
         showUserName(users);
-        orderUserList(users, socket.id);
+        // orderUserList(users, socket.id);
       });
 
       const form = document.querySelector('#messageForm');
@@ -107,7 +116,7 @@
 
         const message = {
           chatMessage: inputMessage.value,
-          nickname: li.innerText,
+          nickname: randomUserName,
         };
 
         socket.emit('message', message);
@@ -131,7 +140,7 @@
 
       socket.on('userDisconnect', (users) => {
         showUserName(users);
-      })
+      });
 
       window.onbeforeunload = function(event) {
         socket.disconnect();

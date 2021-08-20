@@ -7,8 +7,6 @@ const io = require('socket.io')(http, {
     origin: 'http://localhost:3000',
     method: ['GET', 'POST', 'PUT'],
   },
-}, {
-  pingTimeout: 500,
 });
 const ChatMessage = require('./models/chatMessages');
 const ChatMessageControllers = require('./controller/chatMessages');
