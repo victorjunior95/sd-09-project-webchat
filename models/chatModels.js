@@ -1,7 +1,11 @@
-const users = ['Yoda', 'Luke', 'r2d2'];
+const connection = require('./connection');
 
-const getAll = async () => {
-  return users;
+const createMessage = async ({ message, nickname, timestamp }) => {
+  await connection()
+    .then((db) => db.collection('messages').insertOne({ message, nickname, timestamp }));  
 };
 
-module.exports = { getAll };
+const getMessage = async () => connection()
+  .then((db) => db.collection('messages').find({}).toArray());
+
+module.exports = { createMessage, getMessage };
