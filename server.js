@@ -1,42 +1,26 @@
 const express = require('express');
 const path = require('path');
-const cors = require('cors');
-const bodyParser = require('body-parser');
 require('dotenv').config();
 
-const { PORT, SOCKET_PORT } = process.env;
+const { SOCKET_PORT } = process.env || 3000;
 
+const app = express();
 // configuracao do socket.io
-const socketIoServer = require('http').createServer();
+const socketIoServer = require('http').createServer(app);
 const io = require('socket.io')(socketIoServer, {
   cors: {
-    origin: 'socketIoServer://localhost:3000',
+    origin: 'http://localhost:3000',
     methods: ['GET', 'POST'],
   },
 });
 
-const chatRoutes = require('./routes/chatRoutes');
+require('./sockets/chat')(io);
 
-const app = express();
+const controllers = require('./controllers/chatController');
 
-app.use(
-  cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  }),
-);
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(bodyParser.json());
+app.use('/', controllers.getMessages);
 
-app.use(express.static(__dirname + '/public'));
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-
-app.use('/', chatRoutes);
-
-app.listen(PORT, () => console.log(`Server running... | port: ${PORT}`));
-
-socketIoServer.listen(
-  SOCKET_PORT,
-  console.log(`Socket.io running... | port: ${SOCKET_PORT}`),
-);
+socketIoServer.listen(SOCKET_PORT, () =>
+  console.log(`Socket.io running... | port: ${SOCKET_PORT}`));
