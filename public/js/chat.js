@@ -11,7 +11,7 @@ const idGenerator = (idLength) => {
     const index = Math.floor(Math.random() * 53);
     id += characters[index];
   }
-  
+
   return id;
 };
 
@@ -27,10 +27,21 @@ form.addEventListener('submit', (event) => {
 });
 
 const createMessage = (message) => {
-  const ul = document.querySelector('ul');
+  // const { chatMessage, users } = message;
+
+  const ul = document.querySelector('#history-list');
+
   const li = document.createElement('li');
+
+  // const msg = `<span data-testid="online-user">${nickname}</span> `;
+
   li.innerText = message;
   ul.appendChild(li);
 };
 
-socket.on('message', (message) => createMessage(message));
+const displayUsers = (users) => {
+  console.log('[users] > ', users);
+};
+
+ socket.on('message', (message) => createMessage(message));
+ socket.on('users', (users) => displayUsers(users));

@@ -12,22 +12,31 @@
     <h1>Webchat</h1>
   </header>
   <main class="container">
-    <div class="container-user">
-      <div class="left">
-        <div class="users">
-          <h3>Users</h3>
-          <ul>
-            <li>xablau</li>
-          </ul>
-        </div>
+    <form action="" id="nickname">
+      <input type="text" placeholder="Digite um nikname" data-testid="nickname-box">
+      <button
+        type="submit"
+        id="nikname-button"
+        data-testid="nickname-button"
+      >
+        Salvar
+      </button>
+    </form>
+    <div class="chat-container">
+      <div class="history" data-testid="message-box">
+        <h3>Historico</h3>
+        <ul id="history-list"></ul>
       </div>
-      <div class="history">
-  
+
+      <div class="users">
+        <h3>Users</h3>
+        <ul id="users-list"></ul>
       </div>
     </div>
+
     <form action="" id="messages">
-      <input type="text" placeholder="Digite uma nova mensagem aqui">
-      <button type="submit" id="msg-button">Enviar</button>
+      <input type="text" placeholder="Digite uma nova mensagem aqui" data-testid="message-box">
+      <button type="submit" id="msg-button" data-testid="send-button">Enviar</button>
     </form>
   </main>
   <script src="/socket.io/socket.io.js"></script>

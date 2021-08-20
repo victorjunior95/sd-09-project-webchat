@@ -13,10 +13,12 @@ const formatDate = () => {
 module.exports = (io) => io.on('connection', (socket) => {
   socket.on('message', (message) => {
     const { chatMessage, nickname } = message;
+    const users = ['zezinho', 'luizinho'];
 
     const date = formatDate();
     const formatMessage = `${date} - ${nickname}: ${chatMessage}`;
 
     io.emit('message', formatMessage);
+    io.emit('users', users);
   });
 });
