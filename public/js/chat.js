@@ -1,11 +1,25 @@
 const socket = window.io();
+const dataTestid = 'data-testid';
+
+const updateMsg = (msgHistory) => {
+  const messagesUl = document.querySelector('#messages');
+
+  msgHistory.forEach(({ message, nickname, timestamp }) => {
+    const chatMessage = `${timestamp} - ${nickname}: ${message}`;
+    const li = document.createElement('li');
+    li.innerText = chatMessage;
+    li.setAttribute(dataTestid, 'message');
+    messagesUl.appendChild(li);
+  });
+};
+
+socket.on('msgHistory', updateMsg);
 
 const form = document.querySelector('#formChat');
 const formChangeNickName = document.querySelector('#changeNickName');
 const inputMessage = document.querySelector('#messageInput');
 const inputNickName = document.querySelector('#changeNickInput');
 let user = null;
-const dataTestid = 'data-testid';
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -29,11 +43,14 @@ const createMessage = (message) => {
   const messagesUl = document.querySelector('#messages');
   const li = document.createElement('li');
 
-  // const currentDate = getDate();
-  // const message = `${currentDate} - ${nickname}: ${chatMessage}`;
   li.innerText = message;
   li.setAttribute(dataTestid, 'message');
   messagesUl.appendChild(li);
+};
+
+const newUser = (userConnected) => {
+  if (user) return;
+  user = userConnected;
 };
 
 const updateUsersOnline = (usersOnline) => {
@@ -55,11 +72,6 @@ const updateUsersOnline = (usersOnline) => {
   });
 };
 
-const newUser = (userConnected) => {
-  if (user) return;
-  user = userConnected;
-};
-
 const changeNickName = (onlineUsers) => {
   updateUsersOnline(onlineUsers);
 };
@@ -67,7 +79,6 @@ const changeNickName = (onlineUsers) => {
 window.onbeforeunload = () => {
   socket.disconnect();
 };
-
 socket.on('userConnected', newUser);
 socket.on('usersOnline', updateUsersOnline);
 socket.on('message', (objResult) => createMessage(objResult));

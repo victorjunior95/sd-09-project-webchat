@@ -3,6 +3,7 @@ const path = require('path');
 
 const app = express();
 const http = require('http').createServer(app);
+const bodyParser = require('body-parser');
 
 const io = require('socket.io')(http, {
   cors: {
@@ -10,12 +11,15 @@ const io = require('socket.io')(http, {
     methods: ['GET', 'POST'], // Métodos aceitos pela url
   },
 });
+const { getMsgControl } = require('./controllers/chat');
+
+app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, '/public')));
+app.get('/history', getMsgControl);
 
 io.on('connection', (socket) => {
   console.log(`Usuário conectado. ID: ${socket.id} `);
 });
-
-app.use(express.static(path.join(__dirname, '/public')));
 
 require('./sockets/chat')(io);
 

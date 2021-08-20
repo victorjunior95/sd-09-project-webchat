@@ -77,7 +77,12 @@ describe('3 - Elabore o histórico do chat para que as mensagens persistam', () 
 
     // connects via front-end
     await page.goto(BASE_URL);
+    // while (true);
+    // await page.waitForTimeout(500);
+    // console.log('[data-testid=message]');
+    // console.log(dataTestid('message'));
     await page.waitForSelector('[data-testid=message]');
+    // console.log('after wait Selector');
     await page.waitForTimeout(1000);
 
     // peek the messages we sent
