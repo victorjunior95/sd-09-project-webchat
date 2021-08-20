@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,55 +9,59 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
   <title>WebChat Trybe</title>
 </head>
-
-  <body>
-    <section class="main-container">
-      
-      <div class="content-left">
-        <input type="text" data-testid="nickname-box"  id="inpName" placeholder="Insira seu nickname ">
-        <button data-testid="nickname-button" >Salvar</button>
-        <div>
-          <ul id="nameAll"></ul>
-        </div>
+<body>
+  <section class="main-container">
+    <div class="content-left">
+      <input type="text" data-testid="nickname-box" id="inpName" placeholder="Insira seu nickname ">
+      <button data-testid="nickname-button" id="nickname-button">Salvar</button>
+      <div>
+        <ul id="nameAll"></ul>
       </div>
-      <div class="content-right">
-        <ul id="messageAll" data-testid="message"></ul>
-      </div>
-      <input type="text" data-testid="message-box" id="inpMessage" placeholder="Digite uma nova mensagem aqui">
-      <button id="bt-enviar"  data-testid="send-button">Enviar</button>
-      
-    </section>
-
-    <script>
-      const socket = io('http://localhost:3000');
-
-      const btEnviar = document.getElementById('bt-enviar');
-      btEnviar.addEventListener('click', () => {
-        const messageInput = document.getElementById('inpMessage');
-        socket.emit('message', { nickname: socket.id.slice(0,16), chatMessage: messageInput.value });
-
-        const nameAllId = document.getElementById('nameAll');
-
-        socket.emit('nickname', {nickname: socket.id.slice(0,16)});
-        socket.on('name', (data)=>{
-          const addli = document.createElement('li');
-          addli.appendChild(document.createTextNode(data.nickname));
-          nameAllId.appendChild(addli);
-          console.log(data);
-        })
-      });
-
-      
-    
-      const messageAllId = document.getElementById('messageAll');
-      socket.on('message', (data) => {
+    </div>
+    <div class="content-right">
+      <ul id="messageAll" data-testid="message"></ul>
+    </div>
+    <input type="text" data-testid="message-box" id="inpMessage" placeholder="Digite uma nova mensagem aqui">
+    <button id="bt-enviar" data-testid="send-button">Enviar</button>
+  </section>
+  <script>
+    const socket = io('http://localhost:3000');
+    let myNickName = "";
+    socket.on('nickname', () => socket.emit('nickname', socket.id.slice(0, 16)))
+    socket.on('name', (data) => myNickName = data);
+    const btEnviar = document.getElementById('bt-enviar');
+    btEnviar.addEventListener('click', () => {
+      const messageInput = document.getElementById('inpMessage');
+      socket.emit('message', { nickname: myNickName, chatMessage: messageInput.value });
+    })
+    const nameAllId = document.getElementById('nameAll');
+    const renderNickNames = (nickNames) => {
+      nickNames.forEach((nickname) => {
         const addli = document.createElement('li');
-        addli.appendChild(document.createTextNode(data));
-        messageAllId.appendChild(addli);
-      });
-
-
-
-    </script>
-  </body>
+        addli.setAttribute("data-testid", "online-user")
+        addli.appendChild(document.createTextNode(nickname));
+        nameAllId.appendChild(addli);
+      })
+    }
+    socket.on('allNickNames', (nickNames) => {
+      nameAllId.innerHTML = ('<ul id="nameAll"></ul>');
+      renderNickNames([myNickName]);
+      nickNames.splice(nickNames.indexOf(myNickName), 1);
+      renderNickNames(nickNames)
+    })
+    const nicknameButton = document.getElementById('nickname-button');
+    nicknameButton.addEventListener('click', () => {
+      const inpName = document.getElementById('inpName');
+      socket.emit('changeName', { nickname: myNickName, newName: inpName.value });
+      myNickName = inpName.value;
+    })
+    const messageAllId = document.getElementById('messageAll');
+    socket.on('message', (data) => {
+      const addli = document.createElement('li');
+      addli.setAttribute("data-testid", "message")
+      addli.appendChild(document.createTextNode(data));
+      messageAllId.appendChild(addli);
+    });
+  </script>
+</body>
 </html>
