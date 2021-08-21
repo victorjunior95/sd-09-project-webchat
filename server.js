@@ -4,40 +4,32 @@ require('dotenv').config();
 const app = require('express')();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
+const { insertMessage, findMessage } = require('./models/webchat');
 
 const { PORT } = process.env || 3000;
 
 let usersOnline = [];
 
-// eslint-disable-next-line max-lines-per-function
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
   socket.on('sendUser', (nickname) => {
-    usersOnline.push({
-      id: socket.id,
-      nickname,
-    });
+    usersOnline.push({ id: socket.id, nickname });
     io.emit('login', usersOnline);
   });
 
   socket.on('updateNickname', (newNickname) => {
-    usersOnline = usersOnline.map((user) => {
-      if (user.id === socket.id) {
-        return {
-          id: socket.id,
-          nickname: newNickname,
-        };
-      }
-      return user;
-    });
-
+    usersOnline = usersOnline
+      .map((user) => (user.id === socket.id ? { id: socket.id, nickname: newNickname } : user));
     io.emit('login', usersOnline);
   });
 
-  socket.on('message', (messageObj) => {
-    const message = `${moment()
-      .format('DD-MM-yyyy HH:mm:ss')} - ${messageObj.nickname}: ${messageObj.chatMessage}`;
-    io.emit('message', message);
+  socket.on('message', async (messageObj) => {
+    const timestamp = moment().format('DD-MM-yyyy HH:mm:ss');
+    await insertMessage({ ...messageObj, timestamp });
+    io.emit('message', `${timestamp} - ${messageObj.nickname}: ${messageObj.chatMessage}`);
   });
+
+  const data = await findMessage();
+  socket.emit('findMessages', data);
 });
 
 app.get('/', (req, res) => {

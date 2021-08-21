@@ -84,7 +84,7 @@
       const userUl = document.querySelector('#userList');
       userUl.innerText = ''
 
-      usersOnline.forEach(({nickname}) => {
+      usersOnline.forEach(({ nickname }) => {
         const li = document.createElement('li');
         li.setAttribute("data-testid", "online-user");
         li.innerText = nickname;
@@ -93,7 +93,7 @@
     })
 
     const messageBtn = document.querySelector('#send-button');
-      messageBtn.addEventListener('click', (event) => {
+    messageBtn.addEventListener('click', (event) => {
       event.preventDefault();
 
       const inputNickname = document.querySelector('#nickname-box');
@@ -108,26 +108,37 @@
     })
 
     const nicknameBtn = document.querySelector('#nickname-button');
-      nicknameBtn.addEventListener('click', (event) => {
+    nicknameBtn.addEventListener('click', (event) => {
       event.preventDefault();
 
       const inputNickname = document.querySelector('#nickname-box')
       nickname = inputNickname.value
 
       socket.emit('updateNickname', nickname);
-
     })
 
+    socket.on('message', (message) => createMessage(message));
     const createMessage = (message) => {
       const messagesUl = document.querySelector('.messages');
       const li = document.createElement('li');
+
       li.setAttribute("data-testid", "message");
       li.innerText = message;
       messagesUl.appendChild(li);
     };
 
-    socket.on('message', (message) => createMessage(message));
+    socket.on('findMessages', (allMessages) => {
+      const messagesUl = document.querySelector('.messages');
 
+      allMessages.forEach(({ chatMessage, nickname: user, timestamp }) => {
+        const li = document.createElement('li');
+
+        li.setAttribute("data-testid", 'message');
+        li.innerText = `${timestamp} - ${user}: ${chatMessage}`;
+        messagesUl.appendChild(li);
+      });
+
+    });
   </script>
 </body>
 
