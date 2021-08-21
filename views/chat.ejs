@@ -7,7 +7,10 @@
   <body>
     <ul id="listOnlineUsers">Online:</ul>
     <input id="nicknameInput" data-testid="nickname-box" placeholder="Escolha um novo Nick" /><button id="nickButton" data-testid="nickname-button">New Nick</button>
-    <ul id="messages"></ul>
+    <ul id="messages"><% messages.forEach((msg) => { %>
+      <li data-testid="message"><%= msg %></li>
+      <% }) %>
+    </ul>
     <form action="">
       <input id="messageInput" data-testid="message-box" placeholder="Inicie uma conversa" /><button id="sendButton" data-testid="send-button">Send</button>
     </form>

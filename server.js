@@ -8,6 +8,7 @@ const io = require('socket.io')(http, {
     origin: 'http://localhost:3000',
     methods: ['GET', 'POST'],
 } });
+const { getAllMessages } = require('./models/chat');
 
 require('./sockets/chat')(io);
 
@@ -15,8 +16,11 @@ app.use(express.static(`${__dirname}/public`));
 
 app.set('view engine', 'ejs');
 
-app.get('/', (_req, res) => {
-  res.render('chat');
+app.get('/', async (_req, res) => {
+  const allMessages = await getAllMessages();
+  const messages = allMessages.map(({ message, nickname, timeStamp }) => 
+  `${timeStamp} - ${nickname}: ${message}`);
+  res.render('chat', { messages });
 });
 
 const PORT = process.env.PORT || 3000;
