@@ -5,7 +5,7 @@ module.exports = (io) => io.on('connection', async (socket) => {
   const users = [];
   const firstNickname = socket.id.slice(0, 16);
   users.push(firstNickname);
-  io.emit('firstConnection', users);
+  io.emit('listUsers', users);
 
   const timeStamp = moment().format('DD-MM-yyyy LTS');
   socket.on('message', async ({ chatMessage, nickname }) => {

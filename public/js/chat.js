@@ -27,7 +27,7 @@ const createMessage = (message) => {
 };
 
 socket.on('message', (message) => createMessage(message));
-socket.on('firstConnection', (users) => {
+socket.on('listUsers', (users) => {
   const listUl = document.querySelector('#listOnlineUsers');
   const li = document.createElement('li');
   users.forEach((user) => {
