@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Webchat</title>
+</head>
+<body>
+  <main>
+    <aside className="nicknameBox">
+      <ul className="nicknameList"></ul>
+    </aside>
+
+    <div className="chatContainer">
+      <div className="chatBox">
+        <ul className="messageList"></ul>
+      </div>
+
+      <form className="chatInput">
+        <input className="messageInput" placeholder="Mensagem..."/>
+        <button type="submit" className="">Enviar</button>
+      </form>
+    </div>
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="./js/chatClient.js"></script>
+</body>
+</html>
