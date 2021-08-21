@@ -1,0 +1,96 @@
+.webchat-page {
+  background-color: #E5D4C0;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.online-users, .chat-messages {
+  display: flex;
+  flex-direction: column;
+}
+
+.online-users {
+  background-color: aquamarine;
+}
+
+.chat-header {
+  background-color: rgb(240, 240, 240);
+  padding: 10px;
+}
+
+.write-message {
+  background-color: rgb(240, 240, 240);
+  padding: 10px;
+}
+
+.messages {
+  background-image: url("../images/qwd83nc4xxf41.jpg");
+  background-size: cover;
+  height:80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.message {
+  display: flex;
+  width: 100%;
+}
+
+.my {
+  justify-content: flex-end;
+}
+
+.other {
+  justify-content: flex-start;
+}
+
+.my > span {
+  margin: 5px;
+  border-radius: 10px;
+  padding: 5px 20px;
+  display: inline;
+  background-color: rgb(220, 248, 198);
+  box-shadow: -1px 2px #888888;
+}
+
+.other > span {
+  margin: 5px;
+  border-radius: 10px;
+  padding: 5px 20px;
+  display: inline;
+  background-color: rgb(255, 255, 255);
+  box-shadow: 1px 2px #888888;
+}
+
+.new-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emoji {
+  background-color: Transparent;
+  background-repeat:no-repeat;
+  border: none;
+  cursor:pointer;
+  overflow: hidden;
+  outline:none;   
+}
+
+.emoji img {
+  width: 18px;
+}
+
+.new-message input {
+  height: 20px;
+  padding: 9px 12px 11px;
+  border: 1px solid;
+  border-radius: 21px;
+  outline: none;
+  border-color: rgb(240, 240, 240);
+}
+
+.new-message input::placeholder {
+  color: rgb(153, 153, 153);
+}

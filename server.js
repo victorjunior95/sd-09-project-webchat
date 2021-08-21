@@ -11,12 +11,13 @@ const io = require('socket.io')(http, {
   },
 });
 
-io.on('connection', (socket) => {
-  console.log(`Usuário conectado. ID: ${socket.id} `);
-});
+require('./sockets/ping')(io);
+require('./sockets/chat')(io);
+
+app.use('/public', express.static(`${__dirname}/public`));
 
 app.get('/', (req, res) => {
-  res.sendFile(`${__dirname}/index.html`);
+  res.sendFile(`${__dirname}/views/index.html`);
 });
 
 http.listen(3000, () => console.log('Servidor rodando na porta 3000'));
