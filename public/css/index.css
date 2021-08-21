@@ -1,11 +1,11 @@
 .webchat-page {
-  background-color: #E5D4C0;
+  background-color: #e5d4c0;
   display: flex;
   flex-direction: row;
   justify-content: center;
 }
 
-.online-users, .chat-messages {
+.online-users , .chat-messages {
   display: flex;
   flex-direction: column;
 }
@@ -25,11 +25,11 @@
 }
 
 .messages {
-  background-image: url("../images/qwd83nc4xxf41.jpg");
+  background-image: url('../images/qwd83nc4xxf41.jpg');
   background-size: cover;
-  height:80vh;
   display: flex;
   flex-direction: column;
+  height: 80vh;
 }
 
 .message {
@@ -46,36 +46,36 @@
 }
 
 .my > span {
-  margin: 5px;
-  border-radius: 10px;
-  padding: 5px 20px;
-  display: inline;
   background-color: rgb(220, 248, 198);
-  box-shadow: -1px 2px #888888;
+  border-radius: 10px;
+  box-shadow: -1px 2px #888;
+  display: inline;
+  margin: 5px;
+  padding: 5px 20px;
 }
 
 .other > span {
-  margin: 5px;
+  background-color: white;
   border-radius: 10px;
-  padding: 5px 20px;
+  box-shadow: 1px 2px #888;
   display: inline;
-  background-color: rgb(255, 255, 255);
-  box-shadow: 1px 2px #888888;
+  margin: 5px;
+  padding: 5px 20px;
 }
 
 .new-message {
-  display: flex;
   align-items: center;
+  display: flex;
   justify-content: center;
 }
 
 .emoji {
-  background-color: Transparent;
-  background-repeat:no-repeat;
+  background-color: transparent;
+  background-repeat: no-repeat;
   border: none;
-  cursor:pointer;
+  cursor: pointer;
+  outline: none;
   overflow: hidden;
-  outline:none;   
 }
 
 .emoji img {
@@ -83,12 +83,12 @@
 }
 
 .new-message input {
-  height: 20px;
-  padding: 9px 12px 11px;
   border: 1px solid;
-  border-radius: 21px;
-  outline: none;
   border-color: rgb(240, 240, 240);
+  border-radius: 21px;
+  height: 20px;
+  outline: none;
+  padding: 9px 12px 11px;
 }
 
 .new-message input::placeholder {

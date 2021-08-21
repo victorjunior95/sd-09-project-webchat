@@ -28,9 +28,7 @@ const clearSendMessageInput = () => {
 
 const sendMessage = () => {
   const messageToSend = document.querySelector('#message-to-send').value;
-  if (messageToSend === '') {
-    return alert('Escreva alguma mensagem antes de enviar');
-  }
+  if (messageToSend === '') return;
   console.log(messageToSend);
   socket.emit('sendMessage', { messageUserId: myId, message: messageToSend });
   clearSendMessageInput();
