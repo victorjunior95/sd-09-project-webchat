@@ -13,9 +13,12 @@ function dataTestid(name) {
   return `[data-testid=${name}]`;
 }
 
-const chatMessage = 'The more I study, the more insatiable do I feel my genius for it to be.';
-const anotherChatMessage = 'Your best and wisest refuge from all troubles is in your science.';
-const yetAnotherChatMessage = 'The science of operations, as derived from mathematics more especially, is a science of itself, and has its own abstract truth and value.';
+const chatMessage =
+  'The more I study, the more insatiable do I feel my genius for it to be.';
+const anotherChatMessage =
+  'Your best and wisest refuge from all troubles is in your science.';
+const yetAnotherChatMessage =
+  'The science of operations, as derived from mathematics more especially, is a science of itself, and has its own abstract truth and value.';
 const nickname = 'Ada Lovelace';
 const anotherNickname = 'Alan Turing';
 
@@ -24,7 +27,15 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
   let page;
 
   beforeEach(async (done) => {
-    browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage', '--window-size=1920,1080'], headless: true });
+    browser = await puppeteer.launch({
+      args: [
+        '--no-sandbox',
+        '--disable-gpu',
+        '--disable-dev-shm-usage',
+        '--window-size=1920,1080',
+      ],
+      headless: true,
+    });
     page = await browser.newPage();
     done();
   });
@@ -40,14 +51,15 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
     await page.waitForSelector(dataTestid('online-user'));
 
     //he sees his name on screen
-    let client1Nicknames = await page.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    let client1Nicknames = await page.$$eval(
+      dataTestid('online-user'),
+      (nodes) => nodes.map((n) => n.innerText)
+    );
     await page.waitForTimeout(500);
     expect(client1Nicknames.length).toBe(1);
     expect(client1Nicknames).toEqual(
-      expect.arrayContaining([
-        expect.stringMatching(/^[\w'-]{16}$/),
-      ])
-    )
+      expect.arrayContaining([expect.stringMatching(/^[\w'-]{16}$/)])
+    );
 
     //another client connects
     const page2 = await browser.newPage();
@@ -56,27 +68,32 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
     await page2.waitForSelector(dataTestid('online-user'));
 
     //he sees his name and the other on screen
-    let client2Nicknames = await page2.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    let client2Nicknames = await page2.$$eval(
+      dataTestid('online-user'),
+      (nodes) => nodes.map((n) => n.innerText)
+    );
     expect(client2Nicknames.length).toBe(2);
     expect(client2Nicknames).toEqual(
       expect.arrayContaining([
         expect.stringMatching(/^[\w'-]{16}$/),
         expect.stringMatching(/^[\w'-]{16}$/),
       ])
-    )
+    );
 
     // the first client sees the sencond client name
     await page.bringToFront();
     await page.waitForTimeout(500);
 
-    client1Nicknames = await page.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    client1Nicknames = await page.$$eval(dataTestid('online-user'), (nodes) =>
+      nodes.map((n) => n.innerText)
+    );
     expect(client1Nicknames.length).toBe(2);
     expect(client1Nicknames).toEqual(
       expect.arrayContaining([
         expect.stringMatching(/^[\w'-]{16}$/),
         expect.stringMatching(/^[\w'-]{16}$/),
       ])
-    )
+    );
 
     //another client connects
     const page3 = await browser.newPage();
@@ -85,7 +102,10 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
     await page3.waitForSelector(dataTestid('online-user'));
 
     //he sees his name and the other on screen
-    const client3Nicknames = await page3.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    const client3Nicknames = await page3.$$eval(
+      dataTestid('online-user'),
+      (nodes) => nodes.map((n) => n.innerText)
+    );
     expect(client3Nicknames.length).toBe(3);
     expect(client3Nicknames).toEqual(
       expect.arrayContaining([
@@ -93,12 +113,14 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
         expect.stringMatching(/^[\w'-]{16}$/),
         expect.stringMatching(/^[\w'-]{16}$/),
       ])
-    )
+    );
 
     // the first client sees the sencond and third client name
     await page.bringToFront();
     await page.waitForTimeout(500);
-    client1Nicknames = await page.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    client1Nicknames = await page.$$eval(dataTestid('online-user'), (nodes) =>
+      nodes.map((n) => n.innerText)
+    );
     expect(client1Nicknames.length).toBe(3);
     expect(client1Nicknames).toEqual(
       expect.arrayContaining([
@@ -106,12 +128,14 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
         expect.stringMatching(/^[\w'-]{16}$/),
         expect.stringMatching(/^[\w'-]{16}$/),
       ])
-    )
+    );
 
     // the second client sees the sencond and third client name
     await page2.bringToFront();
     await page2.waitForTimeout(500);
-    client2Nicknames = await page2.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    client2Nicknames = await page2.$$eval(dataTestid('online-user'), (nodes) =>
+      nodes.map((n) => n.innerText)
+    );
     expect(client2Nicknames.length).toBe(3);
     expect(client2Nicknames).toEqual(
       expect.arrayContaining([
@@ -119,7 +143,7 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
         expect.stringMatching(/^[\w'-]{16}$/),
         expect.stringMatching(/^[\w'-]{16}$/),
       ])
-    )
+    );
   });
 
   it('Será validado que quando um cliente se desconecta, seu nome desaparece do front-end dos outros clientes', async () => {
@@ -128,14 +152,15 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
     await page.waitForSelector(dataTestid('online-user'));
 
     //he sees his name on screen
-    let client1Nicknames = await page.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    let client1Nicknames = await page.$$eval(
+      dataTestid('online-user'),
+      (nodes) => nodes.map((n) => n.innerText)
+    );
     await page.waitForTimeout(500);
     expect(client1Nicknames.length).toBe(1);
     expect(client1Nicknames).toEqual(
-      expect.arrayContaining([
-        expect.stringMatching(/^[\w'-]{16}$/),
-      ])
-    )
+      expect.arrayContaining([expect.stringMatching(/^[\w'-]{16}$/)])
+    );
 
     //another client connects
     const page2 = await browser.newPage();
@@ -144,27 +169,32 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
     await page2.waitForSelector(dataTestid('online-user'));
 
     //he sees his name and the other on screen
-    let client2Nicknames = await page2.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    let client2Nicknames = await page2.$$eval(
+      dataTestid('online-user'),
+      (nodes) => nodes.map((n) => n.innerText)
+    );
     expect(client2Nicknames.length).toBe(2);
     expect(client2Nicknames).toEqual(
       expect.arrayContaining([
         expect.stringMatching(/^[\w'-]{16}$/),
         expect.stringMatching(/^[\w'-]{16}$/),
       ])
-    )
+    );
 
     // the first client sees the sencond client name
     await page.bringToFront();
     await page.waitForTimeout(500);
 
-    client1Nicknames = await page.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    client1Nicknames = await page.$$eval(dataTestid('online-user'), (nodes) =>
+      nodes.map((n) => n.innerText)
+    );
     expect(client1Nicknames.length).toBe(2);
     expect(client1Nicknames).toEqual(
       expect.arrayContaining([
         expect.stringMatching(/^[\w'-]{16}$/),
         expect.stringMatching(/^[\w'-]{16}$/),
       ])
-    )
+    );
 
     //another client connects
     const page3 = await browser.newPage();
@@ -173,7 +203,10 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
     await page3.waitForSelector(dataTestid('online-user'));
 
     //he sees his name and the other on screen
-    const client3Nicknames = await page3.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    const client3Nicknames = await page3.$$eval(
+      dataTestid('online-user'),
+      (nodes) => nodes.map((n) => n.innerText)
+    );
     expect(client3Nicknames.length).toBe(3);
     expect(client3Nicknames).toEqual(
       expect.arrayContaining([
@@ -181,12 +214,14 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
         expect.stringMatching(/^[\w'-]{16}$/),
         expect.stringMatching(/^[\w'-]{16}$/),
       ])
-    )
+    );
 
     // the first client sees the sencond and third client name
     await page.bringToFront();
     await page.waitForTimeout(500);
-    client1Nicknames = await page.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    client1Nicknames = await page.$$eval(dataTestid('online-user'), (nodes) =>
+      nodes.map((n) => n.innerText)
+    );
     expect(client1Nicknames.length).toBe(3);
     expect(client1Nicknames).toEqual(
       expect.arrayContaining([
@@ -194,12 +229,14 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
         expect.stringMatching(/^[\w'-]{16}$/),
         expect.stringMatching(/^[\w'-]{16}$/),
       ])
-    )
+    );
 
     // the second client sees the sencond and third client name
     await page2.bringToFront();
     await page2.waitForTimeout(500);
-    client2Nicknames = await page2.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    client2Nicknames = await page2.$$eval(dataTestid('online-user'), (nodes) =>
+      nodes.map((n) => n.innerText)
+    );
     expect(client2Nicknames.length).toBe(3);
     expect(client2Nicknames).toEqual(
       expect.arrayContaining([
@@ -207,7 +244,7 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
         expect.stringMatching(/^[\w'-]{16}$/),
         expect.stringMatching(/^[\w'-]{16}$/),
       ])
-    )
+    );
 
     //------------------------------------------------------------------------
     // up here its the same test above
@@ -219,26 +256,30 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
     // the second client sees two other names
     await page2.bringToFront();
     await page2.waitForTimeout(500);
-    client2Nicknames = await page2.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    client2Nicknames = await page2.$$eval(dataTestid('online-user'), (nodes) =>
+      nodes.map((n) => n.innerText)
+    );
     expect(client2Nicknames.length).toBe(2);
     expect(client2Nicknames).toEqual(
       expect.arrayContaining([
         expect.stringMatching(/^[\w'-]{16}$/),
         expect.stringMatching(/^[\w'-]{16}$/),
       ])
-    )
+    );
 
     // the third client sees two other names
     await page3.bringToFront();
     await page3.waitForTimeout(500);
-    client2Nicknames = await page3.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    client2Nicknames = await page3.$$eval(dataTestid('online-user'), (nodes) =>
+      nodes.map((n) => n.innerText)
+    );
     expect(client2Nicknames.length).toBe(2);
     expect(client2Nicknames).toEqual(
       expect.arrayContaining([
         expect.stringMatching(/^[\w'-]{16}$/),
         expect.stringMatching(/^[\w'-]{16}$/),
       ])
-    )
+    );
 
     // now the third client leaves
     await page3.close();
@@ -246,13 +287,13 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
     // the second client sees only his name
     await page2.bringToFront();
     await page2.waitForTimeout(500);
-    client2Nicknames = await page2.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    client2Nicknames = await page2.$$eval(dataTestid('online-user'), (nodes) =>
+      nodes.map((n) => n.innerText)
+    );
     expect(client2Nicknames.length).toBe(1);
     expect(client2Nicknames).toEqual(
-      expect.arrayContaining([
-        expect.stringMatching(/^[\w'-]{16}$/),
-      ])
-    )
+      expect.arrayContaining([expect.stringMatching(/^[\w'-]{16}$/)])
+    );
   });
 
   it('Será validado que quando um cliente atualiza seu nickname, o nickname é atualizado no front-end de todos os clientes', async () => {
@@ -261,14 +302,15 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
     await page.waitForSelector(dataTestid('online-user'));
 
     //he sees his name on screen
-    let client1Nicknames = await page.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    let client1Nicknames = await page.$$eval(
+      dataTestid('online-user'),
+      (nodes) => nodes.map((n) => n.innerText)
+    );
     await page.waitForTimeout(500);
     expect(client1Nicknames.length).toBe(1);
     expect(client1Nicknames).toEqual(
-      expect.arrayContaining([
-        expect.stringMatching(/^[\w'-]{16}$/),
-      ])
-    )
+      expect.arrayContaining([expect.stringMatching(/^[\w'-]{16}$/)])
+    );
 
     // he changes his nickname
     let nicknameBox = await page.$(`input${dataTestid('nickname-box')}`);
@@ -278,14 +320,14 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
     await nicknameButton.click();
 
     // he sees it changed
-    client1Nicknames = await page.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    client1Nicknames = await page.$$eval(dataTestid('online-user'), (nodes) =>
+      nodes.map((n) => n.innerText)
+    );
     await page.waitForTimeout(500);
     expect(client1Nicknames.length).toBe(1);
     expect(client1Nicknames).toEqual(
-      expect.arrayContaining([
-        expect.stringMatching(nickname),
-      ])
-    )
+      expect.arrayContaining([expect.stringMatching(nickname)])
+    );
 
     //another client connects
     const page2 = await browser.newPage();
@@ -294,27 +336,32 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
     await page2.waitForSelector(dataTestid('online-user'));
 
     //he sees his name and the other on screen
-    let client2Nicknames = await page2.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    let client2Nicknames = await page2.$$eval(
+      dataTestid('online-user'),
+      (nodes) => nodes.map((n) => n.innerText)
+    );
     expect(client2Nicknames.length).toBe(2);
     expect(client2Nicknames).toEqual(
       expect.arrayContaining([
         expect.stringMatching(nickname),
         expect.stringMatching(/^[\w'-]{16}$/),
       ])
-    )
+    );
 
     // the first client sees the sencond client name
     await page.bringToFront();
     await page.waitForTimeout(500);
 
-    client1Nicknames = await page.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    client1Nicknames = await page.$$eval(dataTestid('online-user'), (nodes) =>
+      nodes.map((n) => n.innerText)
+    );
     expect(client1Nicknames.length).toBe(2);
     expect(client1Nicknames).toEqual(
       expect.arrayContaining([
         expect.stringMatching(nickname),
         expect.stringMatching(/^[\w'-]{16}$/),
       ])
-    )
+    );
 
     //another client connects
     const page3 = await browser.newPage();
@@ -323,7 +370,10 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
     await page3.waitForSelector(dataTestid('online-user'));
 
     //he sees his name and the other on screen
-    let client3Nicknames = await page3.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    let client3Nicknames = await page3.$$eval(
+      dataTestid('online-user'),
+      (nodes) => nodes.map((n) => n.innerText)
+    );
     expect(client3Nicknames.length).toBe(3);
     expect(client3Nicknames).toEqual(
       expect.arrayContaining([
@@ -331,7 +381,7 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
         expect.stringMatching(/^[\w'-]{16}$/),
         expect.stringMatching(/^[\w'-]{16}$/),
       ])
-    )
+    );
 
     // he changes his nickname
     await page3.bringToFront();
@@ -345,7 +395,9 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
     await page.waitForTimeout(500);
 
     // he sees it changed
-    client3Nicknames = await page3.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    client3Nicknames = await page3.$$eval(dataTestid('online-user'), (nodes) =>
+      nodes.map((n) => n.innerText)
+    );
     expect(client3Nicknames.length).toBe(3);
     expect(client3Nicknames).toEqual(
       expect.arrayContaining([
@@ -353,13 +405,14 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
         expect.stringMatching(anotherNickname),
         expect.stringMatching(/^[\w'-]{16}$/),
       ])
-    )
-
+    );
 
     // the first client sees the sencond and third client name
     await page.bringToFront();
     await page.waitForTimeout(500);
-    client1Nicknames = await page.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    client1Nicknames = await page.$$eval(dataTestid('online-user'), (nodes) =>
+      nodes.map((n) => n.innerText)
+    );
     expect(client1Nicknames.length).toBe(3);
     expect(client1Nicknames).toEqual(
       expect.arrayContaining([
@@ -367,12 +420,14 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
         expect.stringMatching(anotherNickname),
         expect.stringMatching(/^[\w'-]{16}$/),
       ])
-    )
+    );
 
     // the second client sees the sencond and third client name
     await page2.bringToFront();
     await page2.waitForTimeout(500);
-    client2Nicknames = await page2.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    client2Nicknames = await page2.$$eval(dataTestid('online-user'), (nodes) =>
+      nodes.map((n) => n.innerText)
+    );
     expect(client2Nicknames.length).toBe(3);
     expect(client2Nicknames).toEqual(
       expect.arrayContaining([
@@ -380,7 +435,7 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
         expect.stringMatching(anotherNickname),
         expect.stringMatching(/^[\w'-]{16}$/),
       ])
-    )
+    );
   });
 
   it('Será validado que os nicknames são mostrados na ordem correta', async () => {
@@ -389,14 +444,15 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
     await page.waitForSelector(dataTestid('online-user'));
 
     //he sees his name on screen
-    let client1Nicknames = await page.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    let client1Nicknames = await page.$$eval(
+      dataTestid('online-user'),
+      (nodes) => nodes.map((n) => n.innerText)
+    );
     await page.waitForTimeout(500);
     expect(client1Nicknames.length).toBe(1);
     expect(client1Nicknames).toEqual(
-      expect.arrayContaining([
-        expect.stringMatching(/^[\w'-]{16}$/),
-      ])
-    )
+      expect.arrayContaining([expect.stringMatching(/^[\w'-]{16}$/)])
+    );
 
     // he changes his nickname
     let nicknameBox = await page.$(`input${dataTestid('nickname-box')}`);
@@ -406,14 +462,14 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
     await nicknameButton.click();
 
     // he sees it changed
-    client1Nicknames = await page.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    client1Nicknames = await page.$$eval(dataTestid('online-user'), (nodes) =>
+      nodes.map((n) => n.innerText)
+    );
     await page.waitForTimeout(500);
     expect(client1Nicknames.length).toBe(1);
     expect(client1Nicknames).toEqual(
-      expect.arrayContaining([
-        expect.stringMatching(nickname),
-      ])
-    )
+      expect.arrayContaining([expect.stringMatching(nickname)])
+    );
 
     //another client connects
     const page2 = await browser.newPage();
@@ -422,7 +478,10 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
     await page2.waitForSelector(dataTestid('online-user'));
 
     //he sees his name first on the screen
-    let client2Nicknames = await page2.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    let client2Nicknames = await page2.$$eval(
+      dataTestid('online-user'),
+      (nodes) => nodes.map((n) => n.innerText)
+    );
     expect(client2Nicknames.length).toBe(2);
     expect(client2Nicknames[0]).toMatch(/^[\w'-]{16}$/);
     expect(client2Nicknames[1]).toEqual(nickname);
@@ -431,10 +490,11 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
     await page.bringToFront();
     await page.waitForTimeout(500);
 
-    client1Nicknames = await page.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
+    client1Nicknames = await page.$$eval(dataTestid('online-user'), (nodes) =>
+      nodes.map((n) => n.innerText)
+    );
     expect(client1Nicknames.length).toBe(2);
     expect(client1Nicknames[0]).toEqual(nickname);
     expect(client1Nicknames[1]).toMatch(/^[\w'-]{16}$/);
-
   });
 });
