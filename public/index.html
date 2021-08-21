@@ -57,12 +57,12 @@
 
     socket.on('message', (message) => { renderMessage(message) })
 
-    socket.on('newnick', (nick) => {
+ /*    socket.on('newnick', (nick) => {
       const ne = document.createElement('div');
       ne.setAttribute('data-testid', 'online-user')
       ne.innerText = nick;
       nicks.appendChild(ne);
-    });
+    }); */
 
     socket.on('sendonline', (online) => {
       nicks.innerHTML = '';
@@ -70,7 +70,7 @@
         const di = document.createElement('div');
         di.setAttribute('data-testid', 'online-user');
         di.innerText = e;
-        nicks.appendChild(di);
+        online.length > 1 ? nicks.prepend(di) : nicks.appendChild(di);
       });
     });
 
@@ -83,9 +83,8 @@
 
     btnSalvar.addEventListener('click', (e) => {
       e.preventDefault();
-        nicks.childNodes.forEach(
-        (elem)=>{ if(elem.innerText === socket.id.slice(0,16)){elem.innerText = inputNick.value} }
-      );
+       nicks.firstElementChild.innerText = inputNick.value
+      
       socket.emit('nickchanged', { neo: inputNick.value, old: socket.id.slice(0,16) });
     });
 

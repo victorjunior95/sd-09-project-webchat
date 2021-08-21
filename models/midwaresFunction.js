@@ -28,7 +28,7 @@ const fromDb = async () => {
 };
 
 module.exports = {
-insertOne,
-fromDb,
-getall,
+  insertOne,
+  fromDb,
+  getall,
 };

@@ -24,7 +24,7 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
   let page;
 
   beforeEach(async (done) => {
-    browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage', '--window-size=1920,1080'], headless: true });
+    browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage', '--window-size=1920,1080'], headless: false });
     page = await browser.newPage();
     done();
   });
