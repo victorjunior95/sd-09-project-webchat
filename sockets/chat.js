@@ -1,8 +1,21 @@
 const chatModel = require('../models/chatModel');
 
-const newConnection = (socket) => {
-  socket.emit('wellcome', 'Cheguei');
+const newConnection = (io) => {
+  io.emit('wellcome', 'Cheguei');
 };
+
+const createRandomName = (length) => {
+  let result = '';
+  const validChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+  for (let i = 0; i < length; i += 1) {
+    result += validChars.charAt(Math.floor(Math.random() * validChars.length));
+  }
+
+  return result;
+};
+
+const names = {};
 
 const message = (socket, io) => {
   socket.on('message', ({ chatMessage, nickname }) => {
@@ -18,7 +31,7 @@ const message = (socket, io) => {
 
     const usrMsg = `${timestamp} ${nickname}: ${chatMessage}`;
 
-      chatModel.saveMsgs({ message: chatMessage, nickname, timestamp });
+    chatModel.saveMsgs({ message: chatMessage, nickname, timestamp });
 
     io.emit('message', usrMsg);
   });
@@ -27,13 +40,32 @@ const message = (socket, io) => {
 const msgHistory = (socket) => {
   socket.on('msgHistory', async () => {
     const getMesgs = await chatModel.getMesgs();
+
     socket.emit('getMesgs', getMesgs);
   });
 };
 
+const connectedList = (socket, io) => {
+  socket.on('listNames', () => {
+    names[socket.id] = createRandomName(16);
+
+    io.emit('updateOnline', { names });
+  });
+};
+
 const changeName = (socket, io) => {
-  socket.on('changeName', () => {
-    io.emit('changeName', 'Nome alterado com sucesso :)');
+  socket.on('changeName', (newNick) => {
+    names[socket.id] = newNick;
+
+    io.emit('updateOnline', { names });
+  });
+};
+
+const disconnect = (socket, io) => {
+  socket.on('disconnect', () => {
+    delete names[socket.id];
+
+    io.emit('updateOnline', { names });
   });
 };
 
@@ -42,4 +74,6 @@ module.exports = (io) => io.on('connection', (socket) => {
   message(socket, io);
   msgHistory(socket);
   changeName(socket, io);
+  connectedList(socket, io);
+  disconnect(socket, io);
 });
