@@ -14,13 +14,18 @@ const io = require('socket.io')(socketIoServer, {
   },
 });
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+// app.set('views', path.join(__dirname, './views'));
+app.use(express.static(path.join(__dirname, 'public')));
+
 require('./sockets/chat')(io);
 
 const controllers = require('./controllers/chatController');
 
-app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', controllers.getMessages);
+app.get('/', controllers.getMessages);
+// app.use('/', controllers);
 
 socketIoServer.listen(SOCKET_PORT, () =>
   console.log(`Socket.io running... | port: ${SOCKET_PORT}`));

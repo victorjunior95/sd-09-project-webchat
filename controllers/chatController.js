@@ -1,13 +1,16 @@
-const path = require('path');
-
 const chatModels = require('../models/chatModels');
 
+const createMessage = async (payload) => {
+  await chatModels.createMessage(payload);
+};
+
 const getMessages = (_req, res) => {
-  const messages = chatModels.getAll();
+  const messages = chatModels.getMessages();
   console.log(messages);
-  res.sendFile(path.join(__dirname, '/public/index.html'));
+  res.render('index', { messages });
 };
 
 module.exports = {
+  createMessage,
   getMessages,
 };
