@@ -13,8 +13,12 @@ require('./sockets/chat')(io);
 
 app.use(express.static(`${__dirname}/public`));
 
+app.set('view engine', 'ejs');
+
 app.get('/', (_req, res) => {
-  res.sendFile(`${__dirname}/public/views/chat.html`);
+  res.render('chat');
 });
 
-http.listen(3000, () => console.log('Servidor ouvindo na posta 3000'));
+const PORT = process.env.PORT || 3000;
+
+http.listen(PORT, () => console.log(`Online on PORT: ${PORT}`));

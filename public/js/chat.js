@@ -2,10 +2,11 @@ const socket = window.io();
 
 const form = document.querySelector('form');
 const inputMessage = document.querySelector('#messageInput');
+const nickname = '';
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
-  socket.emit('clientMessage', inputMessage.value);
+  socket.emit('message', ({ chatMessage: inputMessage.value, nickname }));
   inputMessage.value = '';
   return false;
 });
@@ -17,7 +18,7 @@ const createMessage = (message) => {
   messagesUl.appendChild(li);
 };
 
-socket.on('serverMessage', (message) => createMessage(message));
+socket.on('message', (message) => createMessage(message));
 
 window.onbeforeunload = () => {
   socket.disconnect();

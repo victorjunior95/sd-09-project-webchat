@@ -1,6 +1,8 @@
+const moment = require('moment');
+
 module.exports = (io) => io.on('connection', (socket) => {
-  socket.emit('serverMessage', 'Bem vindo ao nosso Chat Público');
-  socket.on('clientMessage', (message) => {
-    io.emit('serverMessage', `${socket.id}: ${message}`);
+  const timeStamp = moment().format('DD-MM-yyyy LTS');
+  socket.on('message', ({ chatMessage, nickname }) => {
+    io.emit('message', `${timeStamp} - ${nickname}: ${chatMessage}`);
   });
 });
