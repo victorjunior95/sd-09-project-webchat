@@ -47,17 +47,14 @@ io.on('connection', async (socket) => {
   socket.on('nickchanged', ({ old, neo }) => {
     online.forEach((e, i) => { 
       if (e === old) { online[i] = neo; console.log('dentro do if', online); }
-    });
-      socket.broadcast.emit('changnick', { neo, old });
+    }); socket.broadcast.emit('changnick', { neo, old });
   });
   
   socket.on('disconnect', (motivo) => {
     const sliced = socket.id.slice(0, 16); 
-    const ativo = online.filter((e) => e !== sliced);
-    online = ativo;
-    if (motivo === 'transport error') { online = []; }
+    const ativo = online.filter((e) => e !== sliced); online = ativo;
+    if (motivo === 'transport error') { online = []; } io.emit('userexit', online); 
     // console.log('saiu', sliced, 'motivo da saida: ', motivo, 'online ao sair', online);
-    io.emit('userexit', online); 
   });
 });
 
