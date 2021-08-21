@@ -1,6 +1,6 @@
 const socket = window.io();
 
-const users = [];
+const users = ['blue', 'red', 'green'];
 
 const form = document.getElementById('messages');
 const input = document.querySelector('#messages input');

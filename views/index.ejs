@@ -5,11 +5,6 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="css/style.css">
-  <!-- <style>
-    h1 {
-      color: blue;
-    }
-  </style> -->
   <title>Webchat Project</title>
 </head>
 <body>
@@ -30,7 +25,12 @@
     <div class="chat-container">
       <div class="history" data-testid="message-box">
         <h3>Historico</h3>
-        <ul id="history-list"></ul>
+        <ul id="history-list">
+          <% messages.forEach(({ timestamp, nickname, message }) => { %>
+            <li><%= `${timestamp} - ${nickname}: ${message}` %></li>
+          <% }) %> 
+        </ul>
+        <!-- <ul id="history-list"></ul> -->
       </div>
 
       <div class="users">
@@ -44,7 +44,7 @@
       <button type="submit" id="msg-button" data-testid="send-button">Enviar</button>
     </form>
   </main>
-  <!-- <script src="/socket.io/socket.io.js"></script> -->
-  <!-- <script src="js/chat.js"></script> -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/chat.js"></script>
 </body>
 </html>

@@ -23,7 +23,6 @@ require('./sockets/chat')(io);
 
 const controllers = require('./controllers/chatController');
 
-
 app.get('/', controllers.getMessages);
 // app.use('/', controllers);
 
