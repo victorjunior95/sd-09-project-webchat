@@ -34,10 +34,10 @@ const connectedUsers = {};
 io.on('connection', (socket) => {
     getMessages().then((messages) => {
         socket.emit('messages', { messages, online: connectedUsers });
-    });
-    socket.on('change-nick', (nick) => {
-        connectedUsers[socket.id] = nick;
-        socket.broadcast.emit('change-nick', { id: socket.id, nick });
+        socket.on('change-nick', (nick) => {
+            connectedUsers[socket.id] = nick;
+            socket.broadcast.emit('change-nick', { id: socket.id, nick });
+        });
     });
     socket.on('message', (data) => {
         const date = new Date();
