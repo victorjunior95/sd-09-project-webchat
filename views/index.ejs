@@ -4,7 +4,9 @@
     <title>MVC com Express</title>
   </head>
   <body>
-    <h1>Chat - Bem vindo(a) <span id='user' data-testid="online-user"></span></h1>
+    <h1>Chat - Bem vindo(a) <span id='user'></span></h1>
+
+    <ul id='list'></ul>
 
 
     <ul data-testid="message-box" id='messages'>
@@ -25,13 +27,48 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src='../sockets/chat.js'></script>
     <script>
+      const socket = io();
+
     window.onload = () => {
       const user = (Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)).substring(0,16)
       document.querySelector('#user').innerHTML = user;
-      sessionStorage.setItem('userName', user)
+      sessionStorage.setItem('userName', user);
+
+      socket.emit('cheguei', user);
+
+      socket.on('list', (clientList) => {
+        const ul = document.querySelector('#list');
+        ul.innerHTML = '';
+        clientList.forEach((client) => {
+          const li = document.createElement('li');
+          li.setAttribute('data-testid', 'online-user')
+          li.innerText = client.nickname;
+          ul.appendChild(li)
+        })
+      })
     }
 
-      const socket = io();
+    socket.on('changeName', (clientList) => {
+        const ul = document.querySelector('#list');
+        ul.innerHTML = '';
+        clientList.forEach((client) => {
+          const li = document.createElement('li');
+        li.setAttribute('data-testid', 'online-user')
+          li.innerText = client.nickname;
+          ul.appendChild(li)
+        })
+      })
+
+      socket.on('desconectou', (clientList) => {
+        const ul = document.querySelector('#list');
+        ul.innerHTML = '';
+        clientList.forEach((client) => {
+          const li = document.createElement('li');
+          li.setAttribute('data-testid', 'online-user')
+          li.innerText = client.nickname;
+          ul.appendChild(li)
+        })
+      })
 
       const form = document.querySelector('form');
 
@@ -44,9 +81,10 @@
       let userName = localStorage.getItem('userName');
 
       buttonName.addEventListener('click', () => {
-        sessionStorage.setItem('userName', userNameInput.value)
+      sessionStorage.setItem('userName', userNameInput.value)
       document.querySelector('#user').innerHTML = userNameInput.value;
-        userNameInput.value = ''
+      socket.emit('changeName', userNameInput.value)
+      userNameInput.value = ''
       })
 
       form.addEventListener('submit', (e) => {
