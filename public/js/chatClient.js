@@ -4,13 +4,13 @@ window.onload = () => socket.emit('newConnection');
 
 const nicknameForm = document.querySelector('.nicknameForm');
 const nicknameInput = document.querySelector('.nicknameInput');
-const nicknameButton = document.querySelector('.nicknameButton');
+// const nicknameButton = document.querySelector('.nicknameButton');
 const nicknameList = document.querySelector('.nicknameList');
 const userNickname = document.querySelector('.userNickname');
 
 const chatForm = document.querySelector('.chatForm');
 const chatInput = document.querySelector('.chatInput');
-const chatButton = document.querySelector('chatButton');
+// const chatButton = document.querySelector('chatButton');
 const messageList = document.querySelector('.messageList');
 
 const createItemList = (content, list, dataTestId = '') => {
