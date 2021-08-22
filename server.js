@@ -16,6 +16,9 @@ io.on('connection', (socket) => {
          `${dateFormatted} ${timeFormatted} ${data.nickname} ${data.chatMessage}`);
     });
 });
+app.get('/', (req, res) => {
+    res.sendFile(`${__dirname}/index.html`);
+});
 
 http.listen(3000, () => console.log('server started'));
 
