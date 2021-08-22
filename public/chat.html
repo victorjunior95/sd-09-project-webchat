@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO - trybe</title>
+    <!-- <link rel="stylesheet" href="./css/chat.css"> -->
+  </head>
+  <body>
+    <div id="main-div">
+      <div id="user-div">
+        <form id="nickname-form" action="">
+          <input id="nickname-input" autocomplete="off" /><button>Salvar</button>
+        </form>
+        <ul id="users"></ul>
+      </div>
+      <ul id="messages"></ul>
+    </div>
+    <form id="message-form" action="">
+      <input id="messageInput" autocomplete="off" /><button>Send</button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src='./js/chat.js'></script>
+  </body>
+</html>
