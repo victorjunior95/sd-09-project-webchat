@@ -1,6 +1,5 @@
 const chatModel = require('../models/chatModels');
 
-// let users = [];
 const users = {};
 
 const formatDate = () => {
@@ -18,12 +17,6 @@ const formatDate = () => {
 const handleMessages = (socket, io) => {
   socket.on('message', (message) => {
     const { chatMessage, nickname } = message;
-
-    /* const currentNickname = users[socket.id];
-
-    if (!currentNickname) { users[socket.id] = nickname; } */
-
-    console.log(`[id] > ${socket.id}, nickname: ${nickname}`);
 
     const date = formatDate();
     const formatMessage = `${date} - ${nickname}: ${chatMessage}`;
@@ -45,16 +38,14 @@ const handleUsers = (socket, io) => {
 const handleDisconnect = (socket) => {
   socket.on('disconnect', () => {
     console.log(`[${socket.id}] desconectou-se`);
+    delete users[socket.id];
+    console.log('[users] > ', users);
+    // envia para todos os clientes exceto que se desconectou
+    socket.broadcast.emit('users', users);
   });
 };
 
 const socketServer = (io) => io.on('connection', (socket) => {
-  /* const xablau = io.of('/').sockets;
-  
-  console.log('========= conectados ==========');
-  xablau.forEach((element) => {
-    console.log('[id]', element.id);
-  }); */
   handleMessages(socket, io);
   handleUsers(socket, io);
   handleDisconnect(socket);
