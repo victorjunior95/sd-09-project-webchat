@@ -5,7 +5,7 @@ const inputMessage = document.querySelector('#messageInput');
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
-  socket.emit('message', inputMessage.value);
+  socket.emit('message', { chatMessage: inputMessage.value, nickname: socket.id });
   inputMessage.value = '';
   return false;
 });
@@ -15,6 +15,7 @@ form.addEventListener('submit', (e) => {
 const newMessage = (message) => {
   const messagesUl = document.querySelector('#messages');
   const li = document.createElement('li');
+  console.log(message);
   li.innerText = message;
   messagesUl.appendChild(li);
 };
@@ -23,4 +24,4 @@ const newMessage = (message) => {
 socket.on('welcome', (message) => newMessage(message));
 socket.on('online', (message) => newMessage(message));
 socket.on('retorno', (message) => newMessage(message));
-socket.on('message', (message) => newMessage(message));
+socket.on('message', (chatMessage) => newMessage(chatMessage));
