@@ -7,10 +7,12 @@
   <body>
     <div class="webchat-page">
       <div class="online-users">
-        online-users
+        <div data-testid="online-user" id="online-user">
+          Olá
+        </div>
         <div class="nickname">
-          <input type="text" />
-          <button type="button">Salvar</button>
+          <input type="text" data-testid="nickname-box" id="nickname-box" />
+          <button type="button" data-testid="nickname-button" id="nickname-button">Salvar</button>
         </div>
         <div class="users">
           users
@@ -34,11 +36,16 @@
             <button class="emoji">
               <img src="../public/images/d0679e2704e98a8041508fba4c332d49-paper-clip-stroke-icon.png">
             </button>
-            <input type="text" placeholder="Digite uma mensagem" id='message-to-send'/>
+            <input
+              type="text" 
+              placeholder="Digite uma mensagem"
+              id='message-to-send'
+              data-testid="message-box"
+            />
             <button class="emoji">
               <img src="../public/images/microfone.png">
             </button>
-            <button class="emoji" id="message-send">
+            <button class="emoji" id="message-send" data-testid="send-button">
               <img src="../public/images/send.png">
             </button>
           </div>
@@ -46,6 +53,6 @@
       </div>
     </div>
     <script src="/socket.io/socket.io.js"></script>
-    <script src='/public/scripts/index.js'></script>
+    <script src='/public/scripts/index.js' type="module"></script>
   </body>
   </html>
