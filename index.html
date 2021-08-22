@@ -8,7 +8,6 @@
 </head>
 <body>
     <div id="users">
-        <div data-testid="online-user" id="user-name"></div>
     </div>
     <input data-testid="nickname-box" id="input-nick">
     <button data-testid="nickname-button" id="change-nick">Enviar</button>
@@ -55,7 +54,11 @@
             document.getElementById('messages').append(li);
         });
         const randomName = Math.random().toString().replace('.', '').slice(0, 16).padStart(16, 'x');
-        document.getElementById('user-name').innerText = randomName;
+        const userEl = document.createElement('div');
+        userEl.id = 'user-name';
+        userEl.setAttribute('data-testid','online-user');
+        userEl.innerText = randomName;
+        document.getElementById('users').append(userEl);
         socket.emit('change-nick', randomName);
         window.onbeforeunload = function(event) {
             socket.disconnect();
