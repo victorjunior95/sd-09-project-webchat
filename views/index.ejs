@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+  <head>
+    <title>MVC com Express</title>
+  </head>
+  <body>
+    <h1>Chat</h1>
+
+
+    <ul id='messages'></ul>
+
+    <input id='userNameInput' /> <button id='nameChanger'>Change name</button> 
+    <form action="">
+      <input id="messageInput" autocomplete="off" /><button>Send</button>
+    </form>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src='../sockets/chat.js'></script>
+    <script>
+      const socket = io();
+
+      const form = document.querySelector('form');
+
+      const inputMessage = document.querySelector('#messageInput');
+
+      const buttonName = document.querySelector('#nameChanger');
+      
+      const userNameInput = document.querySelector('#userNameInput')
+
+      let userName = '';
+
+      buttonName.addEventListener('click', () => {
+        sessionStorage.setItem('userName', userNameInput.value)
+        userNameInput.value = ''
+      })
+
+      form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nickname = sessionStorage.getItem('userName')
+      socket.emit('message', {chatMessage: inputMessage.value, nickname});
+      inputMessage.value = '';
+      return false;
+    });
+
+    const createMessage = (message) => {
+        const messagesUl = document.querySelector('#messages');
+        const li = document.createElement('li');
+        li.innerText = message;
+        messagesUl.appendChild(li);
+      }
+
+      socket.on('message', (message) => createMessage(message))
+
+    </script>
+  </body>
+</html>
