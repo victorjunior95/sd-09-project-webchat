@@ -49,6 +49,13 @@ socket.on('user', (user) => {
   createItemList(user, nicknameList, ONLINE_USER_DATA_TESTID);
 });
 
+socket.on('restore', (messages) => {
+  messages.forEach(({ message, nickname, timestamp }) => {
+    const formatMessage = `${timestamp} - ${nickname}: ${message}`;
+    createItemList(formatMessage, messageList, 'message');
+  });
+});
+
 socket.on('onlineUsers', (users) => {
   nicknameList.innerHTML = '';
   createItemList(username, nicknameList, ONLINE_USER_DATA_TESTID);
