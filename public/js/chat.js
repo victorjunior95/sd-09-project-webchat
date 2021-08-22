@@ -8,7 +8,6 @@ const nicknameInput = document.querySelector('#nickname-input');
 messageForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const nickname = document.querySelector('#users-list').firstElementChild.innerText;
-  console.log(nickname);
   socket.emit('message', { chatMessage: inputMessage.value, nickname });
   inputMessage.value = '';
   return false;
@@ -18,6 +17,7 @@ const createMessage = (message) => {
   const messagesUl = document.querySelector('#messages-list');
   const li = document.createElement('li');
   li.innerText = message;
+  li.dataset.testid = 'message';
   messagesUl.appendChild(li);
 };
 
@@ -36,9 +36,12 @@ const renderUserList = (userList) => {
     if (b.id === socket.id) return 1;
     return 0;
   });
-  userList.forEach((user) => {
+  userList.forEach((user, index) => {
     const li = document.createElement('li');
     li.innerText = user.nickname;
+    if (index === 0) {
+      li.dataset.testid = 'online-user';
+    }
     usersUl.appendChild(li);
   });
 };
@@ -46,3 +49,7 @@ const renderUserList = (userList) => {
 // console.log(socket);
 socket.on('message', (message) => createMessage(message));
 socket.on('renderUserList', (userList) => renderUserList(userList));
+socket.on('generateNickname', (nickname) => socket.emit('nicknameChange', nickname));
+window.onload = () => {
+  // socket.connect();
+};

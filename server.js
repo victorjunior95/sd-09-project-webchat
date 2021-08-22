@@ -14,10 +14,6 @@ require('./sockets/chat')(io);
 
 app.use(express.static(`${__dirname}/public`));
 
-io.on('connection', (_socket) => {
-  console.log('a user connected');
-});
-
 server.listen(3000, () => {
   console.log('It\'s Alive!!!');
 });

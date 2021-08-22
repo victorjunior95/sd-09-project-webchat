@@ -3,9 +3,9 @@ const moment = require('moment');
 let userList = [];
 
 module.exports = (io) => io.on('connection', (socket) => {
-  socket.on('connect', () => {
+    // socket.emit('generateUserName', socket.id);
     io.emit('renderUserList', userList);
-  });
+    socket.emit('generateNickname', socket.id.slice(0, -4));
 
   socket.on('message', ({ chatMessage, nickname }) => {
     const dateAndTime = moment().format('DD-MM-yyyy  HH:mm:ss');
@@ -14,7 +14,6 @@ module.exports = (io) => io.on('connection', (socket) => {
   });
 
   socket.on('nicknameChange', (nickname) => {
-    // console.log(`Nickname: ${nickname}`);
     userList = userList.filter((user) => (user.id !== socket.id));
     userList.push({ id: socket.id, nickname });
     io.emit('renderUserList', userList);
