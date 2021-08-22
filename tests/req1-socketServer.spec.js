@@ -28,7 +28,7 @@ describe('1 - Crie um back-end para conexão simultânea de clientes e troca de 
 
   it('Será validado que todos os clientes que estão conectados ao chat recebem as mensagens enviadas', async (done) => {
     const NUMBER_OF_CLIENTS = 3
-
+    console.log(clients);
     clients = Array.from({ length: NUMBER_OF_CLIENTS }, () =>
       io.connect(BASE_URL, { reconnection: false }));
 
@@ -38,6 +38,7 @@ describe('1 - Crie um back-end para conexão simultânea de clientes e troca de 
 
     clients.forEach((client) => {
       client.on('message', (message) => {
+        console.log(message);
         expect(message.includes(chatMessage)).toBeTruthy();
         counter.inc();
       });
