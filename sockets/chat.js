@@ -18,4 +18,9 @@ module.exports = (io) => io.on('connection', (socket) => {
     userList.push({ id: socket.id, nickname });
     io.emit('renderUserList', userList);
   });
+
+  socket.on('disconnect', () => {
+    userList = userList.filter((user) => (user.id !== socket.id));
+    io.emit('renderUserList', userList);
+  });
 });

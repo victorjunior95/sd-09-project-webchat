@@ -39,9 +39,7 @@ const renderUserList = (userList) => {
   userList.forEach((user, index) => {
     const li = document.createElement('li');
     li.innerText = user.nickname;
-    if (index === 0) {
-      li.dataset.testid = 'online-user';
-    }
+    li.dataset.testid = 'online-user';
     usersUl.appendChild(li);
   });
 };
@@ -50,6 +48,3 @@ const renderUserList = (userList) => {
 socket.on('message', (message) => createMessage(message));
 socket.on('renderUserList', (userList) => renderUserList(userList));
 socket.on('generateNickname', (nickname) => socket.emit('nicknameChange', nickname));
-window.onload = () => {
-  // socket.connect();
-};
