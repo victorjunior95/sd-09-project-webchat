@@ -6,9 +6,9 @@
   <body>
     <form id="nickname-form">
       <label htmlFor="nickname-input">
-        <input name="nickname-input" id="nickname-input-id" placeholder="Insira seu nickname" />
+        <input name="nickname-input" id="nickname-input-id" data-testid="nickname-box" placeholder="Insira seu nickname" />
       </label>
-      <button id="send-nickname">Salvar</button>
+      <button id="send-nickname" data-testid="nickname-button">Salvar</button>
     </form>
     
     <h1>Usuários</h1>
@@ -19,9 +19,9 @@
 
     <form id="message-form">
       <label htmlFor="message-input">
-        <input name="message-input" id="message-input-id" placeholder="Digite uma nova mensagem aqui" />
+        <input name="message-input" id="message-input-id" data-testid="message-box" placeholder="Digite uma nova mensagem aqui" />
       </label>
-      <button id="send-message">Enviar</button>
+      <button id="send-message" data-testid="send-button">Enviar</button>
     </form>
 
     <script src="/socket.io/socket.io.js"></script>

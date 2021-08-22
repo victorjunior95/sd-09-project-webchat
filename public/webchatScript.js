@@ -1,11 +1,28 @@
 const socket = window.io();
 let user;
 
-const createMessage = (message, form) => {
-  const messagesUl = document.querySelector(`#${form}`);
+const geraStringAleatoria = () => {
+  let stringAleatoria = '';
+  const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  for (let i = 0; i < 16; i += 1) {
+    stringAleatoria += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+  }
+  return stringAleatoria;
+};
+
+const createMessage = (message) => {
+  const messagesUl = document.querySelector('#messages-content');
   const li = document.createElement('li');
+  li.setAttribute('data-testid', 'message');
   li.innerText = message;
   messagesUl.appendChild(li);
+};
+
+const createUser = (message) => {
+  const usersUl = document.querySelector('#users-content');
+  const li = document.createElement('li');
+  li.innerText = message;
+  usersUl.appendChild(li);
 };
 
 const nicknameForm = document.querySelector('#nickname-form');
@@ -13,6 +30,7 @@ const nicknameInput = document.querySelector('#nickname-input-id');
 
 nicknameForm.addEventListener('submit', (e) => {
   e.preventDefault();
+  console.log('ok');
   socket.emit('clientNickname', nicknameInput.value);
   nicknameInput.value = '';
   return false;
@@ -27,11 +45,16 @@ messageForm.addEventListener('submit', (e) => {
 });
 
 socket.on('login', (name) => {
-  user = name;
-  createMessage(name, 'users-content');
+  const randomName = geraStringAleatoria();
+  user = {
+    socketid: name,
+    randomName,
+  };
+  console.log(user.randomName);
+  createUser(user.randomName);
 });
 
 socket.on('message', (newMessage) => {
   console.log(newMessage);
-  createMessage(newMessage, 'messages-content');
+  createMessage(newMessage);
 });
