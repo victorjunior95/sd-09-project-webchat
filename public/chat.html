@@ -1,22 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="stylesheet" href="./css/chat.css">
   <title>Webchat</title>
 </head>
 <body>
   <main>
-    <aside className="nicknameBox">
-      <ul className="nicknameList"></ul>
+    <aside class="nicknameBox">
+      <header>
+        <form class="nicknameForm">
+          <input class="nicknameInput" placeholder="Nickname" data-testid="nickname-box">
+          <button class="nicknameButton" type="sumbit" data-testid="nickname-button">Salvar</button>
+        </form>
+        <h2 class="userNickname" data-testid="online-user"></h2>
+      </header>
+      <h3>Participantes</h3>
+      <ul class="nicknameList"></ul>
     </aside>
 
-    <div className="chatContainer">
-      <div className="chatBox">
-        <ul className="messageList"></ul>
+    <div class="chatContainer">
+      <div class="chatBox">
+        <ul class="messageList">
+        </ul>
       </div>
 
-      <form className="chatInput">
-        <input className="messageInput" placeholder="Mensagem..."/>
-        <button type="submit" className="">Enviar</button>
+      <form class="chatForm">
+        <input class="chatInput" placeholder="Mensagem..." data-testid="message-box"/>
+        <button class="chatButton" type="submit" data-testid="send-button">Enviar</button>
       </form>
     </div>
   </main>
