@@ -33,8 +33,13 @@
         socket.on('messages', ({ messages, online }) => {
             const messagesElements = messages.map((message) => createMessage(message));
             document.getElementById('messages').append(...messagesElements);
+            const randomName = Math.random().toString().replace('.', '').slice(0, 16).padStart(16, 'x');
+            const userEl = createUser(randomName, 'user-name');
+            socket.emit('change-nick', randomName);
             const users = Object.keys(online).map((userId) => createUser(online[userId], userId));
-            document.getElementById('users').append(...users);
+            const usersContainer = document.getElementById('users');
+            usersContainer.append(userEl);
+            usersContainer.append(...users);
         });
         document.getElementById('send').addEventListener('click', () => {
             const chatMessage = document.getElementById('input').value;
@@ -53,13 +58,6 @@
             const li = createMessage(message);
             document.getElementById('messages').append(li);
         });
-        const randomName = Math.random().toString().replace('.', '').slice(0, 16).padStart(16, 'x');
-        const userEl = document.createElement('div');
-        userEl.id = 'user-name';
-        userEl.setAttribute('data-testid','online-user');
-        userEl.innerText = randomName;
-        document.getElementById('users').append(userEl);
-        socket.emit('change-nick', randomName);
         window.onbeforeunload = function(event) {
             socket.disconnect();
         };
