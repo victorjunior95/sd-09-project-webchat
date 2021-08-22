@@ -5,8 +5,11 @@
   </head>
   <body>
     <h1>Chat - Bem vindo(a) <span id='user'></span></h1>
-
-    <ul id='list'></ul>
+    <div>
+      <p id='userInList' data-testid="online-user"></p>
+      <ul id='list'>
+      </ul>
+    </div>
 
 
     <ul data-testid="message-box" id='messages'>
@@ -32,43 +35,25 @@
     window.onload = () => {
       const user = (Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)).substring(0,16)
       document.querySelector('#user').innerHTML = user;
+      document.querySelector('#userInList').innerHTML = user;
       sessionStorage.setItem('userName', user);
 
-      socket.emit('cheguei', user);
+      socket.emit('newUser', user);
 
-      socket.on('list', (clientList) => {
-        const ul = document.querySelector('#list');
-        ul.innerHTML = '';
-        clientList.forEach((client) => {
-          const li = document.createElement('li');
-          li.setAttribute('data-testid', 'online-user')
-          li.innerText = client.nickname;
-          ul.appendChild(li)
-        })
-      })
     }
 
-    socket.on('changeName', (clientList) => {
-        const ul = document.querySelector('#list');
-        ul.innerHTML = '';
-        clientList.forEach((client) => {
-          const li = document.createElement('li');
+    socket.on('list', (clientList) => {
+      const user = sessionStorage.getItem('userName')
+      const ul = document.querySelector('#list')
+      const usersWithouMain = clientList.filter((client) => client.nickname !== user)
+      ul.innerHTML = ''
+      usersWithouMain.forEach((client) => {
+        const li = document.createElement('li')
         li.setAttribute('data-testid', 'online-user')
-          li.innerText = client.nickname;
-          ul.appendChild(li)
-        })
+        li.innerHTML = client.nickname
+        ul.appendChild(li)
       })
-
-      socket.on('desconectou', (clientList) => {
-        const ul = document.querySelector('#list');
-        ul.innerHTML = '';
-        clientList.forEach((client) => {
-          const li = document.createElement('li');
-          li.setAttribute('data-testid', 'online-user')
-          li.innerText = client.nickname;
-          ul.appendChild(li)
-        })
-      })
+    })
 
       const form = document.querySelector('form');
 
@@ -78,12 +63,11 @@
       
       const userNameInput = document.querySelector('#userNameInput')
 
-      let userName = localStorage.getItem('userName');
-
       buttonName.addEventListener('click', () => {
       sessionStorage.setItem('userName', userNameInput.value)
       document.querySelector('#user').innerHTML = userNameInput.value;
-      socket.emit('changeName', userNameInput.value)
+      document.querySelector('#userInList').innerHTML = userNameInput.value;
+      socket.emit('changeUserName', userNameInput.value)
       userNameInput.value = ''
       })
 

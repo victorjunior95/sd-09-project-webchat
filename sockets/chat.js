@@ -1,43 +1,35 @@
 const Model = require('../models/messages');
 
-let clientList = [];
-
-const changeIndexPosition = (arr, fromIndex, toIndex) => {
-  const element = arr[fromIndex];
-  arr.splice(fromIndex, 1);
-  arr.splice(toIndex, 0, element);
-  return arr;
-};
+const clientList = [];
 
 const disconnectUser = (socket) => {
   socket.on('disconnect', () => {
-    const newClientFilteredList = clientList.filter((client) => client.id !== socket.id);
-    socket.broadcast.emit('desconectou', newClientFilteredList);
-    clientList = newClientFilteredList;
-  });
-};
-
-const changeUserNameInList = (socket) => {
-  socket.on('changeName', (name) => {
-    clientList.find((client) => client.id === socket.id).nickname = name;
-    socket.emit('list', clientList);
-    socket.broadcast.emit('list', changeIndexPosition(clientList, clientList.length - 1, 0));
-  });
-};
-
-const iJustGotHere = (socket) => {
-  socket.on('cheguei', (data) => {
-    clientList.push({ id: socket.id, nickname: data });
+    const idToDescart = clientList.findIndex((client) => client.id === socket.id);
+    clientList.splice(idToDescart, 1);
     socket.broadcast.emit('list', clientList);
-    socket.emit('list', changeIndexPosition(clientList, clientList.length - 1, 0));
+  });
+};
+
+const newUser = (socket, io) => {
+  socket.on('newUser', (data) => {
+    clientList.push({ id: socket.id, nickname: data });
+    io.emit('list', clientList);
+  });
+};
+
+const changeUserName = (socket, io) => {
+  socket.on('changeUserName', (data) => {
+    const user = clientList.find((client) => client.id === socket.id);
+    user.nickname = data;
+    io.emit('list', clientList);
   });
 };
 
 const chat = (io) => {
   io.on('connection', (socket) => {
-    iJustGotHere(socket);
+    newUser(socket, io);
 
-    changeUserNameInList(socket);
+    changeUserName(socket, io);
 
     socket.on('message', async (message) => {
       const currentDate = (new Date()).toLocaleDateString().replaceAll('/', '-');
