@@ -1,34 +1,78 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>t9ers webchat</title>
-</head>
-<body>
-  <h1>t9ers webchat</h1>
-  <main>
-    <form>
-      <input type="text" data-testid="nickname-box">
-      <button data-testid="nickname-button">salvar</button>
-    </form>
-    <p data-testid="online-user"></p>
-    <div>
-      <p data-testid="message"></p>
-    </div>
-    <form>
-      <input type="text" data-testid="message-box">
-      <button type="submit" data-testid="send-button">enviar</button>
-    </form>
-  </main>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./public/style.css" />
+    <title>t9ers webchat</title>
+  </head>
+  <body>
+    <h1>t9ers webchat</h1>
+    <main>
+      <form>
+        <input
+          type="text"
+          name="nickname"
+          data-testid="nickname-box"
+          placeholder="Insira seu nickname"
+        />
+        <button id="nickname-button" data-testid="nickname-button">
+          salvar
+        </button>
+      </form>
+      <div>
+        <section>
+          <h2>Usuários online</h2>
+          <ul id="online-users">
+          </ul>
+        </section>
+        <section class="messages-container" id="messages-container">
+        </section>
+      </div>
+      <form id="message-form">
+        <input
+          type="text"
+          name="message"
+          data-testid="message-box"
+          placeholder="Escreva sua mensagem"
+        />
+        <button type="submit" data-testid="send-button">enviar</button>
+      </form>
+    </main>
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
-			const socket = window.io();
-  </script>
-  <script>
-    socket.emit('message', { chatMessage, nickname })
-  </script>
-</body>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = window.io();
+      
+      const renderMessage = (message) => {
+        document.querySelector('#messages-container').insertAdjacentHTML('beforeend', `<div data-testid="message"> ${message} </div>`)
+      }
+
+      //renderiza as mensagens do array messages
+      socket.on('previousMessages', async (messages) => {
+        for (message of messages) {
+          await renderMessage(message);
+        };
+      });
+
+      // renderiza a mensagem enviada para todos conectados
+      socket.on('sentMessages', async (message) => {
+        await renderMessage(message);
+      })
+      
+      document.querySelector('#message-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const nickname = document.querySelector('input[name=nickname]').value;
+        const chatMessage = document.querySelector('input[name=message]').value;
+        if (nickname && chatMessage) {
+          socket.emit('message', { nickname, chatMessage });
+        };
+      });
+
+      window.onbeforeunload = function(event) {
+        socket.disconnect();
+      };
+    </script>
+  </body>
 </html>
