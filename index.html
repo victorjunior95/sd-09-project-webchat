@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Webchat - Trybe</title>
+  </head>
+  <body>
+    <form id="nickname-form">
+      <label htmlFor="nickname-input">
+        <input name="nickname-input" id="nickname-input-id" placeholder="Insira seu nickname" />
+      </label>
+      <button id="send-nickname">Salvar</button>
+    </form>
+    
+    <h1>Usuários</h1>
+    <ul id="users-content"></ul>
+
+    <h1>Mensagens</h1>
+    <ul id="messages-content"></ul>
+
+    <form id="message-form">
+      <label htmlFor="message-input">
+        <input name="message-input" id="message-input-id" placeholder="Digite uma nova mensagem aqui" />
+      </label>
+      <button id="send-message">Enviar</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/webchatScript.js"></script>
+  </body>
+</html>

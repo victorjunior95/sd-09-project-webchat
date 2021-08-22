@@ -1,1 +1,26 @@
-// Faça seu código aqui
+const express = require('express');
+const path = require('path');
+require('dotenv').config();
+
+const app = express();
+const http = require('http').createServer(app);
+
+const PORT = process.env.PORT || 3000;
+
+const io = require('socket.io')(http, {
+  cors: {
+    origin: 'http://localhost:3000', // url aceita pelo cors
+    methods: ['GET', 'POST'], // Métodos aceitos pela url
+  } });
+
+app.use(express.static(path.join(__dirname, '/public')));
+
+require('./sockets/webchatSocket')(io);
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '/index.html'));
+});
+
+http.listen(PORT, () => {
+  console.log('Servidor ouvindo na porta 3000');
+});
