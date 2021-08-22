@@ -7,7 +7,9 @@
     <title>Document</title>
 </head>
 <body>
-    <div data-testid="online-user" id="user-name"></div>
+    <div id="users">
+        <div data-testid="online-user" id="user-name"></div>
+    </div>
     <input data-testid="nickname-box" id="input-nick">
     <button data-testid="nickname-button" id="change-nick">Enviar</button>
     <ul id="messages"></ul>
@@ -21,10 +23,19 @@
             li.setAttribute('data-testid', 'message');
             return li;
         }
+        function createUser(nick, id) {
+            const div = document.createElement('div');
+            div.innerText = nick;
+            div.setAttribute('data-testid', 'online-user');
+            div.setAttribute('id', id);
+            return div;
+        }
         socket = io();
-        socket.on('messages', (messages) => {
+        socket.on('messages', ({ messages, online }) => {
             const messagesElements = messages.map((message) => createMessage(message));
             document.getElementById('messages').append(...messagesElements);
+            const users = Object.keys(online).map((userId) => createUser(online[userId], userId));
+            document.getElementById('users').append(...users);
         });
         document.getElementById('send').addEventListener('click', () => {
             const chatMessage = document.getElementById('input').value;
@@ -37,13 +48,38 @@
         document.getElementById('change-nick').addEventListener('click', () => {
             const newNickname = document.getElementById('input-nick').value;
             document.getElementById('user-name').innerText = newNickname;
+            socket.emit('change-nick', newNickname);
         });
         socket.on('message', (message) => {
             const li = createMessage(message);
             document.getElementById('messages').append(li);
         });
-        const randomName = Math.random().toString().replace('.', '').slice(0, 16);
+        const randomName = Math.random().toString().replace('.', '').slice(0, 16).padStart(16, 'x');
         document.getElementById('user-name').innerText = randomName;
+        socket.emit('change-nick', randomName);
+        window.onbeforeunload = function(event) {
+            socket.disconnect();
+        };
+        socket.on('user-disconnect', (id) => {
+            document.querySelectorAll('#users div').forEach((userEl) => {
+                if (userEl.id === id) {
+                    userEl.remove();
+                }
+            });
+        });
+        socket.on('change-nick', ({nick, id}) => {
+            let foundUser = false;
+            document.querySelectorAll('#users div').forEach((userEl) => {
+                if (userEl.id === id) {
+                    foundUser = true;
+                    userEl.innerText = nick;
+                }
+            });
+            if (!foundUser) {
+                const user = createUser(nick, id);
+                document.getElementById('users').append(user);
+            }
+        });
     </script>
 </body>
 </html>
