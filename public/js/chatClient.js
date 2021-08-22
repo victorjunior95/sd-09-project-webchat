@@ -2,11 +2,14 @@ const socket = window.io();
 
 window.onload = () => socket.emit('newConnection');
 
+const ONLINE_USER_DATA_TESTID = 'online-user';
+let username = '';
+
 const nicknameForm = document.querySelector('.nicknameForm');
 const nicknameInput = document.querySelector('.nicknameInput');
 // const nicknameButton = document.querySelector('.nicknameButton');
 const nicknameList = document.querySelector('.nicknameList');
-const userNickname = document.querySelector('.userNickname');
+// const userNickname = document.querySelector('.userNickname');
 
 const chatForm = document.querySelector('.chatForm');
 const chatInput = document.querySelector('.chatInput');
@@ -27,7 +30,7 @@ const createMessage = (message) => {
 chatForm.addEventListener('submit', (event) => {
   event.preventDefault();
   const chatMessage = chatInput.value;
-  const nickname = userNickname.innerText;
+  const nickname = username;
   socket.emit('message', { chatMessage, nickname });
   chatInput.value = '';
 });
@@ -35,20 +38,24 @@ chatForm.addEventListener('submit', (event) => {
 nicknameForm.addEventListener('submit', (event) => {
   event.preventDefault();
   const newNickname = nicknameInput.value;
-  const oldNickname = userNickname.innerText;
-  userNickname.innerText = newNickname;
+  const oldNickname = username;
+  username = newNickname;
   socket.emit('newNickname', { newNickname, oldNickname });
   nicknameInput.value = '';
 });
 
 socket.on('user', (user) => {
-  userNickname.innerText = user;
+  username = user;
+  createItemList(user, nicknameList, ONLINE_USER_DATA_TESTID);
 });
 
 socket.on('onlineUsers', (users) => {
   nicknameList.innerHTML = '';
+  createItemList(username, nicknameList, ONLINE_USER_DATA_TESTID);
   users.forEach((user) => {
-    if (user !== userNickname.innerText) createItemList(user, nicknameList);
+    if (user !== username) {
+      createItemList(user, nicknameList, ONLINE_USER_DATA_TESTID);
+    }
   });
 });
 
