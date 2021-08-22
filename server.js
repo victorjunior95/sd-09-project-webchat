@@ -22,6 +22,7 @@ app.set('view engine', 'ejs');
 app.set('views', './views');
 
 app.get('/', messagesController.getAll);
+// app.post('/', messagesController.createMessage);
 
 // app.get('/', (req, res) => {
 //   res.sendFile(`${__dirname}/index.html`);
