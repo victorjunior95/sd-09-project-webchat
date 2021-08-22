@@ -1,3 +1,7 @@
+const moment = require('moment');
+
+const currentTime = moment().format('DD-MM-YYYY h:mm:ss');
+
 module.exports = (io) => io.on('connection', (socket) => {
   console.log(`Usuário conectado. ID: ${socket.id} `);
 
@@ -7,8 +11,12 @@ module.exports = (io) => io.on('connection', (socket) => {
     console.log(`${socket.id} emitiu um ping!`);
   });
 
-  socket.on('sendMessage', (data) => {
-    const { messageUserId, message } = data;
-    io.emit('newMessage', { messageUserId, message });
+  socket.on('message', (data) => {
+    // const { messageUserId, chatMessage } = data;
+    // io.emit('message', { messageUserId, chatMessage });
+
+    //  Project version
+    const { chatMessage, nickname } = data;
+    io.emit('message', `${currentTime} - ${nickname}: ${chatMessage}`);
   });
 });

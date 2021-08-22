@@ -4,7 +4,7 @@ let myId;
 const getSendMessageInput = () => document.querySelector('#message-to-send');
 
 const createNewMessage = (data) => {
-  const { message, messageUserId } = data;
+  const { chatMessage, messageUserId } = data;
   const messagesBox = document.querySelector('#messages-box');
   // Message div
   const messageDiv = document.createElement('div');
@@ -16,7 +16,7 @@ const createNewMessage = (data) => {
 
   //  Message span
   const span = document.createElement('span');
-  span.innerText = message;
+  span.innerText = chatMessage;
   messageDiv.appendChild(span);
 
   messagesBox.appendChild(messageDiv);
@@ -30,7 +30,7 @@ const sendMessage = () => {
   const messageToSend = document.querySelector('#message-to-send').value;
   if (messageToSend === '') return;
   console.log(messageToSend);
-  socket.emit('sendMessage', { messageUserId: myId, message: messageToSend });
+  socket.emit('message', { messageUserId: myId, chatMessage: messageToSend });
   clearSendMessageInput();
 };
 
@@ -52,7 +52,7 @@ sendEnterListener();
 sendButtonListener();
 
 socket.emit('ping');
-socket.on('newMessage', (data) => createNewMessage(data));
+socket.on('message', (data) => createNewMessage(data));
 socket.on('myId', (id) => {
   myId = id;
   console.log(myId);
