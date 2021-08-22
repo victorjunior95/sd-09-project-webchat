@@ -4,20 +4,26 @@
     <title>MVC com Express</title>
   </head>
   <body>
-    <h1>Chat</h1>
+    <h1>Chat - Bem vindo(a) <span id='user' data-testid="online-user"></span></h1>
 
 
-    <ul id='messages'></ul>
+    <ul data-testid="message-box" id='messages'></ul>
 
-    <input id='userNameInput' /> <button id='nameChanger'>Change name</button> 
+    <input id='userNameInput' data-testid="nickname-box" /> <button data-testid="nickname-button" id='nameChanger'>Change name</button> 
     <form action="">
-      <input id="messageInput" autocomplete="off" /><button>Send</button>
+      <input id="messageInput" data-testid="message-box" autocomplete="off" /><button data-testid="send-button">Send</button>
     </form>
 
 
     <script src="/socket.io/socket.io.js"></script>
     <script src='../sockets/chat.js'></script>
     <script>
+    window.onload = () => {
+      const user = (Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)).substring(0,16)
+      document.querySelector('#user').innerHTML = user;
+      sessionStorage.setItem('userName', user)
+    }
+
       const socket = io();
 
       const form = document.querySelector('form');
@@ -28,10 +34,11 @@
       
       const userNameInput = document.querySelector('#userNameInput')
 
-      let userName = '';
+      let userName = localStorage.getItem('userName');
 
       buttonName.addEventListener('click', () => {
         sessionStorage.setItem('userName', userNameInput.value)
+      document.querySelector('#user').innerHTML = userNameInput.value;
         userNameInput.value = ''
       })
 
@@ -46,12 +53,13 @@
     const createMessage = (message) => {
         const messagesUl = document.querySelector('#messages');
         const li = document.createElement('li');
+        li.setAttribute('data-testid', 'message')
         li.innerText = message;
         messagesUl.appendChild(li);
       }
 
-      socket.on('message', (message) => createMessage(message))
-
+    socket.on('message', (message) => createMessage(message))
+    
     </script>
   </body>
 </html>

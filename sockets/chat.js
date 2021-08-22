@@ -1,6 +1,7 @@
 const chat = (io) => {
-  io.on('connection', (socket) => {    
-    console.log('ola ', socket.id);
+  io.on('connection', (socket) => {
+    socket.emit('ola', socket.id);
+    
     socket.on('message', (message) => {
       console.log(message);
       const currentDate = (new Date()).toLocaleDateString().replaceAll('/', '-');
