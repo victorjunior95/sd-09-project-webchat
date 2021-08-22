@@ -27,7 +27,12 @@
         <h3>Historico</h3>
         <ul id="history-list">
           <% messages.forEach(({ timestamp, nickname, message }) => { %>
-            <li><%= `${timestamp} - ${nickname}: ${message}` %></li>
+            <li data-testid="message">
+              <span class="message-item">
+                <%= `${timestamp} - ${nickname}: ` %>
+              </span>
+              <%= ` ${message}` %>
+            </li>
           <% }) %> 
         </ul>
         <!-- <ul id="history-list"></ul> -->

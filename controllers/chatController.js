@@ -13,7 +13,7 @@ const getMessages = async (_req, res) => {
     },
   ]; */
   const messages = await chatModels.getMessages();
-  console.log(messages);
+  // console.log(messages);
   res.render('index', { messages });
 };
 

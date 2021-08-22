@@ -1,4 +1,7 @@
-const chatModels = require('../models/chatModels');
+const chatModel = require('../models/chatModels');
+
+// let users = [];
+const users = {};
 
 const formatDate = () => {
   const date = new Date();
@@ -16,42 +19,45 @@ const handleMessages = (socket, io) => {
   socket.on('message', (message) => {
     const { chatMessage, nickname } = message;
 
-    console.log('[id] > ', socket.id);
+    /* const currentNickname = users[socket.id];
+
+    if (!currentNickname) { users[socket.id] = nickname; } */
+
+    console.log(`[id] > ${socket.id}, nickname: ${nickname}`);
 
     const date = formatDate();
     const formatMessage = `${date} - ${nickname}: ${chatMessage}`;
 
+    chatModel.createMessage(chatMessage, nickname, date);
+
     io.emit('message', formatMessage);
-    io.emit('users', { id: socket.id, nickname });
+  });
+};
+
+const handleUsers = (socket, io) => {
+  socket.on('users', (nickname) => {
+    users[socket.id] = nickname;
+    console.log('[users] > ', users);
+    io.emit('users', users);
+  });
+};
+
+const handleDisconnect = (socket) => {
+  socket.on('disconnect', () => {
+    console.log(`[${socket.id}] desconectou-se`);
   });
 };
 
 const socketServer = (io) => io.on('connection', (socket) => {
-  handleMessages(socket, io);
-  /* socket.on('message', (message) => {
-    const { chatMessage, nickname } = message;
-
-    console.log('[id] > ', socket.id);
-
-    const date = formatDate();
-    const formatMessage = `${date} - ${nickname}: ${chatMessage}`;
-
-    io.emit('message', formatMessage);
-    io.emit('users', { id: socket.id, nickname });
+  /* const xablau = io.of('/').sockets;
+  
+  console.log('========= conectados ==========');
+  xablau.forEach((element) => {
+    console.log('[id]', element.id);
   }); */
+  handleMessages(socket, io);
+  handleUsers(socket, io);
+  handleDisconnect(socket);
 });
 
 module.exports = socketServer;
-/* module.exports = (io) => io.on('connection', (socket) => {
-  socket.on('message', (message) => {
-    const { chatMessage, nickname } = message;
-
-    console.log('[id] > ', socket.id);
-
-    const date = formatDate();
-    const formatMessage = `${date} - ${nickname}: ${chatMessage}`;
-
-    io.emit('message', formatMessage);
-    io.emit('users', { id: socket.id, nickname });
-  });
-}); */
