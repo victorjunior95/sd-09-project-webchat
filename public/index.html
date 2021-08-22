@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Chat</title>
+</head>
+<body>
+  <div class="container">
+    <h1>Web Chat</h1>      
+    <form id="saveNickname">
+      <input
+        type="text"
+        id="nickname-box"
+        data-testid="nickname-box"
+        placeholder="Digite seu nickname"
+      />
+      <button
+        type="submit"
+        id="nickname-button"
+        data-testid="nickname-button"
+      >
+        Salvar
+      </button>
+    </form>
+    <ul class="users"></ul>
+    <ul class="messages"></ul>
+    <form id="sendMessage">
+      <input
+        type="text"
+        id="message-box"
+        data-testid="message-box"
+        placeholder="Digite sua mensagem"
+      />
+      <button
+        type="submit"
+        id="send-button"
+        data-testid="send-button"
+      >
+        Enviar
+      </button>
+    </form>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="./js/client.js"></script>
+</body>
+</html>

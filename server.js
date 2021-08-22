@@ -1,4 +1,5 @@
 const express = require('express');
+const randomstring = require('randomstring');
 
 const app = express();
 const PORT = 3000;
@@ -12,6 +13,7 @@ const io = require('socket.io')(http, {
 });
 
 io.on('connection', (socket) => {    
+  socket.emit('connectUser', randomstring.generate(16));
   socket.on('message', (message) => {
     const date = new Date();
     const fullDate = `${date.getDay()}-${date.getMonth() + 1}-${date.getFullYear()}`;
@@ -19,3 +21,5 @@ io.on('connection', (socket) => {
     io.emit('message', `${fullDate} ${time} - ${message.nickname}: ${message.chatMessage}`);
   });
 });
+
+app.use(express.static('public'));
