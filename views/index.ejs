@@ -44,10 +44,16 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
       const socket = window.io();
+      let user = {};
       
       const renderMessage = (message) => {
         document.querySelector('#messages-container').insertAdjacentHTML('beforeend', `<div data-testid="message"> ${message} </div>`);
       };
+
+      socket.on('onlineUser', (id) => {
+        user['id'] = id;
+        socket.emit('userObject', user);
+      });
 
       //renderiza as mensagens do array messages
       socket.on('previousMessages', (messages) => {
@@ -56,18 +62,14 @@
         };
       });
 
-      const renderOnlineUsers = (client) => {
-        document.querySelector('#online-users').insertAdjacentHTML('beforeend', `<li data-testid="online-user"> ${client} </li>`)
+      const renderOnlineUsers = (user) => {
+        document.querySelector('#online-users').insertAdjacentHTML('beforeend', `<li data-testid="online-user"> ${user} </li>`);
       };
 
-      socket.on('randomId', (id) => {
-        renderOnlineUsers(id);
-        document.querySelector('input[name=nickname]').value = id;
-      });
-
-      socket.on('onlineClients', (clients) => {
-        for (client in clients) {
-          renderOnlineUsers(client);
+      socket.on('onlineUsers', (users) => {
+        document.querySelector('#online-users').innerHTML = '';
+        for (user of users) {
+          !user.nickname ? renderOnlineUsers(user.id) : renderOnlineUsers(user.nickname);
         };
       });
 
@@ -76,15 +78,16 @@
         renderMessage(message);
       });
 
-      document.querySelector('#nickname-button').addEventListener('click', () => {
-        const nickname = document.querySelector('input[name=nickname]').value;
-        socket.emit('customNickname', nickname);
+      document.querySelector('#nickname-button').addEventListener('click', (e) => {
+        e.preventDefault();
+        user['nickname'] = document.querySelector('input[name=nickname]').value;
+        socket.emit('customNickname', user);
       })
       
       document.querySelector('#message-form').addEventListener('submit', (e) => {
         e.preventDefault();
-        const nickname = document.querySelector('input[name=nickname]').value;
         const chatMessage = document.querySelector('input[name=message]').value;
+        const nickname = user.nickname || user.id;
         if (nickname && chatMessage) {
           socket.emit('message', { nickname, chatMessage });
         };

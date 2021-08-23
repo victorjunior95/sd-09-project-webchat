@@ -22,32 +22,37 @@ const messageDate = () => {
   return `${date} ${hour}`;
 };
 const messages = [];
-const clients = [];
+let users = [];
+
+const sendMessage = ({ nickname, chatMessage }) => {
+  const message = `${messageDate()} - ${nickname}: ${chatMessage}`;
+  messages.push(message);
+  io.emit('sentMessages', message);
+  return message;
+};
 
 // o que faz quando um novo client se conecta, é conectado ao socket.io no front
 io.on('connection', (socket) => {
-  const socketId = socket.id;
-  // console.log(`Client ${socketId} se conectou`);
-
   socket.emit('previousMessages', messages);
-  const randomId = socketId.slice(0, 16);
-  clients.push(randomId);
-  io.emit('onlineClients', clients);
-
-  socket.emit('randomId', randomId);
-  socket.on('customNickname', (nickname) => {
-    clients.push(nickname);
+  const id = socket.id.slice(0, 16);
+  socket.emit('onlineUser', id);
+  socket.on('userObject', (user) => {
+    users.push(user);
+    io.emit('onlineUsers', users);
   });
 
-  socket.on('message', ({ nickname, chatMessage }) => {
-    const message = `${messageDate()} - ${nickname}: ${chatMessage}`;
-    messages.push(message);
-    io.emit('sentMessages', message);
-    return message;
+  socket.on('customNickname', (data) => {
+    const found = users.find((item) => item.id === id);
+    found.nickname = data.nickname;
+    io.emit('onlineUsers', users);
   });
+  
+  socket.on('message', sendMessage);
 
   socket.on('disconnect', () => {
-    console.log(`${socket.id} se desconectou`);
+    const filtered = users.filter((item) => item.id !== id);
+    users = filtered;
+    io.emit('onlineUsers', users);
   });
 });
 
