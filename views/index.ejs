@@ -9,16 +9,22 @@
   <script src="client.js" defer></script>
 </head>
 <body>
-  <ul id="messages"></ul>
+  <!-- <p id="nickuserParagraph">Olá, <span data-testid="online-user" id="nickUserSpan"></span></p> -->
+  <ul id="onlineUsers"></ul>
+  
   <form action="" id="form">
     <fieldset>
       <legend>Apelido</legend>
-      <input id="nickname" autocomplete="off" /> <button id="saveNickname">Salvar</button>
+      <input data-testid="nickname-box" id="nickname" placeholder="Escolha um apelido" />
+      <button data-testid="nickname-button" id="saveNickname">Salvar</button>
     </fieldset>
     <fieldset>
       <legend>Mensagem</legend>
-      <input id="messageInput" autocomplete="off" /> <button id="sendMessage">Enviar</button>
+      <input data-testid="message-box" id="messageInput" placeholder="Digite uma mensagem" />
+      <button data-testid="send-button" id="sendMessage">Enviar</button>
     </fieldset>
+
+    <ul id="messages"></ul>
 </form>
 </body>
 </html>

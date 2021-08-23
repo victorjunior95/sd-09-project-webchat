@@ -1,4 +1,3 @@
-// BACK-END
 const express = require('express');
 
 const app = express();
@@ -10,15 +9,23 @@ app.set('views', 'views');
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
+let users = [];
+
 io.on('connection', (socket) => {
-  console.log(`Usuário conectado. ID: ${socket.id} `);
+  const user = socket.id.slice(0, 16);
+  users.push(user);
+  socket.emit('userOnline', user);
+
+  socket.on('newNick', (nickname) => { 
+    users = users.map((el) => (el === user ? nickname : el));
+    // console.log(users);
+    io.emit('allUsers', users);
+  });
   // LTS pega o horário no formato 2:35:09 PM
   const date = moment().format('DD-MM-yyyy LTS');
 
-  /* Escuta o evento do client */
   socket.on('message', ({ chatMessage, nickname }) => {
     // 09-10-2020 2:35:09 PM - Joel: Olá meu caros amigos!
-    /* Devolve um evento para o client */
     io.emit('message', `${date} - ${nickname}: ${chatMessage}`);
   });
 });
