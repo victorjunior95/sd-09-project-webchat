@@ -16,9 +16,7 @@ const renderUserList = (array) => {
       const user = document.createElement('li');
       user.textContent = element.userName;
       user.setAttribute(DATATEST, 'online-user');
-      if (element.userName === userName) {
-        userList.insertBefore(user, userList.firstChild);
-      } else if (element.userName === newName) {
+       if (element.userName === newName) {
         userList.insertBefore(user, userList.firstChild);
       } else {
         userList.appendChild(user);
@@ -30,8 +28,7 @@ const changeName = (e) => {
   e.preventDefault();
   if (nameInput.value) {
     newName = nameInput.value;
-    const newNameSchema = { old: userName, new: nameInput.value };
-    socket.emit('updateUserName', newNameSchema);
+    socket.emit('updateUserName', { userName: newName });
     nameInput.value = '';
   }
 };
@@ -75,6 +72,7 @@ socket.on('connect', () => {
     .then((chat) => renderMessage(chat));
   socket.emit('createUser', userName);
   });
+  
 socket.on('userListConnect', (usersList) => {
   renderUserList(usersList);
 });

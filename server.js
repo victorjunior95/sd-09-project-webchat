@@ -33,8 +33,8 @@ io.on('connection', (socket) => {
     userList.push({ id: socket.id, userName });
     io.emit('userListConnect', userList);
   });
-  socket.on('updateUserName', (nameInfos) => {
-   userList.find((user) => user.userName === nameInfos.old).userName = nameInfos.new;
+  socket.on('updateUserName', (nameInfo) => {
+   userList.find((user) => user.id === socket.id).userName = nameInfo.userName;
     io.emit('updateUserName', userList);
   });
   socket.on('message', async ({ chatMessage, nickname }) => {
