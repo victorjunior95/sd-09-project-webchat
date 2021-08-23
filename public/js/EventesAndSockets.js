@@ -27,8 +27,6 @@ const getNickName = () => {
 
 let myNickName = getNickName();
 
-const getEl = (id) => document.getElementById(id);
-
 const renderMessage = (message) => {
   $('.messages').append(
     `<div data-testid="message"  class="message">
@@ -71,9 +69,7 @@ socket.on('nickname', () => {
 });
 
 const caputureMessageButton = () => {
-  const messageButton = getEl('send-message');
-  messageButton.addEventListener('click', () => {
-    console.log('submit');
+  $('.send-message').on('click', () => {
     const nickname = myNickName;
     const chatMessage = $('input[name=message]').val();
     const messageObject = {
@@ -84,8 +80,7 @@ const caputureMessageButton = () => {
 };
 
 const caputureNickNameButton = () => {
-  const nickNameButton = getEl('namesButton');
-  nickNameButton.addEventListener('click', () => {
+  $('.namesButton').on('click', () => {
     $(nickDiv).empty();
     const oldName = myNickName;
     const newName = $('input[name=username]').val();
