@@ -84,10 +84,16 @@
       const userUl = document.querySelector('#userList');
       userUl.innerText = ''
 
-      usersOnline.forEach(({ nickname }) => {
+      const li = document.createElement('li');
+      li.setAttribute("data-testid", "online-user");
+      li.innerText = nickname;
+      userUl.appendChild(li);
+
+      usersOnline.forEach((user) => {
         const li = document.createElement('li');
+        if (nickname === user.nickname) return;
         li.setAttribute("data-testid", "online-user");
-        li.innerText = nickname;
+        li.innerText = user.nickname;
         userUl.appendChild(li);
       });
     })
@@ -137,7 +143,6 @@
         li.innerText = `${timestamp} - ${user}: ${chatMessage}`;
         messagesUl.appendChild(li);
       });
-
     });
   </script>
 </body>

@@ -9,11 +9,19 @@ const { insertMessage, findMessage } = require('./models/webchat');
 const { PORT } = process.env || 3000;
 
 let usersOnline = [];
+const data = findMessage();
+const userDisconn = (array, userId) => {
+  array.forEach((item, index, object) => {
+    console.log(item.nickname);
+    console.log(userId);
+    if (item.id === userId) object.splice(index, 1);
+  });
+  return array;
+};
 
 io.on('connection', async (socket) => {
   socket.on('sendUser', (nickname) => {
-    usersOnline.push({ id: socket.id, nickname });
-    io.emit('login', usersOnline);
+    usersOnline.push({ id: socket.id, nickname }); io.emit('login', usersOnline);
   });
 
   socket.on('updateNickname', (newNickname) => {
@@ -28,8 +36,12 @@ io.on('connection', async (socket) => {
     io.emit('message', `${timestamp} - ${messageObj.nickname}: ${messageObj.chatMessage}`);
   });
 
-  const data = await findMessage();
-  socket.emit('findMessages', data);
+  socket.emit('findMessages', await data);
+
+  socket.on('disconnect', () => {
+    userDisconn(usersOnline, socket.id);
+    io.emit('login', usersOnline);
+  });
 });
 
 app.get('/', (req, res) => {
