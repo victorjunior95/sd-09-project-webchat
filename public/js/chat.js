@@ -36,6 +36,12 @@ const createUser = (user) => {
 };
 
 socket.on('message', (message) => createMessage(message));
+socket.on('messagesList', (messagesList) => {
+    messagesList.forEach(({ message, nickname: nick, timestamp }) => {
+        const msg = `${timestamp} - ${nick}- ${message}`;
+        createMessage(msg);
+    });
+});
 
 socket.on('userlist', ({ users, newNickname }) => {
   usersUl.innerHTML = '';
@@ -48,3 +54,7 @@ socket.on('userlist', ({ users, newNickname }) => {
     usersUl.appendChild(createUser(user));
   });
 });
+
+window.onbeforeunload = () => {
+    socket.disconnect();
+  };
