@@ -1,19 +1,22 @@
 const express = require('express');
 const moment = require('moment');
-// const cors = require('cors');
 
 const app = express();
-const serverSocket = require('http').createServer();
 
-app.set('view engine', 'ejs');
-app.set('views', './views');
-
+const serverSocket = require('http').createServer(app);
 const io = require('socket.io')(serverSocket, {
   cors: {
     origin: 'http://localhost:3000',
     methods: ['GET', 'POST'],
   },
 });
+
+const chatController = require('./controllers/webchat');
+
+app.set('view engine', 'ejs');
+app.set('views', './views');
+
+app.use('/', chatController);
 
 io.on('connection', (socket) => {
   console.log(`Usuário conectado. ID: ${socket.id}`);
@@ -30,8 +33,6 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('serverMessage', `Xiii! ${socket.id} acabou de se desconectar! :(`);
   });
 });
-
-app.get('/', (req, res) => res.render('index'));
 
 serverSocket.listen(3000, () => {
   console.log('Servidor ouvindo na porta 3000');
