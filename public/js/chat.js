@@ -57,7 +57,11 @@ const displayUsers = (users) => {
     const li = document.createElement('li');
     li.setAttribute('data-testid', 'online-user');
     li.innerText = users[key];
-    ul.appendChild(li);
+    if (users[key] === nickname) {
+      ul.prepend(li);
+    } else {
+      ul.appendChild(li);
+    }
   });
 };
 
