@@ -4,17 +4,20 @@ const sendButton = document.querySelector('#sendButton');
 const inputMessage = document.querySelector('#messageInput');
 const nicknameButton = document.querySelector('#nicknameButton');
 const inputNickname = document.querySelector('#nicknameBox');
+const usersUl = document.querySelector('#usersOnline');
 
-const nickname = '';
+let nickname = '';
 
 nicknameButton.addEventListener('click', (e) => {
   e.preventDefault();
+  nickname = inputNickname.value;
   socket.emit('nicknameChange', inputNickname.value);
   inputNickname.value = '';
   return false;
 });
 
 sendButton.addEventListener('click', (e) => {
+  if (!nickname) nickname = socket.id.slice(1, 17);
   e.preventDefault();
   socket.emit('message', { chatMessage: inputMessage.value, nickname });
   inputMessage.value = '';
@@ -31,23 +34,29 @@ const newMessage = (message) => {
   messagesUl.appendChild(li);
 };
 
-// o tempo de resposta tá muito alto com o código abaixo
-const usersList = (onlineUsers) => {
-  const usersDiv = document.querySelector('#usersOnline');
-  usersDiv.innerHTML = '';
-  onlineUsers.forEach((user) => {
-    const p = document.createElement('p');
-    p.setAttribute('id', 'usersList');
-    usersDiv.appendChild(p);
-    p.innerText = user; 
-});
+// Precisa trazer o nick do usuário para o primeiro
+const usersList = (userList) => {
+  nickname = userList[socket.id];
+  usersUl.innerHTML = '';
+  const li = document.createElement('li');
+  li.setAttribute('data-testid', 'online-user');
+  li.setAttribute('id', 'usersList');
+  li.innerText = nickname; 
+    usersUl.appendChild(li);
+  const nicknameList = Object.values(userList);
+  nicknameList.forEach((id) => {
+    if (id !== nickname) {
+      const liUsers = document.createElement('li');
+      liUsers.setAttribute('data-testid', 'online-user');
+      liUsers.setAttribute('id', 'usersList');
+      liUsers.innerText = id; 
+      usersUl.appendChild(liUsers);
+    }
+  });
 };
 
-// Quanto o evento usersOnline for emitido, a mensagem será tansformada num li pela funcao newMessage
-socket.on('usersList', (onlineList) => {
-  usersList(onlineList);
-});
-socket.on('online', (message) => newMessage(message));
+socket.on('usersList', (userList) => usersList(userList));
+
 socket.on('showHistory', (history) => {
   history.forEach((message) => {
     const format = `${message.timestamp} ${message.nickname} diz: ${message.chatMessage}`;
@@ -55,4 +64,4 @@ socket.on('showHistory', (history) => {
   });
 });
 socket.on('message', (chatMessage) => newMessage(chatMessage));
-socket.on('nicknameChange', (onlineList) => usersList(onlineList));
+socket.on('nicknameChange', (userList) => usersList(userList));

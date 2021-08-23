@@ -18,20 +18,20 @@ module.exports = (io) => {
     socket.emit('showHistory', await messagesHistory());
 
     // Para limpar o código, geramos um só emit para atualizar os nicks de todos os usuários quando forem alterados.
-    io.emit('usersList', Object.values(onlineUsers));
+    io.emit('usersList', onlineUsers);
 
     socket.on('nicknameChange', (newNickname) => { 
       onlineUsers[socket.id] = newNickname;
-      io.emit('usersList', Object.values(onlineUsers));
+      io.emit('usersList', onlineUsers);
     });
     
-    socket.on('message', async ({ nickname, chatMessage }) => {
+    socket.on('message', async ({ chatMessage, nickname }) => {
       await saveHistory({ timestamp, nickname, chatMessage });
       io.emit('message', `${timestamp} ${nickname} diz: ${chatMessage}`);
     });
     socket.on('disconnect', () => {
       delete onlineUsers[socket.id];
-      io.emit('usersList', Object.values(onlineUsers));
+      io.emit('usersList', onlineUsers);
     });
   });
 };

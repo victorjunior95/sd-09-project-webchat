@@ -59,7 +59,6 @@ describe('1 - Crie um back-end para conexão simultânea de clientes e troca de 
     const counter = createCounter(NUMBER_OF_CLIENTS, done);
 
     clients.forEach((client) => client.on('message', (message) => {
-      console.log(message);
       expect(message.includes(chatMessage)).toBeTruthy();
       expect(message.includes(nickname)).toBeTruthy();
       expect(message).toMatch(dateRegex);
