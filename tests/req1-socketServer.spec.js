@@ -35,7 +35,6 @@ describe('1 - Crie um back-end para conexão simultânea de clientes e troca de 
     expect.assertions(NUMBER_OF_CLIENTS);
 
     const counter = createCounter(NUMBER_OF_CLIENTS, done);
-console.log(clients);
     clients.forEach((client) => {
       client.on('message', (message) => {
         expect(message.includes(chatMessage)).toBeTruthy();
@@ -44,7 +43,6 @@ console.log(clients);
     })
     
     const [client] = clients;
-    console.log(client);
 
     client.emit('message', { chatMessage, nickname });
   });
@@ -61,6 +59,7 @@ console.log(clients);
     const counter = createCounter(NUMBER_OF_CLIENTS, done);
 
     clients.forEach((client) => client.on('message', (message) => {
+      console.log(message);
       expect(message.includes(chatMessage)).toBeTruthy();
       expect(message.includes(nickname)).toBeTruthy();
       expect(message).toMatch(dateRegex);

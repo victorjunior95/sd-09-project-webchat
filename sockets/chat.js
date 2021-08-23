@@ -8,20 +8,30 @@ const saveHistory = async ({ timestamp,
 
 const timestamp = moment().format('DD-MM-YYYY HH:mm:ss');
 
+const onlineUsers = {};
+
 module.exports = (io) => {
   io.on('connection', async (socket) => {
-    socket.emit('connected');
+    const userNickname = socket.id.slice(1, 17);
+    onlineUsers[socket.id] = userNickname;
+
     socket.emit('showHistory', await messagesHistory());
 
+    // Para limpar o código, geramos um só emit para atualizar os nicks de todos os usuários quando forem alterados.
+    io.emit('usersList', Object.values(onlineUsers));
+
     socket.on('nicknameChange', (newNickname) => { 
-      io.emit('nicknameChange', newNickname);
-     });
-     
-    socket.on('message', async ({ chatMessage, nickname }) => {
+      onlineUsers[socket.id] = newNickname;
+      io.emit('usersList', Object.values(onlineUsers));
+    });
+    
+    socket.on('message', async ({ nickname, chatMessage }) => {
       await saveHistory({ timestamp, nickname, chatMessage });
       io.emit('message', `${timestamp} ${nickname} diz: ${chatMessage}`);
     });
-
-    socket.broadcast.emit('online', `${socket.id} está online`);
+    socket.on('disconnect', () => {
+      delete onlineUsers[socket.id];
+      io.emit('usersList', Object.values(onlineUsers));
+    });
   });
 };
