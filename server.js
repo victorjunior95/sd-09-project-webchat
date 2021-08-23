@@ -38,7 +38,6 @@ const sendMessage = async ({ nickname, chatMessage }) => {
 };
 
 io.on('connection', (socket) => {
-
   const id = socket.id.slice(0, 16);
   socket.emit('onlineUser', id);
   socket.on('userObject', (user) => {
