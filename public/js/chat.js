@@ -1,44 +1,52 @@
 const socket = window.io();
 
+const DATA_TEST_ID = 'online-user';
 const ONLINE_USERS = '#online-user';
 
-const inputNickname = document.querySelector('#input-nickname');
-const inputMessage = document.querySelector('#input-message');
 const btnSend = document.querySelector('#btn-send');
 const btnSave = document.querySelector('#btn-save');
+const ulUsers = document.querySelector('#ulUsers');
+const spanNick = document.querySelector('#myNickName');
 
 btnSave.addEventListener('click', (e) => {
   e.preventDefault();
-  const listOnlineUsers = document.querySelectorAll(ONLINE_USERS);
-  socket.emit('changeNickName', {
-    lastNickName: listOnlineUsers[0].innerText,
-    newNickName: inputNickname.value,
-  });
-  listOnlineUsers[0].innerText = inputNickname.value;
+  const inputNickname = document.querySelector('#input-nickname');
+  spanNick.innerText = inputNickname.value;
+  socket.emit('changeNickName', inputNickname.value);
   inputNickname.value = '';
-  return false;
 });
 
 btnSend.addEventListener('click', (e) => {
   e.preventDefault();
+  const inputMessage = document.querySelector('#input-message');
+  const listOnlineUsers = document.querySelectorAll(ONLINE_USERS);
   socket.emit('message', {
-    nickname: inputNickname.value,
+    nickname: listOnlineUsers[0].innerText,
     chatMessage: inputMessage.value,
   });
-  inputNickname.value = '';
   inputMessage.value = '';
-  return false;
 });
 
-const changeNickName = ({ lastNickName, newNickName }) => {
-  const listOnlineUsers = document.querySelectorAll(ONLINE_USERS);
-
-  for (let i = 0; i < listOnlineUsers.length; i += 1) {
-    if (listOnlineUsers[i].innerText === lastNickName) listOnlineUsers[i].innerText = newNickName;
-  }
+const insertNickName = (nickName) => {
+  spanNick.dataset.testid = DATA_TEST_ID;
+  spanNick.innerText = nickName;
 };
 
-const createMessage = (message) => {
+const insertUsers = (users) => {
+  console.log(users);
+  const myNick = document.querySelector('#myNickName');
+  ulUsers.innerHTML = '';
+  users.forEach((user) => {
+    if (myNick.innerText !== user.nickName) {
+      const li = document.createElement('li');
+      li.dataset.testid = DATA_TEST_ID;
+      li.innerText = user.nickName;
+      ulUsers.appendChild(li);
+    }
+  });
+};
+
+const insertMessage = (message) => {
   const ulMessages = document.querySelector('#ulMessages');
   const li = document.createElement('li');
   li.dataset.testid = 'message';
@@ -46,27 +54,11 @@ const createMessage = (message) => {
   ulMessages.appendChild(li);
 };
 
-const insertNickName = (nickName) => {
-  const ulUsers = document.querySelector('#ulUsers');
-  const li = document.createElement('li');
-  li.dataset.testid = 'online-user';
-  li.id = 'online-user';
-  li.innerText = nickName;
-  ulUsers.appendChild(li);
-};
+socket.on('message', (message) => insertMessage(message));
 
-socket.on('message', (message) => createMessage(message));
+socket.on('changeNickName', (users) => insertUsers(users));
 
-socket.on('changeNickName', (nicksNames) => changeNickName(nicksNames));
-
-socket.on('logout', (nickName) => {
-  const ulUsers = document.querySelector('#ulUsers');
-  const listOnlineUsers = document.querySelectorAll(ONLINE_USERS);
-
-  for (let i = 0; i < listOnlineUsers.length; i += 1) {
-    if (listOnlineUsers[i].innerText === nickName) ulUsers.removeChild(listOnlineUsers[i]);
-  }
-});
+socket.on('logout', (users) => insertUsers(users));
 
 socket.on('refreshUsers', (nickName) => {
   const listOnlineUsers = document.querySelectorAll(ONLINE_USERS);
@@ -79,21 +71,14 @@ socket.on('refreshUsers', (nickName) => {
   if (!status) insertNickName(nickName);
 });
 
-socket.on('newUser', (nickName) => {
-  insertNickName(nickName);
-  const listOnlineUsers = document.querySelectorAll(ONLINE_USERS);
-
-  socket.emit('nickname', listOnlineUsers[0].innerText);
+socket.on('newUser', (users) => {
+  insertUsers(users);
 });
 
-socket.on('welcome', ({ nickname, messages }) => {
+socket.on('welcome', ({ nickname, messages, users }) => {
   insertNickName(nickname);
   messages.forEach((message) =>
-    createMessage(`${message.timestamp} - ${message.nickname}: ${message.message}`));
+    insertMessage(`${message.timestamp} - ${message.nickname}: ${message.message}`));
+  if (users) insertUsers(users);
   socket.emit('login', nickname);
 });
-
-window.onbeforeunload = () => {
-  const listOnlineUsers = document.querySelectorAll(ONLINE_USERS);
-  socket.emit('logout', listOnlineUsers[0].innerText);
-};
