@@ -20,23 +20,28 @@ const io = require('socket.io')(http, {
   },
 });
 
-const users = [];
-const messages = [];
+const Users = require('./controllers/users');
+const Messages = require('./controllers/messages');
 
-const changeNickname = ({ oldNickname, newNickname }) => {
-  const i = users.findIndex((user) => user.nickname === oldNickname);
-  users[i].nickname = newNickname;
-};
+const connection = require('./messages/connection.js');
+const disconnect = require('./messages/disconnect.js');
+const message = require('./messages/message.js');
+const nickname = require('./messages/nickname.js');
 
-require('./messages/connection.js')(io, users);
-require('./messages/disconnect.js')(io, users);
-require('./messages/message.js')(io, users, messages);
-require('./messages/nickname.js')(io, changeNickname);
+connection(io, Users);
+disconnect(io);
+message(io);
+nickname(io);
 
 app.get('/', async (req, res) => {
+  const users = await Users.find();
+  const oldMessages = await Messages.find();
   const animal = await generateRandomAnimalName().split(' ')[1];
-  const nickname = `${animal}-anonymous`.split('', 16).join('');
-  return res.status(200).render('index', { users, nickname });
+  const newNickname = `${animal}-anonymous`.split('', 16).join('');
+  if (!users) {
+    connection(io, Users);
+  }
+  return res.status(200).render('index', { users, messages: oldMessages, newNickname });
 });
 
 http.listen(3000, () => { console.log('ouvindo na porta 3000'); });

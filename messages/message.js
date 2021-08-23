@@ -1,12 +1,16 @@
-module.exports = (io, users, messages) => {
+const { newMessage } = require('../controllers/messages');
+
+module.exports = (io) => {
   io.on('connection', (socket) => {
-    socket.emit('oldMessages', messages);
-    socket.on('message', ({ nickname, chatMessage }) => {
+    socket.on('message', async ({ nickname, chatMessage }) => {
       const options = { timeZone: 'America/Bahia' };
+
       const date = new Date().toLocaleDateString('pt-BR', options).split('/').join('-');
       const time = new Date().toLocaleTimeString('pt-BR', options);
-      messages.push({ chatMessage, nickname, date, time });
+
       io.emit('message', `<time>${date} ${time}</time> ${nickname}: ${chatMessage}`);
+
+      newMessage({ chatMessage, nickname, timestamp: `${date} ${time}` });
     });
   });
 };

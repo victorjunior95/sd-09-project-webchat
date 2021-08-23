@@ -9,16 +9,28 @@
 </head>
 <body>
   <aside>
-    <span id="you"><%= nickname %></span><span> (You)</span>
+    <span id="you"><%= newNickname %></span><span> (You)</span>
     <br>
     <input class="nickname-box" id="nickname-box" type="text" data-testid="nickname-box">
     <button id="nickname-button" data-testid="nickname-button">change nickname</button>
-    <p id="total-users"></p>
+    <p id="total-users">Users (<%= users.length %>)</p>
     <ul class="user-panel" id="users">
+      <% users.forEach((user) => { %>
+        <li data-testid="online-user">
+          <%= user.nickname %>
+        </li>
+      <% }) %>
     </ul>
   </aside>
   <main>
-    <ul class="chat" id="messages"></ul>
+    <ul class="chat" id="messages">
+      <% messages.forEach(({ timestamp, nickname, chatMessage }) => { %>
+        <li data-testid="message" class="message">
+          <time><%=  timestamp %></time>
+          <%= nickname %>: <%= chatMessage %>
+        </li>
+      <% }) %>
+    </ul>
     <div class="send-area">
       <input
         autofocus

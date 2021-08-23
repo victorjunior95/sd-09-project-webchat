@@ -9,6 +9,16 @@ const messagesArea = document.getElementById('messages');
 const userList = document.getElementById('users');
 let localNickname = localStorage.getItem('nickname');
 
+if (localNickname) {
+  you.innerText = localNickname;
+  socket.emit('connected', localNickname);
+} else {
+  // caso o usuário não esteja salvo, emitir um newUser
+  localStorage.setItem('nickname', you.innerText);
+  localNickname = you.innerText;
+  socket.emit('newUser', localNickname);
+}
+
 sendButton.addEventListener('click', () => {
   socket.emit('message', { nickname: you.innerText, chatMessage: inputMessage.value });
   inputMessage.value = '';
@@ -20,39 +30,16 @@ nicknameButton.addEventListener('click', () => {
   you.innerText = nicknameBox.value;
 });
 
-if (localNickname) {
-  you.innerText = localNickname;
-  socket.emit('connected');
-} else {
-  localStorage.setItem('nickname', you.innerText);
-  localNickname = you.innerText;
-  // caso o usuário não esteja salvo, emitir um newUser
-  socket.emit('newUser', localNickname);
-}
-
-// salva na localStorage
-
-const appendUsers = (users) => {
-  userList.innerHTML = '';
+const appendNewUser = (newUser) => {
   const totalUsers = document.getElementById('total-users');
-  totalUsers.innerText = `Users (${users.length})`;
-  users.forEach((user) => {
-    const li = document.createElement('li');
-    li.setAttribute(DATA_TESTID, 'online-user');
-    li.innerText = `${user.nickname}`;
-    userList.appendChild(li);
-  });
-};
-
-const appendOlderMessages = (messages) => {
-  messages.forEach(({ date, time, nickname, chatMessage }) => {
-    const olderMessage = document.createElement('li');
-    olderMessage.classList.add('message');
-    olderMessage.setAttribute(DATA_TESTID, 'message');
-    olderMessage.innerHTML = `<time>${date} ${time}</time> ${nickname}: ${chatMessage}`;
-    messagesArea.appendChild(olderMessage);
-    olderMessage.scrollIntoView();
-  });
+  totalUsers.innerText = `Users (${[...userList.children].length + 1})`;
+  const li = document.createElement('li');
+  li.setAttribute(DATA_TESTID, 'online-user');
+  li.innerText = `${newUser}`;
+  if (newUser === localNickname) {
+    return userList.prepend(li);
+  }
+  return userList.appendChild(li);
 };
 
 const appendNewMessage = (message) => {
@@ -77,13 +64,9 @@ const enteredChatMessage = (newUser) => {
   return messagesArea.appendChild(newUserMessage);
 };
 
-socket.on('connected', ({ newUser, users }) => {
-  appendUsers(users);
-  if (newUser) enteredChatMessage(newUser);
-});
-
-socket.on('oldMessages', (messages) => {
-  appendOlderMessages(messages);
+socket.on('connected', ({ newUser }) => {
+  appendNewUser(newUser);
+  enteredChatMessage(newUser);
 });
 
 socket.on('message', (message) => {
@@ -91,3 +74,5 @@ socket.on('message', (message) => {
 });
 
 socket.on('newNickname', (nicknames) => appendNewNickname(nicknames));
+
+socket.on('disconnect', socket.emit('disconnec', you.innerText));

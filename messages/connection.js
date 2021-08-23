@@ -1,11 +1,17 @@
-module.exports = (io, users) => {
+module.exports = (io, Users) => {
   io.on('connection', (socket) => {
-    socket.on('newUser', (nickname) => {
-      users.push({ nickname, id: socket.id });
-      io.emit('connected', { newUser: nickname, users });
+    socket.on('newUser', async (nickname) => {
+      io.emit('connected', { newUser: nickname });
+      Users.insertOne({ nickname });
     });
-    socket.on('connected', () => {
-      socket.emit('connected', { users });
+
+    socket.on('connected', async (localNickname) => {
+      const userExists = await Users.findByNickname(localNickname);
+
+      if (!userExists) {
+        Users.insertOne({ nickname: localNickname });
+        io.emit('connected', { newUser: localNickname });
+      }
     });
 });
 };
