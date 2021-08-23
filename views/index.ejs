@@ -7,15 +7,44 @@
     <title>trybeChat</title>
   </head>
   <body>
-    <div class="messages"></div>
-    <form id="chat">
+    <form id="form-nickname">
       <input
         type="text"
-        name="chatMessage"
-        class="chatMessage"
+        name="nickname-box"
+        class="nickname-box"
+        data-testid="nickname-box"
+        placeholder="Digite seu nickname"
+      />
+      <button
+        type="submit"
+        name="nickname-button"
+        class="btn btn-nickname"
+        data-testid="nickname-button"
+      >
+        Salvar nickname
+      </button>
+    </form>
+
+    <ul class="online-user" data-testid="online-user"></ul>
+
+    <div class="messages"></div>
+
+    <form id="form-chat">
+      <input
+        type="text"
+        name="message-box"
+        class="message-box"
+        data-testid="message-box"
         placeholder="Digite sua mensagem"
       />
-      <button type="submit">Enviar</button>
+      <button
+        type="submit"
+        name="send-button"
+        class="btn btn-send"
+        data-testid="send-button"
+      >
+        Enviar
+      </button>
     </form>
 
     <script src="/socket.io/socket.io.js"></script>
