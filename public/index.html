@@ -5,16 +5,16 @@
     <link rel="stylesheet" href="./css/chat.css">
   </head>
   <body>
-    <div id="main-div">
-      <div id="user-div">
+    <div class="main-div">
+      <div class="user-div">
         <form id="nickname-form" action="">
           <input id="nickname-input" autocomplete="off" placeholder="Insira seu nickname" data-testid="nickname-box" /><button data-testid="nickname-button">Salvar</button>
         </form>
-        <ul id="users-list"></ul>
+        <ul id="users-list" class="users-list"></ul>
       </div>
-      <ul id="messages-list" data-testid="messages-list"></ul>
+      <ul id="messages-list" class="messages-list" data-testid="messages-list"></ul>
     </div>
-    <form id="message-form" action="">
+    <form id="message-form" class="message-form" action="">
       <input id="message-input" data-testid="message-box" autocomplete="off" placeholder="Digite uma nova mensagem aqui"/><button data-testid="send-button">Send</button>
     </form>
     <script src="/socket.io/socket.io.js"></script>

@@ -1,72 +1,70 @@
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 body {
-  font: 13px Helvetica, Arial;
+  font: 13px;
 }
 
-#main-div {
+.main-div {
   display: flex;
 }
 
-#user-div {
+.user-div {
   display: flex;
   flex-direction: column;
   width: 40vw;
 }
 
-#users-list {
+.users-list {
   background-color: lightcoral;
   height: 90vh;
   width: 100%;
 }
 
-#messages-list {
+.messages-list {
   background-color: lightgreen;
   height: 100vh;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
   width: 59vw;
 }
 
+.messages-list li {
+  padding: 5px 10px;
+}
+
+.messages-list li:nth-child( odd ) {
+  background: rgb(165, 165, 165);
+}
+
 form {
-  background: #000;
+  background: black;
   padding: 2px;
 }
 
 
-#message-form {
-  position: fixed;
+.message-form {
   bottom: 0;
+  position: fixed;
   width: 100%;
 }
 
 form input {
   border: 0;
+  margin-right: 0.5%;
   padding: 10px;
   width: 90%;
-  margin-right: 0.5%;
 }
 
 form button {
-  width: 9%;
   background: rgb(130, 224, 255);
   border: none;
-  padding: 10px;
   cursor: pointer;
+  padding: 10px;
+  width: 9%;
 }
 
-#messages-list {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
-
-#messages-list li {
-  padding: 5px 10px;
-}
-
-#messages-list li:nth-child(odd) {
-  background: rgb(165, 165, 165);
-}
