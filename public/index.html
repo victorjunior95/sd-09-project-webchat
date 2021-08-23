@@ -6,30 +6,50 @@
     <title>Web Chat</title>
   </head>
   <body>
-    <h1>Web Chat</h1>
-    <form id='nicknameForm'>
-      <input 
-        type="text"
-        id="nicknameBox"
-        maxlength="16"
-        data-testid="nickname-box"
-        placeholder="Type your nickname"
-      >
-      <button type="submit" data-testid="nickname-button">Change</button>
-    </form>
-    <span id="usersList"></span>
-    <span id="messagesList"></span>
-    <form id="messagesForm">
-      <input 
-        type="text"
-        id="messageBox"
-        data-testid="message-box"
-        placeholder="Enter your message..."
-        autocomplete="off"
-      >
-      <button type="submit" data-testid="send-button">Send</button>
-    </form>
+    <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+    crossorigin="anonymous"
+  />
+    <div class="container">
+      <div class="brand">WEBCHAT</div>
+      <form id='nicknameForm' class="user-form">
+        <input 
+          type="text"
+          id="nicknameBox"
+          maxlength="16"
+          data-testid="nickname-box"
+          placeholder="Type your nickname"
+          class="form-control c-form-input"
+        >
+        <button 
+        type="submit" 
+        data-testid="nickname-button"
+        class="btn btn-primary enter-chat"
+        >Change</button>
+      </form>
+      <span id="usersList" class="list-group"></span>
+      <span id="messagesList" class="chat"></span>
+      <form id="messagesForm" class="col-md-8 chat-block">
+        <input 
+          type="text"
+          id="messageBox"
+          data-testid="message-box"
+          placeholder="Enter your message..."
+          autocomplete="off"
+          class="form-control text-area"
+        >
+        <button 
+        type="submit" 
+        data-testid="send-button"
+        class="btn btn-primary send-btn">Send</button>
+      </form>
+
+    </div>
+   
     <script src="/socket.io/socket.io.js"></script>
     <script src="./sockets.js"></script>
   </body>
 </html> 
+
