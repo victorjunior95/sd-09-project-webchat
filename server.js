@@ -33,9 +33,7 @@ io.on('connection', async (socket) => {
   // console.log(`socket conectado com o ID: ${socket.id}`);
   const message = await fromDb();
   // gerando nick para o req2
-  online.push(socket.id.slice(0, 16));
-  console.log('online', online);
-  io.emit('sendonline', online);
+  online.push(socket.id.slice(0, 16)); console.log('online', online); io.emit('sendonline', online);
   // enviando historico de mensagens ao front.
   socket.emit('previousmessage', message);
 
@@ -43,24 +41,17 @@ io.on('connection', async (socket) => {
   socket.on('message', ({ chatMessage, nickname }) => { 
     const payload = `${timeLocal} - ${nickname}: ${chatMessage}`;
     const objmess = { timestamp: timeLocal, nickname, message: chatMessage };
-    insertOne(objmess);
-    
-    // message out a todos os clientes
-    io.emit('message', payload);
+    insertOne(objmess); io.emit('message', payload);
   });
     
-  socket.on('nickchanged', ({ old, neo }) => {
-    online.forEach((e, i) => { 
-      if (e === old) { online[i] = neo; console.log('dentro do if', online); }
-    });
+  socket.on('nickchanged', ({ old, neo }) => { 
+    online.forEach((e, i) => { if (e === old) { online[i] = neo; } });
       socket.broadcast.emit('changnick', { neo, old });
-  });
+    });
   
   socket.on('disconnect', (motivo) => {
-    const sliced = socket.id.slice(0, 16); 
-    const ativo = online.filter((e) => e !== sliced);
-    online = ativo;
-    if (motivo === 'transport error') { online = []; }
+    const sliced = socket.id.slice(0, 16); const ativo = online.filter((e) => e !== sliced);
+    online = ativo; if (motivo === 'transport error') { online = []; }
     console.log('saiu', sliced, 'motivo da saida: ', motivo, 'online ao sair', online);
     io.emit('userexit', online); 
   });
