@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const { getAll } = require('../models/chat');
+const { save, getAll } = require('../models/messages');
 
 const usersList = {};
 
@@ -24,24 +24,24 @@ const setRandomNickname = (socket, io) => {
 
 const sendInitialUsersList = async (socket) => {
   socket.emit('online', usersList);
-  // const messagesLog = await getAll();
-  // socket.emit('updateMessage', messagesLog);
+  const messagesLog = await getAll();
+  socket.emit('updateMessage', messagesLog);
 };
 
 const sendUsersList = (socket, io) => {
   socket.on('clientLogin', (newUser) => {
     usersList[socket.id] = newUser;
-    
     io.emit('updateUsers', { usersList, name: newUser });
   });
 };
 
 const sendNewMessage = (socket, io) => {
-  socket.on('message', ({ chatMessage, _nickname }) => {
+  socket.on('message', async ({ chatMessage, nickname }) => {
     if (!usersList[socket.id]) {
-      usersList[socket.id] = crypto.randomBytes(20).toString('hex').substr(0, 16);
+      usersList[socket.id] = nickname || crypto.randomBytes(20).toString('hex').substr(0, 16);
     }
     const userNick = usersList[socket.id];
+    await save(chatMessage, userNick, createDate());
     const message = `${createDate()} - ${userNick}: ${chatMessage}`;
     io.emit('message', (message));
   });

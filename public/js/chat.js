@@ -33,7 +33,7 @@ messageForm.addEventListener('submit', (e) => {
 });
 
 const createMessage = (chatMessage) => {
-  console.log(chatMessage)
+  console.log(chatMessage);
   const li = document.createElement('li');
   li.innerHTML = chatMessage;
   li.setAttribute('data-testid', 'message');
