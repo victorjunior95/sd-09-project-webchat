@@ -27,7 +27,7 @@ let users = [];
 const sendMessage = ({ nickname, chatMessage }) => {
   const message = `${messageDate()} - ${nickname}: ${chatMessage}`;
   messages.push(message);
-  io.emit('sentMessages', message);
+  io.emit('message', message);
   return message;
 };
 

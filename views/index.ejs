@@ -74,7 +74,7 @@
       });
 
       // renderiza a mensagem enviada para todos conectados
-      socket.on('sentMessages', (message) => {
+      socket.on('message', (message) => {
         renderMessage(message);
       });
 
