@@ -36,7 +36,7 @@ const renderUserList = (userList) => {
     if (b.id === socket.id) return 1;
     return 0;
   });
-  userList.forEach((user, index) => {
+  userList.forEach((user) => {
     const li = document.createElement('li');
     li.innerText = user.nickname;
     li.dataset.testid = 'online-user';
