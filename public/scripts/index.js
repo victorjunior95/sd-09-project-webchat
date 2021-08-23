@@ -67,6 +67,7 @@ const changeNickname = () => {
   myId = nickname.value;
   showUserNickName(myId);
   nickname.value = '';
+  socket.emit('updateName', myId);
 };
 
 const changeNickNameListener = () => {
@@ -89,6 +90,35 @@ const generateRandomName = () => {
   myId = rnd(16);
 };
 
+const generateUserCard = (name) => {
+  const usersDiv = document.querySelector('#online-users-list');
+  const card = document.createElement('div');
+  card.className = 'user-card';
+
+  const imgDiv = document.createElement('div');
+  imgDiv.className = 'user-img';
+  const img = document.createElement('img');
+  img.setAttribute('src', '../public/images/770137_man_512x512.png');
+  imgDiv.appendChild(img);
+
+  const userInfDiv = document.createElement('div');
+  userInfDiv.className = 'user-informations';
+  const userName = document.createElement('div');
+  userName.setAttribute('data-testid', 'online-user');
+  userName.className = 'user-name';
+  userName.innerHTML = name || 'Usuario';
+  userInfDiv.appendChild(userName);
+
+  card.appendChild(imgDiv);
+  card.appendChild(userInfDiv);
+  usersDiv.appendChild(card);
+};
+
+const clearUsersTable = () => {
+  const usersDiv = document.querySelector('#online-users-list');
+  usersDiv.innerHTML = '';
+};
+
 //  Add listeners
 sendEnterListener();
 sendButtonListener();
@@ -97,5 +127,19 @@ changeNickNameListener();
 generateRandomName();
 showUserNickName(myId);
 
-socket.emit('ping');
+socket.emit('ping', myId);
 socket.on('message', (data) => createNewMessage(data));
+socket.on('onlineUsers', (data) => {
+  clearUsersTable();
+  data.forEach((userData) => {
+    if (userData.id.name === myId) {
+      generateUserCard(userData.id.name);
+    }
+  });
+  data.forEach((userData) => {
+    if (userData.id.name !== myId) {
+      generateUserCard(userData.id.name);
+    }
+  });
+});
+socket.on('userDisconnected', (data) => generateUserCard(data));
