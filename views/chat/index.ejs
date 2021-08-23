@@ -115,7 +115,6 @@
     });
 
     socket.on('message', (mensagem) => createMessage(mensagem));
-    socket.on('serverMessage', (mensagem) => createMessage(mensagem));
     socket.on('userList', (userList) => createUserList(userList));
 
     window.onbeforeunload = function (event) {
