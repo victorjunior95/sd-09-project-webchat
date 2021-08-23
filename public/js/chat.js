@@ -1,8 +1,8 @@
 const socket = window.io();
 
-const userForm = document.querySelector('.login-form')
+const userForm = document.querySelector('.login-form');
 const inputUser = document.querySelector('#loginInput');
-const messageForm = document.querySelector('.message-form')
+const messageForm = document.querySelector('.message-form');
 const inputMessage = document.querySelector('#messageInput');
 const usersUl = document.querySelector('.usersList');
 const messagesUl = document.querySelector('.chat-messages');
@@ -28,7 +28,7 @@ socket.on('serverLogin', (userName) => createNewUser(userName));
 messageForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const chatMessage = inputMessage.value;
-  socket.emit('message', { chatMessage, nickname });
+  socket.emit('message', { chatMessage });
   inputMessage.value = '';
 });
 
@@ -46,8 +46,7 @@ socket.on('online', (usersList) => {
   });
 });
 
-socket.on('updateUsers', ({ usersList, name }) => {
-  nickname = name;
+socket.on('updateUsers', ({ usersList }) => {
   usersUl.innerHTML = '';
   const firstUser = Object.keys(usersList).find((user) => user === socket.id.toString());
   const users = Object.values(usersList).filter((user) => user !== usersList[firstUser]);
@@ -57,7 +56,7 @@ socket.on('updateUsers', ({ usersList, name }) => {
   });
 });
 
-socket.on('updateMessages', (messageHistory) => {
+socket.on('updateMessage', (messageHistory) => {
   messageHistory.forEach(({ timestamp, nickname: name, message }) => {
     const messageInfo = `${timestamp} - ${name}: ${message}`;
     createMessage(messageInfo);
