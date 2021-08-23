@@ -65,19 +65,11 @@ const displayUsers = (users) => {
   });
 };
 
-/* const sendNickname = (message) => {
-  console.log(`[server] > ${message}`);
-  socket.emit('users', nickname);
-}; */
-
 window.onload = () => {
   socket.emit('users', nickname);
 };
 
-// socket.on('requestNickname', (message) => sendNickname(message));
-
 socket.on('message', (message) => createMessage(message));
-// socket.on('updateNickname', (updatedUsers) => displayUsers(updatedUsers));
 socket.on('users', (usersConnected) => displayUsers(usersConnected));
 
 window.onbeforeunload = (_event) => {
