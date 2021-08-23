@@ -1,14 +1,14 @@
 const socket = window.io();
 let myId;
+const dataTestId = 'data-testid';
 
 const getSendMessageInput = () => document.querySelector('#message-to-send');
 
-const createNewMessage = (data) => {
+const createNewMessage = (data, messageUserId) => {
   //  WhatsApp Version
   // const { chatMessage, messageUserId } = data;
 
   //  Project Version
-  const { messageUserId } = data;
   const messagesBox = document.querySelector('#messages-box');
   // Message div
   const messageDiv = document.createElement('div');
@@ -20,12 +20,39 @@ const createNewMessage = (data) => {
 
   //  Message span
   const span = document.createElement('span');
-  span.setAttribute('data-testid', 'message');
+  span.setAttribute(dataTestId, 'message');
   //  WhatsApp Version
   // span.innerText = chatMessage;
 
   //  Project Version
   span.innerText = data;
+  messageDiv.appendChild(span);
+
+  messagesBox.appendChild(messageDiv);
+};
+
+const loadMessageHistory = (message, nickname, timestamp) => {
+  //  WhatsApp Version
+  // const { chatMessage, messageUserId } = data;
+
+  //  Project Version
+  const messagesBox = document.querySelector('#messages-box');
+  // Message div
+  const messageDiv = document.createElement('div');
+  if (myId === nickname) {
+    messageDiv.className = 'message my';
+  } else {
+    messageDiv.className = 'message other';
+  }
+
+  //  Message span
+  const span = document.createElement('span');
+  span.setAttribute(dataTestId, 'message');
+  //  WhatsApp Version
+  // span.innerText = chatMessage;
+
+  //  Project Version
+  span.innerText = `${timestamp} - ${nickname}: ${message}`;
   messageDiv.appendChild(span);
 
   messagesBox.appendChild(messageDiv);
@@ -127,7 +154,7 @@ changeNickNameListener();
 generateRandomName();
 showUserNickName(myId);
 
-socket.emit('ping', myId);
+socket.emit('userConnected', myId);
 socket.on('message', (data) => createNewMessage(data));
 socket.on('onlineUsers', (data) => {
   clearUsersTable();
@@ -143,3 +170,9 @@ socket.on('onlineUsers', (data) => {
   });
 });
 socket.on('userDisconnected', (data) => generateUserCard(data));
+socket.on('messageHistory', (messageHistory) => {
+  messageHistory.forEach((data) => {
+    const { message, nickname, timestamp } = data;
+    loadMessageHistory(message, nickname, timestamp);
+  });
+});

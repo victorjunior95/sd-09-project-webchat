@@ -1,4 +1,7 @@
 const moment = require('moment');
+const messageModel = require('../models/message');
+
+const { getAllMessages, insertMessage } = messageModel;
 
 const currentTime = moment().format('DD-MM-YYYY h:mm:ss');
 
@@ -11,6 +14,14 @@ const updateName = (newName, socketId) => {
     }
       return { id: { socket: socketId, name: newName } };
   });
+};
+
+const userConnected = async (data, socket, io) => {
+  console.log(`${socket.id} emitiu um ping!`);
+  onlineUsers.push({ id: { socket: socket.id, name: data } });
+  const messageHistory = await getAllMessages();
+  io.emit('onlineUsers', onlineUsers);
+  socket.emit('messageHistory', messageHistory);
 };
 
 module.exports = (io) => io.on('connection', (socket) => {
@@ -26,19 +37,16 @@ module.exports = (io) => io.on('connection', (socket) => {
     io.emit('onlineUsers', onlineUsers);
 });
 
-  socket.on('ping', (data) => {
-    console.log(`${socket.id} emitiu um ping!`);
-    onlineUsers.push({ id: { socket: socket.id, name: data } });
-    io.emit('onlineUsers', onlineUsers);
-  });
+  socket.on('userConnected', (data) => userConnected(data, socket, io));
 
-  socket.on('message', (data) => {
+  socket.on('message', async (data) => {
     //  WhatsApp version
     // const { messageUserId, chatMessage } = data;
     // io.emit('message', { messageUserId, chatMessage });
 
     //  Project version
     const { chatMessage, nickname } = data;
+    await insertMessage(chatMessage, nickname, currentTime);
     io.emit('message', `${currentTime} - ${nickname}: ${chatMessage}`);
   });
 });
