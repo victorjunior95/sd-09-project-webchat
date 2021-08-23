@@ -7,7 +7,7 @@ const inputNickname = document.querySelector('#nicknameBox');
 const usersUl = document.querySelector('#usersOnline');
 
 let nickname = '';
-
+const DATA_TESTID = 'data-testid';
 nicknameButton.addEventListener('click', (e) => {
   e.preventDefault();
   nickname = inputNickname.value;
@@ -29,7 +29,7 @@ sendButton.addEventListener('click', (e) => {
 const newMessage = (message) => {
   const messagesUl = document.querySelector('#messages');
   const li = document.createElement('li');
-  li.setAttribute('data-testid', 'message');
+  li.setAttribute(DATA_TESTID, 'message');
   li.innerText = message;
   messagesUl.appendChild(li);
 };
@@ -39,7 +39,7 @@ const usersList = (userList) => {
   nickname = userList[socket.id];
   usersUl.innerHTML = '';
   const li = document.createElement('li');
-  li.setAttribute('data-testid', 'online-user');
+  li.setAttribute(DATA_TESTID, 'online-user');
   li.setAttribute('id', 'usersList');
   li.innerText = nickname; 
     usersUl.appendChild(li);
@@ -47,7 +47,7 @@ const usersList = (userList) => {
   nicknameList.forEach((id) => {
     if (id !== nickname) {
       const liUsers = document.createElement('li');
-      liUsers.setAttribute('data-testid', 'online-user');
+      liUsers.setAttribute(DATA_TESTID, 'online-user');
       liUsers.setAttribute('id', 'usersList');
       liUsers.innerText = id; 
       usersUl.appendChild(liUsers);
