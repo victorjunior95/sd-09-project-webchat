@@ -19,9 +19,8 @@ btnSave.addEventListener('click', (e) => {
 btnSend.addEventListener('click', (e) => {
   e.preventDefault();
   const inputMessage = document.querySelector('#input-message');
-  const listOnlineUsers = document.querySelectorAll(ONLINE_USERS);
   socket.emit('message', {
-    nickname: listOnlineUsers[0].innerText,
+    nickname: spanNick.innerText,
     chatMessage: inputMessage.value,
   });
   inputMessage.value = '';
