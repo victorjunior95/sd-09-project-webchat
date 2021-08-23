@@ -28,6 +28,11 @@
           </ul>
         </section>
         <section id="messages-container">
+          <% previousMessages.forEach((item) => { %>
+            <div data-testid="message">
+              <%= item.timestamp %> - <%= item.nickname %>: <%= item.message %>
+            </div>
+          <% }) %>
         </section>
       </div>
       <form id="message-form">
@@ -53,13 +58,6 @@
       socket.on('onlineUser', (id) => {
         user['id'] = id;
         socket.emit('userObject', user);
-      });
-
-      //renderiza as mensagens do array messages
-      socket.on('previousMessages', (messages) => {
-        for (message of messages) {
-          renderMessage(message);
-        };
       });
 
       const renderOnlineUsers = (user) => {
