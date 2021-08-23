@@ -44,7 +44,17 @@ const renderUserList = (userList) => {
   });
 };
 
-// console.log(socket);
+const renderMessageHistory = (messages) => {
+  const messagesUl = document.querySelector('#messages-list');
+  messages.forEach(({ message, nickname, timestamp }) => {
+    const li = document.createElement('li');
+    li.innerText = `${timestamp} - ${nickname}: ${message}`;
+    li.dataset.testid = 'message';
+    messagesUl.appendChild(li);
+  });
+};
+
 socket.on('message', (message) => createMessage(message));
 socket.on('renderUserList', (userList) => renderUserList(userList));
 socket.on('generateNickname', (nickname) => socket.emit('nicknameChange', nickname));
+socket.on('messageHistory', (messages) => renderMessageHistory(messages));
