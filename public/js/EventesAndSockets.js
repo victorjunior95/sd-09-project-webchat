@@ -9,18 +9,18 @@ const renderMessage = (message) => {
     `<div data-testid="message"  class="message">
     ${message}
     </div>`,
-    );
-  };
-  
-  const renderNickNames = (username) => {
-    $(nickDiv).append(
-      `<div class="message">
+  );
+};
+
+const renderNickNames = (username) => {
+  $(nickDiv).append(
+    `<div class="message">
       <strong data-testid="online-user">${username}</strong>
       </div>`,
-      );
-    };
-    renderNickNames(myNickName);
-    
+  );
+};
+renderNickNames(myNickName);
+
 socket.on('previousNames', (nicks) => {
   nicks.forEach((nick) => {
     renderNickNames(nick);
