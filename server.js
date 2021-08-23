@@ -20,6 +20,7 @@ app.use(express.static(path.join(__dirname, '/public')));
 require('./sockets/login')(io);
 require('./sockets/message')(io);
 require('./sockets/changeName')(io);
+require('./sockets/starterMessages')(io);
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '/index.html'));

@@ -6,8 +6,9 @@ window.onbeforeunload = () => {
 
 let localUser;
 
+const messagesUl = document.querySelector('#messages-content');
+
 const createMessage = (message) => {
-  const messagesUl = document.querySelector('#messages-content');
   const li = document.createElement('li');
   li.setAttribute('data-testid', 'message');
   li.innerText = message;
@@ -51,9 +52,15 @@ socket.on('login', (users) => {
   users[0].users.forEach((item) => createUser(item.nickname));
 });
 
+socket.on('starterMessages', (messages) => {
+  messagesUl.innerHTML = '';
+  messages.forEach((item) => createMessage(item.messageToRender));
+});
+
 socket.on('message', (newMessage) => {
   console.log(newMessage);
-  createMessage(newMessage);
+  messagesUl.innerHTML = '';
+  newMessage.forEach((item) => createMessage(item.messageToRender));
 });
 
 socket.on('updateListOfUsers', (users) => {
