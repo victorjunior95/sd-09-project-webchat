@@ -6,10 +6,9 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const { insertMessage, findMessage } = require('./models/webchat');
 
-const { PORT } = process.env || 3000;
+const { PORT = 3000 } = process.env;
 
 let usersOnline = [];
-const data = findMessage();
 const userDisconn = (array, userId) => {
   array.forEach((item, index, object) => {
     console.log(item.nickname);
@@ -36,11 +35,11 @@ io.on('connection', async (socket) => {
     io.emit('message', `${timestamp} - ${messageObj.nickname}: ${messageObj.chatMessage}`);
   });
 
-  socket.emit('findMessages', await data);
+  const data = await findMessage();
+  socket.emit('findMessages', data);
 
   socket.on('disconnect', () => {
-    userDisconn(usersOnline, socket.id);
-    io.emit('login', usersOnline);
+    userDisconn(usersOnline, socket.id); io.emit('login', usersOnline);
   });
 });
 
