@@ -14,10 +14,10 @@ const formatDate = () => {
   return `${day}-${month}-${year} ${hour}:${min}:${sec}`;
 };
 
-const handleCientConnect = (socket) => {
+/* const handleCientConnect = (socket) => {
   console.log(`[${socket.id}] > acabou de se conectar!`);
   socket.emit('requestNickname', 'Envie seu nickname');
-};
+}; */
 
 const handleMessages = (socket, io) => {
   socket.on('message', (message) => {
@@ -56,7 +56,6 @@ const handleUpdateNickname = (socket, io) => {
  * Sempre que um cliente fecha ou recarrega a página, a conexão socket é encerrada
  *  e o socket.io dispara automaticamente um evento disconnect.
  */
-
 const handleDisconnect = (socket) => {
   socket.on('disconnect', () => {
     console.log(`[${socket.id}] desconectou-se`);
@@ -68,7 +67,7 @@ const handleDisconnect = (socket) => {
 };
 
 const socketServer = (io) => io.on('connection', (socket) => {
-  handleCientConnect(socket);
+  // handleCientConnect(socket);
   handleMessages(socket, io);
   handleUsers(socket, io);
   handleUpdateNickname(socket, io);
