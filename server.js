@@ -10,7 +10,7 @@ const http = require('http').createServer(app);
 
 const webChat = require('./sockets/webChat');
 const webChatModel = require('./models/webChat');
-const webChatController = require('./controllers/webChatController')(webChatModel);
+const webChatController = require('./controllers/webChat')(webChatModel);
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));

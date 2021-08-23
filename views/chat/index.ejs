@@ -11,9 +11,10 @@
 <body>
   <header>
     <h1>Trybe Chat</h1>
-    <p>Bem vindo, <span id="onlineUser" data-testid='online-user'></span></p>
   </header>
 
+  <p>Online:</p>
+  <ul id='userList'></ul>
 
   <form id='nicknameForm'>
     <input type="text" id="nicknameInput" data-testid="nickname-box">
@@ -42,23 +43,25 @@
       const lengt = 16;
       const randomNick = `user${socket.id}`
 
-      localStorage.setItem('nickname', randomNick.slice(0, 16));
+      sessionStorage.setItem('nickname', randomNick.slice(0, 16));
     }
 
     const setNickname = () => {
-      const messagesUl = document.querySelector('#userList');
-      const onlineUser = document.querySelector('#onlineUser')
-      const nickname = localStorage.getItem('nickname');
+      const userListUL = document.querySelector('#userList');
+      const nickname = sessionStorage.getItem('nickname');
+      const li = document.createElement('li');
 
-      onlineUser.innerText = nickname;
+      li.setAttribute('data-testid', 'online-user');
+      li.innerText = nickname;
+      userListUL.appendChild(li);
     }
 
     socket.on('connect', () => {
       generateRandomNick()
       setNickname();
 
-      const nickname = localStorage.getItem('nickname');
-      socket.emit(nickname);
+      const nickname = sessionStorage.getItem('nickname');
+      socket.emit('changeNickname', nickname);
     });
 
     const createMessage = (message) => {
@@ -70,6 +73,29 @@
       messagesUl.appendChild(li);
     };
 
+    const createUserList = (userList) => {
+      const userListUL = document.querySelector('#userList');
+      const nickname = sessionStorage.getItem('nickname');
+
+      userListUL.innerHTML = '';
+
+      const users = Object.values(userList);
+
+      const userIndex = users.indexOf(nickname);
+      
+      const currentUserli = document.createElement('li');
+      currentUserli.setAttribute('data-testid', 'online-user');
+      currentUserli.innerText = nickname;
+      userListUL.appendChild(currentUserli);
+
+      delete users[userIndex];
+
+      users.forEach((user) => {
+        const li = document.createElement('li');
+        li.innerText = user;
+        userListUL.appendChild(li);
+      });
+    };
 
     const nicknameForm = document.querySelector('#nicknameForm');
     const nicknameInput = document.querySelector('#nicknameInput');
@@ -79,14 +105,9 @@
 
       const newNickname = nicknameInput.value;
 
-      const nickname = localStorage.getItem('nickname');
+      socket.emit('changeNickname', newNickname);
 
-      socket.emit('changeNickname', {
-        nickname,
-        newNickname,
-      });
-
-      localStorage.setItem('nickname', newNickname);
+      sessionStorage.setItem('nickname', newNickname);
 
       setNickname();
 
@@ -97,7 +118,7 @@
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const nickname = localStorage.getItem('nickname');
+      const nickname = sessionStorage.getItem('nickname');
       socket.emit('message', {
         chatMessage: message.value,
         nickname
@@ -109,9 +130,10 @@
 
     socket.on('message', (mensagem) => createMessage(mensagem));
     socket.on('serverMessage', (mensagem) => createMessage(mensagem));
+    socket.on('userList', (userList) => createUserList(userList));
 
     window.onbeforeunload = function (event) {
-      const nickname = localStorage.getItem('nickname');
+      const nickname = sessionStorage.getItem('nickname');
       socket.disconnect();
     };
   </script>

@@ -5,10 +5,7 @@ const saveMessage = async (message, webChatModel) => {
 const getMessageHistory = async (webChatModel) => {
   const messages = await webChatModel.getAll();
 
-  return messages.map(({ message }) => {
-    console.log(message);
-    return message;
-  });
+  return messages.map(({ message }) => message);
 };
 
 const webChatController = (webChatModel) => ({
