@@ -18,7 +18,7 @@ const idGenerator = (idLength) => {
   return id;
 };
 
-const nickname = idGenerator(16);
+let nickname = idGenerator(16);
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
@@ -30,8 +30,10 @@ form.addEventListener('submit', (event) => {
   return false;
 });
 
-btnNickname.addEventListener('click', (_event) => {
+btnNickname.addEventListener('click', (event) => {
+  event.preventDefault();
   const newNickname = inputNickname.value;
+  nickname = newNickname;
 
   socket.emit('updateNickname', newNickname);
   inputNickname.value = '';
@@ -59,9 +61,15 @@ const displayUsers = (users) => {
   });
 };
 
-window.onload = () => {
+const sendNickname = (message) => {
+  console.log(`[server] > ${message}`);
   socket.emit('users', nickname);
 };
+/* window.onload = () => {
+  socket.emit('users', nickname);
+}; */
+
+socket.on('requestNickname', (message) => sendNickname(message));
 
 socket.on('message', (message) => createMessage(message));
 // socket.on('updateNickname', (updatedUsers) => displayUsers(updatedUsers));
