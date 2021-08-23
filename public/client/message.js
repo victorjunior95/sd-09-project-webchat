@@ -19,4 +19,4 @@ const createMessage = (message) => {
   list.appendChild(li);
 };
 
-socket.on('message', ({ message }) => createMessage(message));
+socket.on('message', (message) => createMessage(message));

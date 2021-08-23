@@ -10,7 +10,7 @@ module.exports = (io) => {
 
       const message = `${timestamp} - ${nickname}: ${chatMessage}`;
 
-      io.emit('message', { message });
+      io.emit('message', message);
     });
   });
 };
