@@ -24,7 +24,7 @@ const io = socket(http, {
 
 webChat(io, webChatController);
 
-app.get('/', async (req, res) => {
+app.get('/', async (_req, res) => {
   const messageHistory = await webChatController.getMessageHistory();
 
   res.render('chat', { messageHistory });

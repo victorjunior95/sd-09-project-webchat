@@ -46,19 +46,8 @@
       sessionStorage.setItem('nickname', randomNick.slice(0, 16));
     }
 
-    const setNickname = () => {
-      const userListUL = document.querySelector('#userList');
-      const nickname = sessionStorage.getItem('nickname');
-      const li = document.createElement('li');
-
-      li.setAttribute('data-testid', 'online-user');
-      li.innerText = nickname;
-      userListUL.appendChild(li);
-    }
-
     socket.on('connect', () => {
-      generateRandomNick()
-      setNickname();
+      generateRandomNick();
 
       const nickname = sessionStorage.getItem('nickname');
       socket.emit('changeNickname', nickname);
@@ -92,6 +81,7 @@
 
       users.forEach((user) => {
         const li = document.createElement('li');
+        li.setAttribute('data-testid', 'online-user');
         li.innerText = user;
         userListUL.appendChild(li);
       });
@@ -104,15 +94,11 @@
       e.preventDefault();
 
       const newNickname = nicknameInput.value;
-
       socket.emit('changeNickname', newNickname);
 
       sessionStorage.setItem('nickname', newNickname);
 
-      setNickname();
-
       nicknameInput.value = '';
-
       return false;
     });
 
@@ -133,7 +119,6 @@
     socket.on('userList', (userList) => createUserList(userList));
 
     window.onbeforeunload = function (event) {
-      const nickname = sessionStorage.getItem('nickname');
       socket.disconnect();
     };
   </script>
