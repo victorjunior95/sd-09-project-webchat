@@ -1,7 +1,7 @@
-#message-box {
+main div section#messages-container {
   border: 1px solid black;
   border-radius: 4px;
-  height: 200px;
+  min-height: 200px;
   padding: 8px;
 }
 
