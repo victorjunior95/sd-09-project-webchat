@@ -6,8 +6,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Web Chat</title>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
   <link rel="stylesheet" href="css/client.css">
   <script src="js/EventesAndSockets.js"></script>
 
@@ -15,93 +15,14 @@
 </head>
 
 <body>
-  <form id="chat">
-    <input type="text" id="inputName" data-testid="nickname-box" name="username" placeholder="Digite seu NickName">
-    <button type="button" id="namesButton" data-testid="nickname-button">Salvar</button>
-    <div class="container">
-      <div class="messages" id="messages"></div>
-      <div class="nickNames"></div>
-    </div>
-    <input type="text" name="message" data-testid="message-box" placeholder="Digite sua Mensagem">
-    <button type="submit" data-testid="send-button">Enviar</button>
-  </form>
-  <!-- <script src="js/getNickName.js"></script> -->
-  <script>
-    // const jquery = require('jquery');
-// const io = require('socket.io');
-// const getNickName = require('./getNickName');
-    // const socket = io('localhost:3000')
-    // let myNickName = getNickName();
-    // const renderMessage = (message) => {
-    //   $('.messages').append(
-    //     `<div data-testid="message"  class="message">
-    //       ${message}
-    //       </div>`)
-    // }
-
-    // const renderNickNames = (username) => {
-    //   $('.nickNames').append(
-    //     `<div class="message">
-    //           <strong data-testid="online-user">${username}</strong>
-    //           </div>`)
-    // }
-    // renderNickNames(myNickName)
-
-    // socket.on('previousMessage', (messages) => {
-    //   messages.forEach(element => {
-    //     renderMessage(element.message);
-    //   });
-    // })
-
-    // socket.on('previousNames', (messages) => {
-    //   for (message of messages) {
-    //     renderNickNames(message);
-    //   }
-    // })
-
-    // socket.on('message', (message) => {
-    //   renderMessage(message);
-    // })
-
-    // const nick = (item) => item.nickname;
-    // // https://pt.stackoverflow.com/questions/441373/como-remover-todos-os-elementos-de-uma-div-em-javascript
-    // // metodo empty - JQuery https://api.jquery.com/empty/
-    // socket.on('receivedNames', (names) => {
-    //   $('.nickNames').empty();
-    //   renderNickNames(myNickName)
-    //   const nicknames = names.map(nick)
-    //   nicknames.splice(nicknames.indexOf(myNickName), 1);
-    //   nicknames.forEach(element => {
-    //     renderNickNames(element);
-    //   })
-    // })
-
-    // socket.on('nickname', () => socket.emit('sendName', { nickname: myNickName, id: socket.id }))
-
-    // $('#chat').submit((event) => {
-    //   event.preventDefault();
-    //   const nickname = myNickName;
-    //   const chatMessage = $('input[name=message]').val();
-    //   const messageObject = {
-    //     chatMessage, nickname
-    //   }
-    //   socket.emit('message', messageObject)
-    // })
-
-    // const getEl = (id) => document.getElementById(id);
-    // const namesButton = getEl('namesButton');
-
-    // namesButton.addEventListener('click', () => {
-    //   $('.nickNames').empty();
-    //   const oldName = myNickName;
-    //   const newName = $('input[name=username]').val();
-    //   myNickName = newName;
-    //   renderNickNames(myNickName)
-    //   socket.emit('changeName', { oldName, newName })
-    // });
-
-  </script>
-
+  <input type="text" id="inputName" data-testid="nickname-box" name="username" placeholder="Digite seu NickName">
+  <button type="button" id="namesButton" data-testid="nickname-button">Salvar</button>
+  <div class="container">
+    <div class="messages" id="messages"></div>
+    <div class="nickNames"></div>
+  </div>
+  <input type="text" name="message" data-testid="message-box" placeholder="Digite sua Mensagem">
+  <button type="button" id="send-message" data-testid="send-button">Enviar</button>
 </body>
 
 </html>

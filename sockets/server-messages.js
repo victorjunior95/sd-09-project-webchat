@@ -1,6 +1,5 @@
 const date = require('../js/getDate.js');
 const mongo = require('../models/messages');
-// socket.emit('changeName', { oldName, newName })
 
 module.exports = (io) => {
   io.on('connection', async (socket) => {

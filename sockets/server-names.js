@@ -1,22 +1,21 @@
 /* eslint-disable max-lines-per-function */
-let nickNames = [];
-const nick = (item) => item.nickname;
+const nickNames = [];
+const Ids = [];
 
 const onConnect = (io) => {
   io.on('connection', async (socket) => {
     socket.emit('nickname');
 
     socket.on('sendName', (data) => {
-      nickNames.push(data);
+      nickNames.push(data[0]);
+      Ids.push(data[1]);
       socket.broadcast.emit('receivedNames', nickNames);
       socket.emit('receivedNames', nickNames);
     });
 
     socket.on('changeName', (objNames) => {
       const { oldName, newName } = objNames;
-      const names = nickNames.map(nick);
-      const index = names.indexOf(oldName);
-      nickNames[index].nickname = newName;
+      nickNames.splice(nickNames.indexOf(oldName), 1, newName);
       socket.broadcast.emit('receivedNames', nickNames);
       socket.emit('receivedNames', nickNames);
     });
@@ -26,7 +25,9 @@ const onConnect = (io) => {
 const onDisconnect = (io) => {
   io.on('connection', async (socket) => {
     socket.on('disconnect', () => {
-      nickNames = nickNames.filter((item) => item.id !== socket.id);
+      const index = Ids.indexOf(socket.id);
+      nickNames.splice(index, 1);
+      Ids.splice(index, 1);
       socket.broadcast.emit('receivedNames', nickNames);
       socket.emit('receivedNames', nickNames);
     });

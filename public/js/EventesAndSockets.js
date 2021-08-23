@@ -1,6 +1,8 @@
 const socket = window.io();
 const nickDiv = '.nickNames';
+const { $ } = window;
 
+// ------------------------------------------------------------------------------------------//
 const adjectives = [
   'lord', 'master', 'adorable', 'short', 'kind', 'tired', 'caring', 'fearless', 'funny',
   'joyful', 'friendly', 'tall', 'short', 'handsome', 'determined', 'smart', 'studious', 'faithful',
@@ -21,8 +23,12 @@ const getNickName = () => {
   }
   return nick;
 };
+// ------------------------------------------------------------------------------------------//
 
 let myNickName = getNickName();
+
+const getEl = (id) => document.getElementById(id);
+
 const renderMessage = (message) => {
   $('.messages').append(
     `<div data-testid="message"  class="message">
@@ -40,12 +46,6 @@ const renderNickNames = (username) => {
 };
 renderNickNames(myNickName);
 
-socket.on('previousMessage', (messages) => {
-  messages.forEach((element) => {
-    renderMessage(element.message);
-  });
-});
-
 socket.on('previousNames', (nicks) => {
   nicks.forEach((nick) => {
     renderNickNames(nick);
@@ -56,40 +56,49 @@ socket.on('message', (message) => {
   renderMessage(message);
 });
 
-const nick = (item) => item.nickname;
-// https://pt.stackoverflow.com/questions/441373/como-remover-todos-os-elementos-de-uma-div-em-javascript
-// metodo empty - JQuery https://api.jquery.com/empty/
 socket.on('receivedNames', (receivedNames) => {
   $(nickDiv).empty();
   renderNickNames(myNickName);
-  const nicknames = receivedNames.map(nick);
+  const nicknames = receivedNames;
   nicknames.splice(nicknames.indexOf(myNickName), 1);
   nicknames.forEach((element) => {
     renderNickNames(element);
   });
 });
 
-socket.on('nickname', () => socket.emit('sendName', { nickname: myNickName, id: socket.id }));
-
-$('#chat').submit((event) => {
-  event.preventDefault();
-  const nickname = myNickName;
-  const chatMessage = $('input[name=message]').val();
-  const messageObject = {
-    chatMessage, nickname,
-  };
-  socket.emit('message', messageObject);
+socket.on('nickname', () => {
+  socket.emit('sendName', [myNickName, socket.id]);
 });
 
-const getEl = (id) => document.getElementById(id);
-const namesButton = getEl('namesButton');
+const caputureMessageButton = () => {
+  const messageButton = getEl('send-message');
+  messageButton.addEventListener('click', () => {
+    console.log('submit');
+    const nickname = myNickName;
+    const chatMessage = $('input[name=message]').val();
+    const messageObject = {
+      chatMessage, nickname,
+    };
+    socket.emit('message', messageObject);
+  });
+};
 
-namesButton.addEventListener('click', () => {
-  console.log('fui');
-  $(nickDiv).empty();
-  const oldName = myNickName;
-  const newName = $('input[name=username]').val();
-  myNickName = newName;
-  renderNickNames(myNickName);
-  socket.emit('changeName', { oldName, newName });
+const caputureNickNameButton = () => {
+  const nickNameButton = getEl('namesButton');
+  nickNameButton.addEventListener('click', () => {
+    $(nickDiv).empty();
+    const oldName = myNickName;
+    const newName = $('input[name=username]').val();
+    myNickName = newName;
+    renderNickNames(myNickName);
+    socket.emit('changeName', { oldName, newName });
+  });
+};
+
+socket.on('previousMessage', (messages) => {
+  caputureMessageButton();
+  caputureNickNameButton();
+  messages.forEach((element) => {
+    renderMessage(element.message);
+  });
 });
