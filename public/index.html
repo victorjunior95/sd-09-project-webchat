@@ -70,7 +70,7 @@
         const di = document.createElement('div');
         di.setAttribute('data-testid', 'online-user');
         di.innerText = e;
-        online.length > 1 ? nicks.prepend(di) : nicks.appendChild(di);
+        inputNick.value.length > 1 ? nicks.appendChild(di) : nicks.prepend(di) ;
       });
     });
 
@@ -83,7 +83,7 @@
 
     btnSalvar.addEventListener('click', (e) => {
       e.preventDefault();
-       nicks.firstElementChild.innerText = inputNick.value
+       nicks.firstChild.innerText = inputNick.value
       
       socket.emit('nickchanged', { neo: inputNick.value, old: socket.id.slice(0,16) });
     });

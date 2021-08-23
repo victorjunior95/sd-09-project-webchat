@@ -383,7 +383,7 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
     )
   });
 
-  it('Será validado que os nicknames são mostrados na ordem correta', async () => {
+  it.only('Será validado que os nicknames são mostrados na ordem correta', async () => {
     // a client connects
     await page.goto(BASE_URL);
     await page.waitForSelector(dataTestid('online-user'));
@@ -430,7 +430,7 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
     // the first client sees the sencond client name
     await page.bringToFront();
     await page.waitForTimeout(500);
-
+while(true);
     client1Nicknames = await page.$$eval(dataTestid('online-user'), (nodes) => nodes.map((n) => n.innerText));
     expect(client1Nicknames.length).toBe(2);
     expect(client1Nicknames[0]).toEqual(nickname);
