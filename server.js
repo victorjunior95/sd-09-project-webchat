@@ -22,16 +22,22 @@ const messageDate = () => {
   return `${date} ${hour}`;
 };
 const messages = [];
+const clients = [];
 
 // o que faz quando um novo client se conecta, é conectado ao socket.io no front
 io.on('connection', (socket) => {
   const socketId = socket.id;
-  console.log(`Client ${socketId} se conectou`);
+  // console.log(`Client ${socketId} se conectou`);
 
   socket.emit('previousMessages', messages);
-
   const randomId = socketId.slice(0, 16);
+  clients.push(randomId);
+  io.emit('onlineClients', clients);
+
   socket.emit('randomId', randomId);
+  socket.on('customNickname', (nickname) => {
+    clients.push(nickname);
+  });
 
   socket.on('message', ({ nickname, chatMessage }) => {
     const message = `${messageDate()} - ${nickname}: ${chatMessage}`;

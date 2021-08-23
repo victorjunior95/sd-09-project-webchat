@@ -46,19 +46,39 @@
       const socket = window.io();
       
       const renderMessage = (message) => {
-        document.querySelector('#messages-container').insertAdjacentHTML('beforeend', `<div data-testid="message"> ${message} </div>`)
-      }
+        document.querySelector('#messages-container').insertAdjacentHTML('beforeend', `<div data-testid="message"> ${message} </div>`);
+      };
 
       //renderiza as mensagens do array messages
-      socket.on('previousMessages', async (messages) => {
+      socket.on('previousMessages', (messages) => {
         for (message of messages) {
-          await renderMessage(message);
+          renderMessage(message);
+        };
+      });
+
+      const renderOnlineUsers = (client) => {
+        document.querySelector('#online-users').insertAdjacentHTML('beforeend', `<li data-testid="online-user"> ${client} </li>`)
+      };
+
+      socket.on('randomId', (id) => {
+        renderOnlineUsers(id);
+        document.querySelector('input[name=nickname]').value = id;
+      });
+
+      socket.on('onlineClients', (clients) => {
+        for (client in clients) {
+          renderOnlineUsers(client);
         };
       });
 
       // renderiza a mensagem enviada para todos conectados
-      socket.on('sentMessages', async (message) => {
-        await renderMessage(message);
+      socket.on('sentMessages', (message) => {
+        renderMessage(message);
+      });
+
+      document.querySelector('#nickname-button').addEventListener('click', () => {
+        const nickname = document.querySelector('input[name=nickname]').value;
+        socket.emit('customNickname', nickname);
       })
       
       document.querySelector('#message-form').addEventListener('submit', (e) => {
