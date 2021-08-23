@@ -37,10 +37,7 @@ const sendMessage = async ({ nickname, chatMessage }) => {
   return message;
 };
 
-
-// o que faz quando um novo client se conecta, é conectado ao socket.io no front
 io.on('connection', (socket) => {
-  // socket.emit('previousMessages', await previousMessages());
 
   const id = socket.id.slice(0, 16);
   socket.emit('onlineUser', id);
