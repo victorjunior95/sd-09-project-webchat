@@ -21,8 +21,9 @@ io.on('connection', (socket) => {
   socket.on('message', ({ chatMessage, nickname }) => {
     const timestamp = moment().format('DD-MM-YYYY HH:mm:ss A');
     const message = `${timestamp} - ${nickname}: ${chatMessage}`;
+    console.log('user enviou uma msg');
 
-    io.emit(message);
+    io.emit('message', message);
   });
 
   socket.on('disconnect', () => {
