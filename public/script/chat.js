@@ -46,7 +46,6 @@ const displayNickname = () => {
 };
 
 const changeNickname = (newNickname) => {
-  console.log(nickname);
   nickname = newNickname;
   const userP = document.querySelector('#onlineUser');
   const welcomeMessage = nickname;
@@ -55,7 +54,13 @@ const changeNickname = (newNickname) => {
 };
 
 // Quanto o evento welcome for emitido, a mensagem será tansformada num li pela funcao newMessage
-socket.on('welcome', () => displayNickname());
+socket.on('connected', () => displayNickname());
 socket.on('online', (message) => newMessage(message));
+socket.on('showHistory', (history) => {
+  history.forEach((message) => {
+    const format = `${message.timestamp} ${message.nickname} diz: ${message.chatMessage}`;
+    newMessage(format);
+  });
+});
 socket.on('message', (chatMessage) => newMessage(chatMessage));
 socket.on('nicknameChange', (newNickname) => changeNickname(newNickname));
