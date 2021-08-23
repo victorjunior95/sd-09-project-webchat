@@ -12,15 +12,20 @@ const io = require('socket.io')(http, {
     origin: 'http://localhost:3000', // url aceita pelo cors
     methods: ['GET', 'POST'], // Métodos aceitos pela url
   } });
+  
+const userModel = require('./models/userRequests');
 
 app.use(express.static(path.join(__dirname, '/public')));
 
-require('./sockets/webchatSocket')(io);
+require('./sockets/login')(io);
+require('./sockets/message')(io);
+require('./sockets/changeName')(io);
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '/index.html'));
 });
 
-http.listen(PORT, () => {
+http.listen(PORT, async () => {
   console.log('Servidor ouvindo na porta 3000');
+  await userModel.clearDb();
 });
