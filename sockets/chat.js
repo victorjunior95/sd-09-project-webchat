@@ -21,6 +21,7 @@ const handleMessages = (socket, io) => {
     const date = formatDate();
     const formatMessage = `${date} - ${nickname}: ${chatMessage}`;
 
+    // Persistencia no banco de dados
     chatModel.createMessage(chatMessage, nickname, date);
 
     io.emit('message', formatMessage);
@@ -28,9 +29,20 @@ const handleMessages = (socket, io) => {
 };
 
 const handleUsers = (socket, io) => {
+  // evento personalizado para lidar com os usuarios ativos
   socket.on('users', (nickname) => {
     users[socket.id] = nickname;
-    console.log('[users] > ', users);
+    console.log('[addUser][users] > ', users);
+    io.emit('users', users);
+  });
+};
+
+const handleUpdateNickname = (socket, io) => {
+  socket.on('updateNickname', (newNickname) => {
+    const oldNickname = users[socket.id];
+    users[socket.id] = newNickname;
+    console.log(`[antigo]: ${oldNickname} -> [novo]: ${users[socket.id]}`);
+    console.log('[updateNickname][users] > ', users);
     io.emit('users', users);
   });
 };
@@ -39,7 +51,7 @@ const handleDisconnect = (socket) => {
   socket.on('disconnect', () => {
     console.log(`[${socket.id}] desconectou-se`);
     delete users[socket.id];
-    console.log('[users] > ', users);
+    console.log('[disconnect][users] > ', users);
     // envia para todos os clientes exceto que se desconectou
     socket.broadcast.emit('users', users);
   });
@@ -48,6 +60,7 @@ const handleDisconnect = (socket) => {
 const socketServer = (io) => io.on('connection', (socket) => {
   handleMessages(socket, io);
   handleUsers(socket, io);
+  handleUpdateNickname(socket, io);
   handleDisconnect(socket);
 });
 

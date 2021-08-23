@@ -3,6 +3,9 @@ const socket = window.io();
 const form = document.getElementById('messages');
 const input = document.querySelector('#messages input');
 
+const btnNickname = document.getElementById('btn-nikname');
+const inputNickname = document.querySelector('#nickname input');
+
 const idGenerator = (idLength) => {
   const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let id = '';
@@ -16,8 +19,6 @@ const idGenerator = (idLength) => {
 };
 
 const nickname = idGenerator(16);
-console.log('[nikname gerado] >', nickname);
-console.log('[tamanho nikname] >', nickname.length);
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
@@ -26,6 +27,14 @@ form.addEventListener('submit', (event) => {
 
   socket.emit('message', { chatMessage, nickname });
   input.value = '';
+  return false;
+});
+
+btnNickname.addEventListener('click', (_event) => {
+  const newNickname = inputNickname.value;
+
+  socket.emit('updateNickname', newNickname);
+  inputNickname.value = '';
   return false;
 });
 
@@ -55,6 +64,7 @@ window.onload = () => {
 };
 
 socket.on('message', (message) => createMessage(message));
+// socket.on('updateNickname', (updatedUsers) => displayUsers(updatedUsers));
 socket.on('users', (usersConnected) => displayUsers(usersConnected));
 
 window.onbeforeunload = (_event) => {
