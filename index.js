@@ -8,14 +8,15 @@ const io = require('socket.io')(http, {
     methods: ['GET', 'POST'],
 } });
 
-const PORT = 3000;
-
 app.use(express.static(`${__dirname}/public`));
 
+require('./sockets/ping')(io);
 require('./sockets/chat')(io);
 
+const PORT = 3000;
+
 app.get('/', (req, res) => {
-  res.sendFile(`${__dirname}/index.html`);
+  res.sendFile(`${__dirname}/public/chat.html`);
 });
 
 http.listen(PORT, () => {
