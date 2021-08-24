@@ -6,7 +6,7 @@ module.exports = (io) => {
     socket.on('message', async ({ chatMessage, nickname }) => {
       const time = moment().format('D-MM-YYYY - h:mm:ss a');
       const messageToRender = `${time} - ${nickname}: ${chatMessage}`;
-      
+
       const messageToSave = {
         message: chatMessage,
         nickname,
@@ -16,8 +16,8 @@ module.exports = (io) => {
 
       await messageModel.saveMessage(messageToSave);
 
-      const messages = await messageModel.getMessages();
-      io.emit('message', messages);
+      // const messages = await messageModel.getMessages();
+      io.emit('message', messageToRender);
     });
   });
 };

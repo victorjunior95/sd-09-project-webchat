@@ -48,8 +48,25 @@ socket.on('setUser', (user) => {
 });
 
 socket.on('login', (users) => {
+  console.log('login', users);
   usersUl.innerHTML = '';
   users[0].users.forEach((item) => createUser(item.nickname));
+});
+
+socket.on('loginClient', (MyUsers) => {
+  const { userToSend, user } = MyUsers;
+  const array = userToSend[0].users;
+
+  // ideia inspirada no código do Daniel Fasanaro para ordenar os usuários online!
+  array.sort((a, b) => {
+    if (a.socketId === user.socketId) return -1;
+    if (b.socketId === user.socketId) return 1;
+    return 0;
+  });
+    // ideia inspirada no código do Daniel Fasanaro para ordenar os usuários online!
+
+  usersUl.innerHTML = '';
+  array.forEach((item) => createUser(item.nickname));
 });
 
 socket.on('starterMessages', (messages) => {
@@ -59,8 +76,7 @@ socket.on('starterMessages', (messages) => {
 
 socket.on('message', (newMessage) => {
   console.log(newMessage);
-  messagesUl.innerHTML = '';
-  newMessage.forEach((item) => createMessage(item.messageToRender));
+  createMessage(newMessage);
 });
 
 socket.on('updateListOfUsers', (users) => {
