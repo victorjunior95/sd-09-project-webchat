@@ -6,17 +6,17 @@ module.exports = (io) => {
     const user = { socketId: nick, nickname: nick };
     socket.emit('setUser', user);
 
-    await userModel.insertUser(user);
+    socket.on('login', (users) => {
+      io.emit('login', users);
+      socket.emit('loginClient', { userToSend: users, user });
+    });
 
-    const userToSend = await userModel.getUsers();
-    io.emit('login', userToSend);
-    
-    socket.emit('loginClient', { userToSend, user });
+    socket.on('updateUsers', (users) => {
+      io.emit('updateListOfUsers', users);
+    })
 
     socket.on('disconnect', async () => {
-      await userModel.deleteUser(nick);
-      const users = await userModel.getUsers();
-      socket.broadcast.emit('updateListOfUsers', users);
+      io.emit('disconnectMe', user);
     });
   });
 };

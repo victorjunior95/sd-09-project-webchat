@@ -1,6 +1,9 @@
 const socket = window.io();
 
 window.onbeforeunload = () => {
+  const storage = JSON.parse(localStorage.getItem('users'));
+  const newUsers = storage.filter((item) => item.socketId !== localUser.socketId);
+  localStorage.setItem('users', JSON.stringify(newUsers));
   socket.disconnect();
 };
 
@@ -29,8 +32,8 @@ const nicknameInput = document.querySelector('#nickname-input-id');
 
 nicknameForm.addEventListener('submit', (e) => {
   e.preventDefault();
-  console.log('ok');
-  socket.emit('clientNickname', nicknameInput.value);
+  const storage = JSON.parse(localStorage.getItem('users'));
+  socket.emit('clientNickname', { newNick: nicknameInput.value, users: storage });
   nicknameInput.value = '';
   return false;
 });
@@ -45,20 +48,22 @@ messageForm.addEventListener('submit', (e) => {
 
 socket.on('setUser', (user) => {
   localUser = user;
+  const storage = JSON.parse(localStorage.getItem('users')) || [];
+  storage.push(user);
+  localStorage.setItem('users', JSON.stringify(storage));
+  socket.emit('login', storage);
 });
 
 socket.on('login', (users) => {
-  console.log('login', users);
   usersUl.innerHTML = '';
-  users[0].users.forEach((item) => createUser(item.nickname));
+  users.forEach((item) => createUser(item.nickname));
 });
 
 socket.on('loginClient', (MyUsers) => {
   const { userToSend, user } = MyUsers;
-  const array = userToSend[0].users;
 
   // ideia inspirada no código do Daniel Fasanaro para ordenar os usuários online!
-  array.sort((a, b) => {
+  userToSend.sort((a, b) => {
     if (a.socketId === user.socketId) return -1;
     if (b.socketId === user.socketId) return 1;
     return 0;
@@ -66,7 +71,7 @@ socket.on('loginClient', (MyUsers) => {
     // ideia inspirada no código do Daniel Fasanaro para ordenar os usuários online!
 
   usersUl.innerHTML = '';
-  array.forEach((item) => createUser(item.nickname));
+  userToSend.forEach((item) => createUser(item.nickname));
 });
 
 socket.on('starterMessages', (messages) => {
@@ -81,5 +86,19 @@ socket.on('message', (newMessage) => {
 
 socket.on('updateListOfUsers', (users) => {
   usersUl.innerHTML = '';
-  users[0].users.forEach((item) => createUser(item.nickname));
+  console.log(users);
+  localStorage.setItem('users', JSON.stringify(users));
+
+  users.forEach((item) => createUser(item.nickname));
+});
+
+socket.on('disconnectMe', (user) => {
+  const storage = JSON.parse(localStorage.getItem('users'));
+  const newUsers = storage.filter((item) => item.socketId !== user.socketId);
+  localStorage.setItem('users', JSON.stringify(newUsers));
+  socket.emit('updateUsers', newUsers);
+});
+
+socket.on('updateUser', (newUser) => {
+  localUser = newUser;
 });
