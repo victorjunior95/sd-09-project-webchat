@@ -27,12 +27,12 @@ const findByNickname = async (nickname) => (
     )
 );
 
-const updateOne = async (old, updated) => (
+const updateOne = async (old, nickname) => (
   connection()
     .then(
       (db) => db
         .collection('users')
-          .updateOne(old, { $set: { updated } }),
+          .updateOne({ nickname: old }, { $set: { nickname } }),
     )
 );
 

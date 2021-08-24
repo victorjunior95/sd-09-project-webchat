@@ -16,7 +16,7 @@ const findByNickname = async (nickname) => {
 };
 
 const updateNickname = async ({ oldNickname, newNickname }) => {
-  const updated = await Users.updateOne({ nickname: oldNickname }, { nickname: newNickname });
+  const updated = await Users.updateOne(oldNickname, newNickname);
   return updated.modifiedCount;
 };
 

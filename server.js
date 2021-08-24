@@ -19,8 +19,8 @@ const io = require('socket.io')(http, {
   },
 });
 
-const Users = require('./controllers/users');
-const Messages = require('./controllers/messages');
+const users = require('./models/usersObject');
+const messages = require('./models/messagesArray');
 
 const disconnect = require('./messages/disconnect.js');
 const message = require('./messages/message.js');
@@ -33,9 +33,7 @@ message(io);
 nickname(io);
 
 app.get('/', async (req, res) => {
-  const usersData = await Users.find();
-  const oldMessages = await Messages.find();
-  res.status(200).render('index', { users: usersData, messages: oldMessages });
+  res.status(200).render('index', { users: Object.values(users), messages });
 });
 
 http.listen(3000, () => { console.log('ouvindo na porta 3000'); });

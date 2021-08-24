@@ -1,6 +1,16 @@
 const socket = window.io();
-const DATA_TESTID = 'data-testid';
+const localNickname = sessionStorage.getItem('nickname');
 const you = document.getElementById('you');
+
+if (localNickname) {
+  socket.emit('connected', localNickname);
+  you.innerText = localNickname;
+} else {
+  // caso o usuário não esteja salvo, emitir um newUser
+  socket.emit('newUser');
+}
+
+const DATA_TESTID = 'data-testid';
 const sendButton = document.getElementById('send-button');
 const inputMessage = document.getElementById('chat-input');
 const nicknameBox = document.getElementById('nickname-box');
@@ -8,15 +18,6 @@ const nicknameButton = document.getElementById('nickname-button');
 const messagesArea = document.getElementById('messages');
 const userList = document.getElementById('users');
 const totalUsers = document.getElementById('total-users');
-const localNickname = localStorage.getItem('nickname');
-
-if (localNickname) {
-  you.innerText = localNickname;
-  socket.emit('connected', localNickname);
-} else {
-  // caso o usuário não esteja salvo, emitir um newUser
-  socket.emit('newUser');
-}
 
 sendButton.addEventListener('click', () => {
   socket.emit('message', { nickname: you.innerText, chatMessage: inputMessage.value });
@@ -25,8 +26,8 @@ sendButton.addEventListener('click', () => {
 
 nicknameButton.addEventListener('click', () => {
   socket.emit('newNickname', { newNickname: nicknameBox.value, oldNickname: you.innerText });
-  localStorage.setItem('nickname', nicknameBox.value);
   you.innerText = nicknameBox.value;
+  sessionStorage.setItem('nickname', nicknameBox.value);
 });
 
 const enteredChatMessage = (newUser) => {
@@ -59,18 +60,16 @@ const userElement = (newUser) => {
 
 const appendNewUser = ({ newUser }) => {
   const list = [...userList.children];
-  const index = list.findIndex((user) => user.innerText === newUser);
-  if (index === -1) {
-    totalUsers.innerText = `Users (${[...userList.children].length + 1})`;
-    enteredChatMessage(newUser);
-  } else {
-    userList.removeChild(userList.children[index]);
-  }
+  totalUsers.innerText = `Users (${list.length + 1})`;
   const element = userElement(newUser);
   if (newUser === you.innerText || you.innerText === '') {
-    return userList.prepend(element);
+    userList.prepend(element);
+    you.innerText = newUser;
+    sessionStorage.setItem('nickname', newUser);
+  } else {
+    userList.appendChild(element);
   }
-  return userList.appendChild(element);
+  enteredChatMessage(newUser);
 };
 
 const appendNewMessage = (message) => {
@@ -85,7 +84,7 @@ const appendNewMessage = (message) => {
 const appendNewNickname = ({ oldNickname, newNickname }) => {
   const list = [...userList.children];
   const index = list.findIndex((user) => user.innerText === oldNickname);
-  userList.children[index].innerText = newNickname;
+  userList.children[index].children[1].innerText = newNickname;
 };
 
 const removeUser = (nickname) => {
@@ -102,9 +101,8 @@ socket.on('message', appendNewMessage);
 
 socket.on('newNickname', appendNewNickname);
 
-socket.on('newUser', ({ newUser }) => {
-  localStorage.setItem('nickname', newUser);
-  you.innerText = newUser;
-});
-
 socket.on('logoff', removeUser);
+
+window.onbeforeunload = () => {
+  socket.disconnect();
+};
