@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+#nick-name-form {
+  border-style: groove;
+  height: 25em;
+  
+}
+
+#messages-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-style: groove;
+  height: 25em;
+  width: 30em;
+}
+
+#messages-form #message-input {
+  display: inline-block;
+  width: 85%;
+}
+
+.nick-name-container {
+  align-items: center;
+}
