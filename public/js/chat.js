@@ -21,7 +21,8 @@ const createNickNameList = (nickName) => {
   return nickName;
 };
 
-socket.emit('login', createNickNameList(nickname));
+socket.emit('login', nickname);
+socket.on('onlineUsers', (users) => createNickNameList(users));
 
 nickNameForm.addEventListener('submit', (e) => {
   e.preventDefault();

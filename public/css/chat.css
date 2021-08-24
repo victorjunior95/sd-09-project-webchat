@@ -3,22 +3,21 @@
   justify-content: space-evenly;
 }
 
-#nick-name-form {
+#nickname-form {
   border-style: groove;
   height: 25em;
-  
 }
 
 #messages-form {
+  border-style: groove;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-style: groove;
   height: 25em;
   width: 30em;
 }
 
-#messages-form #message-input {
+#message-input {
   display: inline-block;
   width: 85%;
 }

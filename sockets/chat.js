@@ -1,13 +1,13 @@
 const moment = require('moment'); // referência: https://tableless.com.br/trabalhando-com-moment/
 
-// eslint-disable-next-line sonarjs/no-unused-collection
-// const users = [];
+const users = [];
 
 module.exports = (io) => io.on('connection', (socket) => {
   socket.emit('serverMessage', 'Bem vindo ao chat!');
   
   socket.on('login', async (nickName) => {
-    // users.push(nickName);
+    users.push(nickName);
+    io.emit('onlineUsers', users);
   });
 
   socket.on('message', ({ chatMessage, nickname }) => {
