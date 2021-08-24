@@ -35,7 +35,7 @@ const createUser = (newUserInfo) => {
   const newUser = document.createElement('li');
   newUser.setAttribute('data-testid', 'online-user');
   newUser.innerText = newUserInfo;
-  usersList.appendChild(newUser);
+  usersList.insertBefore(newUser, newUser.nextElementSibling);
 };
 
 socket.on('message', (message) => createMessage(message));
@@ -45,9 +45,9 @@ socket.on('login', (newUserInfo) => {
   createUser(nickname);
 });
 
-/* socket.on('getAllMessages', (messages) => {
+socket.on('getAllMessages', (messages) => {
   messages.forEach((message) => createMessage(message));
-}); */
+});
 socket.on('updateOnlineUsersList', (onlineUsersList) => {
   usersList.innerHTML = '';
   createUser(nickname);
@@ -57,3 +57,7 @@ socket.on('updateOnlineUsersList', (onlineUsersList) => {
     }
   });
 });
+
+window.onbeforeunload = () => {
+  socket.disconnect();
+};
