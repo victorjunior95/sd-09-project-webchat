@@ -25,10 +25,9 @@ io.on('connection', async (socket) => {
   console.log(`${socket.id} se conectou`);
 
   const chatHistory = await controller.getAll();
-  chatHistory.forEach(({ time, nickname, messages }) => {
-    socket.emit('message', `${time} - ${nickname}: ${messages}`);
-  });
-  socket.emit('newConnection', 'Trybe Webchat!');
+  chatHistory
+    .map(({ time, nickname, messages }) => 
+      socket.emit('message', `${time} - ${nickname}: ${messages}`));
 });
 
 socketServer.listen(3000, () => {
