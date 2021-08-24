@@ -1,6 +1,6 @@
-const socket = window.io();
+const socket = window.io('http://localhost:3000');
 
-const messageForm = document.querySelector('#message-form');
+const messageBtn = document.querySelector('#message-btn');
 const messageInput = document.querySelector('#message-input');
 const messagesList = document.querySelector('#messages');
 const usersList = document.querySelector('#users-list');
@@ -9,19 +9,11 @@ const nicknameInput = document.querySelector('#nickname-input');
 
 let nickname = null;
 
-messageForm.addEventListener('submit', (e) => {
+messageBtn.addEventListener('click', (e) => {
   e.preventDefault();
   const chatMessage = messageInput.value;
-  socket.emit('clientMessage', { chatMessage, nickname });
+  socket.emit('message', { chatMessage, nickname });
   messageInput.value = '';
-});
-
-nicknameForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const updatedNickname = nicknameInput.value;
-  nickname = updatedNickname;
-  socket.emit('updateNickname', nickname);
-  nicknameInput.value = '';
 });
 
 const createMessage = (message) => {
@@ -31,24 +23,32 @@ const createMessage = (message) => {
   messagesList.appendChild(newMessage);
 };
 
+nicknameForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const updatedNickname = nicknameInput.value;
+  nickname = updatedNickname;
+  socket.emit('updateNickname', nickname);
+  nicknameInput.value = '';
+});
+
 const createUser = (newUserInfo) => {
   const newUser = document.createElement('li');
   newUser.setAttribute('data-testid', 'online-user');
   newUser.innerText = newUserInfo;
-  usersList.insertBefore(newUser, newUser.nextElementSibling);
+  usersList.appendChild(newUser);
 };
 
-socket.on('serverMessage', (message) => createMessage(message));
+socket.on('message', (message) => createMessage(message));
 
 socket.on('login', (newUserInfo) => {
   nickname = newUserInfo;
   createUser(nickname);
 });
 
-socket.on('getAllMessages', (messages) => {
+/* socket.on('getAllMessages', (messages) => {
   messages.forEach((message) => createMessage(message));
-});
-socket.on('updateOnlineUsersList', (onlineUsersList) => {
+}); */
+/* socket.on('updateOnlineUsersList', (onlineUsersList) => {
   usersList.innerHTML = '';
   createUser(nickname);
   onlineUsersList.forEach((user) => {
@@ -57,3 +57,4 @@ socket.on('updateOnlineUsersList', (onlineUsersList) => {
     }
   });
 });
+ */

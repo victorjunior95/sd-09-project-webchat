@@ -1,23 +1,26 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Webchat Project</title>
-</head>
-<body>
-  <ul id="users-list"></ul>
-  <br>
-  <form id="nickname-form">
-    <input id="nickname-input" autocomplete="off" data-testid="nickname-box">
-    <button type="submit" data-testid="nickname-button">Update nickname</button>
-  </form>
-  <form id="message-form">
-    <input id="message-input" autocomplete="off" data-testid="message-box">
-    <button type="submit" data-testid="send-button">Send</button>
-  </form>
+  <head>
+    <title>WebChat Project</title>
+  </head>
+  <body>
+    <ul id="users-list"></ul>
+    <br>
 
-  <ul id="messages"></ul>
+    <form id='nickname-form'>
+      <input id="nickname-input" autocomplete="off" data-testid="nickname-box" />
+      <button type='submit' data-testid="nickname-button">Update nickname</button>
+    </form>
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="js/chat.js"></script>
-</body>
+    <form id='message-form'>
+      <input id="message-input" autocomplete="off" data-testid="message-box" />
+      <button id="message-btn" type='button' data-testid="send-button">Send</button>
+    </form>
+
+    <ul id="messages"></ul>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/chat.js"></script>
+  </body>
+
 </html>
