@@ -48,15 +48,10 @@ form.addEventListener('submit', (event) => {
 
 // Escuta a msg no formato string
 socket.on('message', (data) => {
-  console.log(data);
   renderMessage(data);
-  // data.forEach((msg) => {
-  //   renderMessage(msg);
-  // });
 });
 
 socket.on('usersOnline', (data) => {
-  console.log(data);
   usersOnline.innerHTML = '';
   data.forEach((user) => {
     renderUsers(user);

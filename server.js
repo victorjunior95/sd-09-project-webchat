@@ -30,14 +30,9 @@ app.use('/', (req, res) => {
 
 // Array de msg (substituir pelo DB)
 const messages = [];
+console.log(messages);
 // Array de users online
 let users = [];
-// const userAlreadyOnline = (nick) => {
-//   users.forEach((user) => {
-//     if (user === nick) return;
-//     users.push(nick);
-//   });
-// };
 
 // Conexão do client com o nosso server (socket.io)
   // cada socket é um client que se conecta
@@ -65,7 +60,7 @@ io.on('connection', (socket) => {
       if (user === guestRandom) return nickname;
       return user;
     });
-    // userAlreadyOnline(nickname);
+
     // para renderizar os nicknames
     io.emit('usersOnline', users);
   });
