@@ -12,8 +12,6 @@ const io = require('socket.io')(http, {
     origin: 'http://localhost:3000', // url aceita pelo cors
     methods: ['GET', 'POST'], // Métodos aceitos pela url
   } });
-  
-const userModel = require('./models/userRequests');
 
 app.use(express.static(path.join(__dirname, '/public')));
 
@@ -28,5 +26,4 @@ app.get('/', (req, res) => {
 
 http.listen(PORT, async () => {
   console.log('Servidor ouvindo na porta 3000');
-  await userModel.clearDb();
 });

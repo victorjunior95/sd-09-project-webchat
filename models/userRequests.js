@@ -38,16 +38,10 @@ async function updateNickname(user, newNickname) {
       ));
 }
 
-async function clearDb() {
-  return connection()
-    .then((db) => db.collection(users).drop());
-}
-
 module.exports = {
   getUsers,
   createUser,
   insertUser,
   deleteUser,
-  clearDb,
   updateNickname,
 };
