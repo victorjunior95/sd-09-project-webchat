@@ -1,16 +1,13 @@
-const { deleteOne, clearUsers } = require('../controllers/users');
-const { clearMessages } = require('../controllers/messages');
+const { deleteOne } = require('../controllers/users');
+const users = require('../models/usersObject');
 
 module.exports = async (io) => {
   io.on('connection', async (socket) => {
-    socket.on('disconnecting', (reason) => {
-      console.log('disconnecting... ');
-      console.log('reason: ', reason);
+    socket.on('disconnecting', () => {
+      const { nickname } = users[socket.id];
+      delete users[socket.id];
       deleteOne(socket.id);
+      io.emit('logoff', nickname);
     });
-  });
-  io.on('disconnect', async () => {
-    clearUsers();
-    clearMessages();
   });
 };

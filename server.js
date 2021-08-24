@@ -1,5 +1,4 @@
 const express = require('express');
-const generateRandomAnimalName = require('random-animal-name-generator');
 
 const app = express();
 const http = require('http').createServer(app);
@@ -23,25 +22,20 @@ const io = require('socket.io')(http, {
 const Users = require('./controllers/users');
 const Messages = require('./controllers/messages');
 
-const connection = require('./messages/connection.js');
 const disconnect = require('./messages/disconnect.js');
 const message = require('./messages/message.js');
 const nickname = require('./messages/nickname.js');
+const connection = require('./messages/connection');
 
-connection(io, Users);
+connection(io);
 disconnect(io);
 message(io);
 nickname(io);
 
 app.get('/', async (req, res) => {
-  const users = await Users.find();
+  const usersData = await Users.find();
   const oldMessages = await Messages.find();
-  const animal = await generateRandomAnimalName().split(' ')[1];
-  const newNickname = `${animal}-anonymous`.split('', 16).join('');
-  if (!users) {
-    connection(io, Users);
-  }
-  return res.status(200).render('index', { users, messages: oldMessages, newNickname });
+  res.status(200).render('index', { users: usersData, messages: oldMessages });
 });
 
 http.listen(3000, () => { console.log('ouvindo na porta 3000'); });

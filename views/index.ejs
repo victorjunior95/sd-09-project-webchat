@@ -9,16 +9,20 @@
 </head>
 <body>
   <aside>
-    <span id="you"><%= newNickname %></span><span> (You)</span>
+    <span id="you"></span><span> (You)</span>
     <br>
     <input class="nickname-box" id="nickname-box" type="text" data-testid="nickname-box">
-    <button id="nickname-button" data-testid="nickname-button">change nickname</button>
+    <button class="btn-success" id="nickname-button" data-testid="nickname-button">change nickname</button>
+    <hr>
     <p id="total-users">Users (<%= users.length %>)</p>
     <ul class="user-panel" id="users">
       <% users.forEach((user) => { %>
-        <li data-testid="online-user">
-          <%= user.nickname %>
-        </li>
+        <div>
+          <img src="/images/avatar.svg" alt="profile" width="20px" class="avatar" >
+          <li data-testid="online-user">
+            <%= user.nickname %>
+          </li>
+        </div>
       <% }) %>
     </ul>
   </aside>
@@ -27,7 +31,7 @@
       <% messages.forEach(({ timestamp, nickname, chatMessage }) => { %>
         <li data-testid="message" class="message">
           <time><%=  timestamp %></time>
-          <%= nickname %>: <%= chatMessage %>
+          <span><%= nickname %></span>: <%= chatMessage %>
         </li>
       <% }) %>
     </ul>

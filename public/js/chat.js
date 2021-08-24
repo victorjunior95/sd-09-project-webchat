@@ -7,16 +7,15 @@ const nicknameBox = document.getElementById('nickname-box');
 const nicknameButton = document.getElementById('nickname-button');
 const messagesArea = document.getElementById('messages');
 const userList = document.getElementById('users');
-let localNickname = localStorage.getItem('nickname');
+const totalUsers = document.getElementById('total-users');
+const localNickname = localStorage.getItem('nickname');
 
 if (localNickname) {
   you.innerText = localNickname;
   socket.emit('connected', localNickname);
 } else {
   // caso o usuário não esteja salvo, emitir um newUser
-  localStorage.setItem('nickname', you.innerText);
-  localNickname = you.innerText;
-  socket.emit('newUser', localNickname);
+  socket.emit('newUser');
 }
 
 sendButton.addEventListener('click', () => {
@@ -30,16 +29,48 @@ nicknameButton.addEventListener('click', () => {
   you.innerText = nicknameBox.value;
 });
 
-const appendNewUser = (newUser) => {
-  const totalUsers = document.getElementById('total-users');
-  totalUsers.innerText = `Users (${[...userList.children].length + 1})`;
+const enteredChatMessage = (newUser) => {
+  const newUserMessage = document.createElement('li');
+  newUserMessage.classList.add('new-user');
+  newUserMessage.innerText = `${newUser} has entered the chat`;
+  return messagesArea.appendChild(newUserMessage);
+};
+
+const leftChatMessage = (user) => {
+  const leftUserMessage = document.createElement('li');
+  leftUserMessage.classList.add('new-user');
+  leftUserMessage.innerText = `${user} has left the chat`;
+  messagesArea.appendChild(leftUserMessage);
+  leftUserMessage.scrollIntoView();
+};
+
+const userElement = (newUser) => {
+  const div = document.createElement('div');
+  const img = document.createElement('img');
+  img.src = '/images/avatar.svg';
+  img.height = '20';
   const li = document.createElement('li');
   li.setAttribute(DATA_TESTID, 'online-user');
   li.innerText = `${newUser}`;
-  if (newUser === localNickname) {
-    return userList.prepend(li);
+  div.appendChild(img);
+  div.appendChild(li);
+  return div;
+};
+
+const appendNewUser = ({ newUser }) => {
+  const list = [...userList.children];
+  const index = list.findIndex((user) => user.innerText === newUser);
+  if (index === -1) {
+    totalUsers.innerText = `Users (${[...userList.children].length + 1})`;
+    enteredChatMessage(newUser);
+  } else {
+    userList.removeChild(userList.children[index]);
   }
-  return userList.appendChild(li);
+  const element = userElement(newUser);
+  if (newUser === you.innerText || you.innerText === '') {
+    return userList.prepend(element);
+  }
+  return userList.appendChild(element);
 };
 
 const appendNewMessage = (message) => {
@@ -54,25 +85,26 @@ const appendNewMessage = (message) => {
 const appendNewNickname = ({ oldNickname, newNickname }) => {
   const list = [...userList.children];
   const index = list.findIndex((user) => user.innerText === oldNickname);
-  userList.childNodes[index].innerText = newNickname;
+  userList.children[index].innerText = newNickname;
 };
 
-const enteredChatMessage = (newUser) => {
-  const newUserMessage = document.createElement('li');
-  newUserMessage.classList.add('new-user');
-  newUserMessage.innerText = `${newUser} has entered the chat`;
-  return messagesArea.appendChild(newUserMessage);
+const removeUser = (nickname) => {
+  const list = [...userList.children];
+  const index = list.findIndex((user) => user.innerText === nickname);
+  userList.removeChild(userList.children[index]);
+  totalUsers.innerText = `Users (${[...userList.children].length})`;
+  return leftChatMessage(nickname);
 };
 
-socket.on('connected', ({ newUser }) => {
-  appendNewUser(newUser);
-  enteredChatMessage(newUser);
+socket.on('connected', appendNewUser);
+
+socket.on('message', appendNewMessage);
+
+socket.on('newNickname', appendNewNickname);
+
+socket.on('newUser', ({ newUser }) => {
+  localStorage.setItem('nickname', newUser);
+  you.innerText = newUser;
 });
 
-socket.on('message', (message) => {
-  appendNewMessage(message);
-});
-
-socket.on('newNickname', (nicknames) => appendNewNickname(nicknames));
-
-socket.on('disconnect', socket.emit('disconnec', you.innerText));
+socket.on('logoff', removeUser);
