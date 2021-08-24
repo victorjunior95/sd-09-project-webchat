@@ -18,7 +18,7 @@ const Models = require('./models');
 const Middlewares = require('./middlewares');
 
 const users = [];
-const { PORT } = process.env;
+const PORT = process.env.PORT || 3000;
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
