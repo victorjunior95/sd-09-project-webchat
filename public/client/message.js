@@ -6,7 +6,7 @@ const messageList = document.querySelector('#message-list');
 
 messageForm.addEventListener('submit', (e) => {
   e.preventDefault();
-  const nickname = localStorage.getItem('nickname') || 'Stranger';
+  const nickname = document.querySelector('#online-user').innerText;  
   messageSocket.emit('message', { chatMessage: newMessage.value, nickname });
   newMessage.value = '';
   return false;

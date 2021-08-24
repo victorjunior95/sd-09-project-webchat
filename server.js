@@ -15,12 +15,12 @@ const io = require('socket.io')(http, {
   },
 });
 
-const controllers = require('./controllers');
+const controller = require('./controllers/chat');
 
 require('./sockets/message')(io);
 require('./sockets/nickname')(io);
 
-app.get('/', controllers.chat);
+app.get('/', controller);
 
 const PORT = process.env.PORT || 3000;
 
