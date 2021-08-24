@@ -48,7 +48,7 @@ socket.on('login', (newUserInfo) => {
 /* socket.on('getAllMessages', (messages) => {
   messages.forEach((message) => createMessage(message));
 }); */
-/* socket.on('updateOnlineUsersList', (onlineUsersList) => {
+socket.on('updateOnlineUsersList', (onlineUsersList) => {
   usersList.innerHTML = '';
   createUser(nickname);
   onlineUsersList.forEach((user) => {
@@ -57,4 +57,3 @@ socket.on('login', (newUserInfo) => {
     }
   });
 });
- */
