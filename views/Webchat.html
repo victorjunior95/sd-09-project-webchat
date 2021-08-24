@@ -4,13 +4,54 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>WebChat</title>
+
   <script src="socket.io/socket.io.js"></script>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
   <form>
-    <input type="text" id="mensagem" />
-    <button type="submit" id="botaoEnviar">Enviar Mensagem</button>
+    <div class="head">
+      <div class="right">
+        <div class="input-nickname">
+          <input
+            type="text"
+            name="nickname"
+            id="nickname"
+            class="nickname"
+            placeholder="Insira seu nickname"
+            data-testid="nickname-box"
+          >
+          <button
+            data-testid="nickname-button"
+            id="nickname-button"
+            class="savebtn"
+            type="button"
+          >Salvar</button>
+        </div>
+        <ul class="usersOnline" id="usersOnline">
+          <!-- data-testid="online-user" -->
+        </ul>
+      </div>
+      <div class="left">
+        <section id="messages" data-testid="message">
+          <!-- data-testid="message" -->
+        </section>
+      </div>
+    </div>
+
+    <div class="tail">
+      <input
+        type="text"
+        name="message"
+        id="message"
+        class="text"
+        placeholder="Digite uma nova mensagem aqui"
+        data-testid="message-box"
+      >
+      <button type="submit" class="sendbtn" data-testid="send-button">Enviar</button>
+    </div>
   </form>
 
   <script src="client.js"></script>

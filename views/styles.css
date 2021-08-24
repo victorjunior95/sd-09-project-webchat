@@ -9,7 +9,7 @@ html , body {
 
 }
 
-.form {
+.right {
   display: flex;
   flex-direction: column;
 }
@@ -19,21 +19,21 @@ html , body {
   flex-wrap: nowrap;
 }
 
-.head .a {
+.head .input-nickname {
   display: flex;
   flex: flow;
 
   /* grid-template-columns: 1fr; */
 }
 
-.head .nickname {
+.head .input-nickname .nickname {
   border: 1px solid #ddd;
   font-size: 14px;
   height: 50px;
   width: 400px;
 }
 
-.head .savebtn {
+.head .input-nickname .savebtn {
   border: 1px solid #ddd;
   font-size: 14px;
   height: 50px;
@@ -52,14 +52,14 @@ html , body {
   width: 851px;
 }
 
-.foot .text {
+.tail .text {
   border: 1px solid #ddd;
   font-size: 14px;
   height: 50px;
   width: 1247px;
 }
 
-.foot .sendbtn {
+.tail .sendbtn {
   border: 1px solid #ddd;
   font-size: 14px;
   height: 50px;

@@ -30,24 +30,44 @@ app.use('/', (req, res) => {
 
 // Array de msg (substituir pelo DB)
 const messages = [];
-console.log(messages);
+// Array de users online
+let users = [];
+// const userAlreadyOnline = (nick) => {
+//   users.forEach((user) => {
+//     if (user === nick) return;
+//     users.push(nick);
+//   });
+// };
 
 // Conexão do client com o nosso server (socket.io)
-io.on('connection', (socket) => {
-  // Para gerar nickname
-  const guest = socket.id.slice(0, 16);
-  socket.emit('nickname', guest);
   // cada socket é um client que se conecta
+io.on('connection', (socket) => {
+  const guestRandom = socket.id.slice(0, 16);
+  users.push(guestRandom);
+  socket.emit('nickname', guestRandom);
 
   // Escuta o evento message do front-end
+    // data é um obj { chatMessage, nickname }
   socket.on('message', (data) => {
     const timeStamp = moment().format('DD-MM-yyyy HH:mm:ss A');
 
-    const defaultMsg = `${timeStamp} - ${data.nickname}: ${data.chatMessage}`;
+    const defaultMsg = (obj) => `${timeStamp} - ${obj.nickname}: ${obj.chatMessage}`;
 
+    // recebo data.nickname
     messages.push(data);
 
-    io.emit('message', defaultMsg);
+    // para renderizar as msg
+    io.emit('message', defaultMsg(data));
+  });
+
+  socket.on('nickname', (nickname) => {
+    users = users.map((user) => {
+      if (user === guestRandom) return nickname;
+      return user;
+    });
+    // userAlreadyOnline(nickname);
+    // para renderizar os nicknames
+    io.emit('usersOnline', users);
   });
 });
 
