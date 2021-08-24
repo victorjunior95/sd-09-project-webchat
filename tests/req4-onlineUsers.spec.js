@@ -34,7 +34,7 @@ describe('4 - Informe a todos os clientes quem está online no momento', () => {
         '--disable-dev-shm-usage',
         '--window-size=1920,1080',
       ],
-      headless: true,
+      headless: false,
     });
     page = await browser.newPage();
     done();

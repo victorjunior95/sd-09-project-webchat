@@ -10,6 +10,7 @@ const spanNick = document.querySelector('#myNickName');
 
 btnSave.addEventListener('click', (e) => {
   e.preventDefault();
+  console.log('entrou');
   const inputNickname = document.querySelector('#input-nickname');
   spanNick.innerText = inputNickname.value;
   socket.emit('changeNickName', inputNickname.value);
@@ -27,7 +28,7 @@ btnSend.addEventListener('click', (e) => {
 });
 
 const insertNickName = (nickName) => {
-  spanNick.dataset.testid = DATA_TEST_ID;
+  spanNick.setAttribute('data-testid', DATA_TEST_ID);
   spanNick.innerText = nickName;
 };
 
@@ -38,7 +39,7 @@ const insertUsers = (users) => {
   users.forEach((user) => {
     if (myNick.innerText !== user.nickName) {
       const li = document.createElement('li');
-      li.dataset.testid = DATA_TEST_ID;
+      li.setAttribute('data-testid', DATA_TEST_ID);
       li.innerText = user.nickName;
       ulUsers.appendChild(li);
     }
