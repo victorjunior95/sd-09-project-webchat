@@ -1,56 +1,57 @@
 const moment = require('moment');
+
 const Chat = require('../models/chat');
+
+const getChatMessages = async () => {
+  const getAllMessages = await Chat.getAll();
+  console.log(getAllMessages);
+  return getAllMessages;
+};
 
 const users = [];
 
-const updateNickname = (nickname, users, socket) => {
-  users.forEach((user, index) => {
-    if (user.id === socket.id) users[index].nickname = nickname;
+const updateNickname = (nickname, usersList, socket) => {
+  const updatedUsers = usersList;
+  usersList.forEach((user, index) => {
+    if (user.id === socket.id) updatedUsers[index].nickname = nickname;
   });
-  return users;
+  return updatedUsers;
 };
 
-const filterUsers = (users, socket) => {
-  users.filter((user, index) => {
+const filterUsers = (usersList, socket) => {
+  usersList.filter((user, index) => {
     if (user.id === socket.id) {
-      users.splice(index, 1);
+      usersList.splice(index, 1);
     }
+    return false;
   });
-  return users;
+  return usersList;
 };
 
-const createMessage = (users, socket, messageObj) => {
+const createMessage = (usersList, socket, messageObj) => {
   const timestamp = moment().format('DD-MM-yyyy HH:mm:ss');
   let nickname;
   const { chatMessage } = messageObj;
-  const user = users.find((user) => user.id === socket.id);
+  const findUser = usersList.find((user) => user.id === socket.id);
 
-  if (user && user.nickname !== messageObj.nickname) {
-    nickname = user.nickname;
+  if (findUser && findUser.nickname !== messageObj.nickname) {
+    nickname = findUser.nickname;
   } else {
     nickname = messageObj.nickname;
   }
 
   Chat.setData(timestamp, nickname, chatMessage);
   return `${timestamp} ${nickname}: ${chatMessage}`;
-
 };
 
 module.exports = (io) => io.on('connection', async (socket) => {
   const { id } = socket;
-  
-  const user = {
-     id,
-     nickname: id.slice(0, -4),
-  };
+  const user = { id, nickname: id.slice(0, -4) };
+
+  io.emit('retryMessages', await getChatMessages());
 
   socket.on('updateNickname', (nickname) => {
     const updatedUsers = updateNickname(nickname, users, socket);
-    // users.forEach((user, index) => {
-    //   if (user.id === socket.id) {
-    //     users[index].nickname = nickname;
-    //   }
-    // });
     io.emit('onlineUsers', updatedUsers);
   });
 
@@ -61,33 +62,10 @@ module.exports = (io) => io.on('connection', async (socket) => {
 
   socket.on('disconnect', () => {
     const filteredUsers = filterUsers(users, socket);
-    // users.filter((user, index) => {
-    //   if (user.id === socket.id) {
-    //     users.splice(index, 1);
-    //   }
-    // });
     io.emit('onlineUsers', filteredUsers);
   });
 
   socket.on('message', (messageObj) => {
-    // const timestamp = moment().format('DD-MM-yyyy HH:mm:ss');
-    // const { chatMessage } = messageObj;
-    // let nickname;
-    // // const { nickname, chatMessage } = messageObj;
-    // const user = users.find((user) => user.id === socket.id);
-
-    // if (user && user.nickname !== messageObj.nickname) {
-    //   nickname = user.nickname;
-    // } else {
-    //   nickname = messageObj.nickname;
-    // }
-
-    // Chat.setData(timestamp, nickname, chatMessage);
-    // io.emit('message', `${timestamp} ${nickname}: ${chatMessage}`);
     io.emit('message', createMessage(users, socket, messageObj));
-    // io.emit('message', {timestamp, nickname, chatMessage});
   });
-
-  const getChatMessages = await Chat.getAll();
-  io.emit('retryMessages', getChatMessages);
 });
