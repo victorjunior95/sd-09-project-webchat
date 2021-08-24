@@ -55,10 +55,14 @@
         document.querySelector('#messages-container').insertAdjacentHTML('beforeend', `<div data-testid="message"> ${message} </div>`);
       };
 
-      socket.on('onlineUser', (id) => {
+      socket.on('userId', (id) => {
         user['id'] = id;
         socket.emit('userObject', user);
       });
+
+      const renderOnlineUser = (user) => {
+        document.querySelector('#online-users').insertAdjacentHTML('afterbegin', `<li data-testid="online-user"> ${user} </li>`);
+      };
 
       const renderOnlineUsers = (user) => {
         document.querySelector('#online-users').insertAdjacentHTML('beforeend', `<li data-testid="online-user"> ${user} </li>`);
@@ -66,6 +70,10 @@
 
       socket.on('onlineUsers', (users) => {
         document.querySelector('#online-users').innerHTML = '';
+
+        !user.nickname ? renderOnlineUser(user.id) : renderOnlineUser(user.nickname);
+
+        if(users.length <=1) users.filter(item => item.id !== user.id);
         for (user of users) {
           !user.nickname ? renderOnlineUsers(user.id) : renderOnlineUsers(user.nickname);
         };

@@ -37,13 +37,15 @@ const sendMessage = async ({ nickname, chatMessage }) => {
   return message;
 };
 
+const userObject = (user) => {
+  users.unshift(user);
+  io.emit('onlineUsers', users);
+};
+
 io.on('connection', (socket) => {
   const id = socket.id.slice(0, 16);
-  socket.emit('onlineUser', id);
-  socket.on('userObject', (user) => {
-    users.push(user);
-    io.emit('onlineUsers', users);
-  });
+  socket.emit('userId', id);
+  socket.on('userObject', userObject);
 
   socket.on('customNickname', (data) => {
     const found = users.find((item) => item.id === id);
