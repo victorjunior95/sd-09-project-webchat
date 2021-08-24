@@ -8,17 +8,25 @@
   </head>
   <body>
     <div>
+      <form id="nickname-form">
+        <input type="text" id="nickname-text" data-testid="nickname-box" />
+        <button type="submit" data-testid="nickname-button">Submit</button>
+      </form>
+      <ul id="online-list"></ul>
+    </div>
+    <div>
       <form id="message-form">
-        <input type="text" id="message-text" />
-        <button type="submit">Submit</button>
+        <input type="text" id="message-text" data-testid="message-box" />
+        <button type="submit" data-testid="send-button">Submit</button>
       </form>
       <ul id="message-list">
         <% messages.forEach((message) => { %>
-          <li><%= message %></li>
+          <li data-testid="message"><%= message %></li>
         <% }) %>
       </ul>
     </div>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/client/nickname.js"></script>
     <script src="/client/message.js"></script>
   </body>
 </html>

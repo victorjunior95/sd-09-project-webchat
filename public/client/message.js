@@ -1,22 +1,22 @@
-const socket = window.io();
+const messageSocket = window.io();
 
-const form = document.querySelector('#message-form');
+const messageForm = document.querySelector('#message-form');
 const newMessage = document.querySelector('#message-text');
-const list = document.querySelector('#message-list');
+const messageList = document.querySelector('#message-list');
 
-const nickname = 'Stranger';
-
-form.addEventListener('submit', (e) => {
+messageForm.addEventListener('submit', (e) => {
   e.preventDefault();
-  socket.emit('message', { chatMessage: newMessage.value, nickname });
+  const nickname = localStorage.getItem('nickname') || 'Stranger';
+  messageSocket.emit('message', { chatMessage: newMessage.value, nickname });
   newMessage.value = '';
   return false;
 });
 
 const createMessage = (message) => {
   const li = document.createElement('li');
+  li.setAttribute('data-testid', 'message');
   li.innerText = message;
-  list.appendChild(li);
+  messageList.appendChild(li);
 };
 
-socket.on('message', (message) => createMessage(message));
+messageSocket.on('message', (message) => createMessage(message));

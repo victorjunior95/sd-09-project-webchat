@@ -1,7 +1,5 @@
 module.exports = (io) => {
   io.on('connection', (socket) => {
-    console.log(`Usuário conectado. Id: ${socket.id}`);
-
     socket.on('message', ({ chatMessage, nickname }) => {
       const time = new Date();
       const timeDate = `${time.getDate()}-${time.getMonth() + 1}-${time.getFullYear()}`;

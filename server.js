@@ -18,6 +18,7 @@ const io = require('socket.io')(http, {
 const controllers = require('./controllers');
 
 require('./sockets/message')(io);
+require('./sockets/nickname')(io);
 
 app.get('/', controllers.chat);
 
