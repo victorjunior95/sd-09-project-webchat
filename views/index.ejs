@@ -73,10 +73,13 @@
 
         !user.nickname ? renderOnlineUser(user.id) : renderOnlineUser(user.nickname);
 
-        if(users.length <=1) users.filter(item => item.id !== user.id);
-        for (user of users) {
-          !user.nickname ? renderOnlineUsers(user.id) : renderOnlineUsers(user.nickname);
+        if(users.length > 1) {
+          const filteredUsers = users.filter(item => item.id !== user.id);
+          for (user of filteredUsers) {
+            !user.nickname ? renderOnlineUsers(user.id) : renderOnlineUsers(user.nickname);
+          };
         };
+        
       });
 
       // renderiza a mensagem enviada para todos conectados
@@ -88,6 +91,7 @@
         e.preventDefault();
         user['nickname'] = document.querySelector('input[name=nickname]').value;
         socket.emit('customNickname', user);
+        console.log(user)
       })
       
       document.querySelector('#message-form').addEventListener('submit', (e) => {

@@ -42,16 +42,24 @@ const userObject = (user) => {
   io.emit('onlineUsers', users);
 };
 
+const customNickname = (data) => {
+  const map = users.map((item) => {
+    if (item.id === data.id) {
+      return { ...item, nickname: data.nickname };
+    }
+    return item;
+  });
+  console.log(map);
+  io.emit('onlineUsers', map);
+};
+
 io.on('connection', (socket) => {
   const id = socket.id.slice(0, 16);
+  console.log('id', id);
   socket.emit('userId', id);
   socket.on('userObject', userObject);
 
-  socket.on('customNickname', (data) => {
-    const found = users.find((item) => item.id === id);
-    found.nickname = data.nickname;
-    io.emit('onlineUsers', users);
-  });
+  socket.on('customNickname', customNickname);
   
   socket.on('message', sendMessage);
 
