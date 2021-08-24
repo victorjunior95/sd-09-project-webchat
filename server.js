@@ -49,13 +49,14 @@ const customNickname = (data) => {
     }
     return item;
   });
-  console.log(map);
-  io.emit('onlineUsers', map);
+  console.log('map', map);
+  users = map;
+  io.emit('onlineUsers', users);
 };
 
 io.on('connection', (socket) => {
+  console.log('users', users);
   const id = socket.id.slice(0, 16);
-  console.log('id', id);
   socket.emit('userId', id);
   socket.on('userObject', userObject);
 

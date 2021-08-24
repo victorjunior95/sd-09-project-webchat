@@ -50,6 +50,7 @@
     <script>
       const socket = window.io();
       let user = {};
+      console.log(user);
       
       const renderMessage = (message) => {
         document.querySelector('#messages-container').insertAdjacentHTML('beforeend', `<div data-testid="message"> ${message} </div>`);
@@ -61,14 +62,11 @@
       });
 
       const renderOnlineUser = (user) => {
-        document.querySelector('#online-users').insertAdjacentHTML('afterbegin', `<li data-testid="online-user"> ${user} </li>`);
-      };
-
-      const renderOnlineUsers = (user) => {
         document.querySelector('#online-users').insertAdjacentHTML('beforeend', `<li data-testid="online-user"> ${user} </li>`);
       };
 
       socket.on('onlineUsers', (users) => {
+        console.log('foi')
         document.querySelector('#online-users').innerHTML = '';
 
         !user.nickname ? renderOnlineUser(user.id) : renderOnlineUser(user.nickname);
@@ -76,10 +74,9 @@
         if(users.length > 1) {
           const filteredUsers = users.filter(item => item.id !== user.id);
           for (user of filteredUsers) {
-            !user.nickname ? renderOnlineUsers(user.id) : renderOnlineUsers(user.nickname);
+            !user.nickname ? renderOnlineUser(user.id) : renderOnlineUser(user.nickname);
           };
         };
-        
       });
 
       // renderiza a mensagem enviada para todos conectados
