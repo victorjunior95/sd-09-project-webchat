@@ -1,6 +1,8 @@
-const messages = require('../models/test');
+const model = require('../models/chat');
 
-const chat = (_req, res) => {
+const chat = async (_req, res) => {
+  const messages = await model.getMessages();
+
   res.status(200).render('webchat', { messages });
 };
 

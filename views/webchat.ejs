@@ -21,7 +21,13 @@
       </form>
       <ul id="message-list">
         <% messages.forEach((message) => { %>
-          <li data-testid="message"><%= message %></li>
+          <li data-testid="message">
+            <%= message.timestamp %>
+             - 
+            <%= message.nickname %>
+            :
+            <%= message.message %>
+          </li>
         <% }) %>
       </ul>
     </div>
