@@ -58,9 +58,3 @@ nicknameSocket.on('offlineUser', (nickname) => {
   const offline = nicknameList.children.namedItem(nickname);
   nicknameList.removeChild(offline);
 });
-
-window.onbeforeunload = () => {
-  const nickname = document.querySelector(USER).innerText;
-  nicknameSocket.emit('end', { nickname });
-  nicknameSocket.disconnect();
-};
