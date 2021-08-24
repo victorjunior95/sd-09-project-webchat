@@ -25,6 +25,6 @@ app.get('/', (_req, res) => {
   res.sendFile(`${__dirname}/public/chat.html`);
 });
 
-http.listen(PORT, () => {
+http.listen(PORT || 3000, () => {
   console.log(`Listening on Port ${PORT}`);
 });
