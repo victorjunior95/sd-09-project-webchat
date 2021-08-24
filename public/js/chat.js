@@ -35,17 +35,22 @@ const createUser = (newUserInfo) => {
   const newUser = document.createElement('li');
   newUser.setAttribute('data-testid', 'online-user');
   newUser.innerText = newUserInfo;
-  usersList.appendChild(newUser);
+  usersList.insertBefore(newUser, newUser.nextElementSibling);
 };
 
 socket.on('serverMessage', (message) => createMessage(message));
+
 socket.on('login', (newUserInfo) => {
   nickname = newUserInfo;
   createUser(nickname);
 });
 
+socket.on('getAllMessages', (messages) => {
+  messages.forEach((message) => createMessage(message));
+});
 socket.on('updateOnlineUsersList', (onlineUsersList) => {
   usersList.innerHTML = '';
+  createUser(nickname);
   onlineUsersList.forEach((user) => {
     if (user !== nickname) {
       createUser(user);

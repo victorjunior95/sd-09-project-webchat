@@ -1,12 +1,22 @@
 const moment = require('moment');
+const ChatModel = require('../models/chatModel');
 
 const allOnlineUsers = [];
 
 const createTimestamp = moment().format('DD-MM-yyyy HH:mm:ss');
 
-const getMessageFormat = ({ chatMessage, nickname }) => {
+const getMessageFormat = async ({ chatMessage, nickname }) => {
   const timestamp = createTimestamp;
+  await ChatModel.addMessage({ message: chatMessage, nickname, timestamp });
   return `${timestamp} - ${nickname}: ${chatMessage}`;
+};
+
+const getAllMessages = async (socket) => {
+  const allMessages = await ChatModel.getAllMessages();
+  const getAllMessagesFormat = allMessages.map(
+    ({ timestamp, nickname, message }) => `${timestamp} - ${nickname}: ${message}`,
+  );
+  socket.emit('getAllMessages', getAllMessagesFormat);
 };
 
 const updateOnlineUsersList = (io) => {
@@ -15,7 +25,8 @@ const updateOnlineUsersList = (io) => {
   io.emit('updateOnlineUsersList', allNicknames);
 };
 
-const chatConfig = (io, socket) => {
+const chatConfig = async (io, socket) => {
+  await getAllMessages(socket);
   socket.on('clientMessage', (dataMessage) => {
     const formatedMsg = getMessageFormat(dataMessage);
     io.emit('serverMessage', formatedMsg);
