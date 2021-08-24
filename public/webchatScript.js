@@ -1,13 +1,13 @@
 const socket = window.io();
 
+let localUser;
+
 window.onbeforeunload = () => {
   const storage = JSON.parse(localStorage.getItem('users'));
   const newUsers = storage.filter((item) => item.socketId !== localUser.socketId);
   localStorage.setItem('users', JSON.stringify(newUsers));
   socket.disconnect();
 };
-
-let localUser;
 
 const messagesUl = document.querySelector('#messages-content');
 

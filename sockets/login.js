@@ -1,5 +1,3 @@
-const userModel = require('../models/userRequests');
-
 module.exports = (io) => {
   io.on('connection', async (socket) => {
     const nick = socket.id.slice(0, 16);
@@ -13,7 +11,7 @@ module.exports = (io) => {
 
     socket.on('updateUsers', (users) => {
       io.emit('updateListOfUsers', users);
-    })
+    });
 
     socket.on('disconnect', async () => {
       io.emit('disconnectMe', user);
