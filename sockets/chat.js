@@ -48,24 +48,24 @@ module.exports = (io) => io.on('connection', async (socket) => {
   const { id } = socket;
   const user = { id, nickname: id.slice(0, -4) };
 
-  io.emit('retryMessages', await getChatMessages());
-
   socket.on('updateNickname', (nickname) => {
     const updatedUsers = updateNickname(nickname, users, socket);
     io.emit('onlineUsers', updatedUsers);
   });
-
+  
   socket.on('updateOnlineUsers', () => {
     users.push(user);
     io.emit('onlineUsers', users);
   });
-
+  
   socket.on('disconnect', () => {
     const filteredUsers = filterUsers(users, socket);
     io.emit('onlineUsers', filteredUsers);
   });
-
+  
   socket.on('message', (messageObj) => {
     io.emit('message', createMessage(users, socket, messageObj));
   });
+
+  io.emit('retryMessages', await getChatMessages());
 });
