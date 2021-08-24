@@ -1,0 +1,67 @@
+html , body {
+  height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.head {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.head .a {
+  display: flex;
+  flex: flow;
+
+  /* grid-template-columns: 1fr; */
+}
+
+.head .nickname {
+  border: 1px solid #ddd;
+  font-size: 14px;
+  height: 50px;
+  width: 400px;
+}
+
+.head .savebtn {
+  border: 1px solid #ddd;
+  font-size: 14px;
+  height: 50px;
+  width: 100px;
+}
+
+.head .usersOnline {
+  border: 1px solid #ddd;
+  height: 500px;
+  width: 500px;
+}
+
+.head .messages {
+  border: 1px solid #ddd;
+  height: 550px;
+  width: 851px;
+}
+
+.foot .text {
+  border: 1px solid #ddd;
+  font-size: 14px;
+  height: 50px;
+  width: 1247px;
+}
+
+.foot .sendbtn {
+  border: 1px solid #ddd;
+  font-size: 14px;
+  height: 50px;
+  width: 100px;
+}
