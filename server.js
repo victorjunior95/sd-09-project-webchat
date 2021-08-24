@@ -52,6 +52,11 @@ io.on('connection', (socket) => {
   });
 });
 
+app.get('/', async (_request, response) => {
+  const messages = await Models.getAllMessage();
+  response.render('index', { messages });
+});
+
 app.use(Middlewares.error);
 
 http.listen(PORT, () => {
