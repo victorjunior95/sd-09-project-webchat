@@ -15,9 +15,8 @@ const io = require('socket.io')(http, {
 });
 
 const Models = require('./models');
-const Middlewares = require('./middlewares');
 
-const users = [];
+let users = [];
 const PORT = process.env.PORT || 3000;
 
 app.set('view engine', 'ejs');
@@ -36,12 +35,15 @@ const editedMessage = (chatMessage, nickname) => {
   io.emit('message', `${timestampMessage} - ${nickname}: ${chatMessage}`);
 };
 
+const disconnectUser = (client) => {
+  users = client;
+  io.emit('onlineUsers', users);
+  io.emit('disconnectUser');
+};
+
 io.on('connection', (socket) => {
   socket.on('newUser', (nickname) => {
-    users.push({
-      userId: socket.id,
-      nickname,
-    });
+    users.push({ userId: socket.id, nickname });
     socket.broadcast.emit('newUser', nickname);
   });
 
@@ -50,14 +52,23 @@ io.on('connection', (socket) => {
   socket.on('message', ({ chatMessage, nickname }) => {
     editedMessage(chatMessage, nickname);
   });
+
+  socket.on('updateUser', (nickname) => {
+    const userIndex = users.findIndex((user) => user.userId === socket.id);
+    users[userIndex].nickname = nickname;
+    io.emit('onlineUsers', users);
+  });
+
+  socket.on('disconnect', () => {
+    const allClients = users.filter((user) => user.userId !== socket.id);
+    disconnectUser(allClients);
+  });
 });
 
 app.get('/', async (_request, response) => {
   const messages = await Models.getAllMessage();
   response.render('index', { messages });
 });
-
-app.use(Middlewares.error);
 
 http.listen(PORT, () => {
   console.clear();
