@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8">
+    <title>Trybe WebChat</title>
+    </head>
+  <body>
+    <div class="container">
+      <h5 class="title">Chat App</h5>
+        <div class="content-wrapper">
+          <div class="chat-search-box">
+            <div class="input-group">
+                <input class="form-control" data-testid="nickname-box" id="nickName" placeholder="nickname">
+                <div class="input-group-btn">
+            <button type="button" class="btn btn-info" id="user" data-testid="nickname-button">
+                Alterar
+            </button>
+          </div>
+          <ul class="users">
+              <li class="person" data-chat="person1">
+                  <p class="name-time">
+                      <span class="name">José</span>
+                      <span class="time">23/08/2021</span>
+                  </p>
+              </li>
+          </ul>
+      </div>
+  </div>
+      <div class="selected-user">
+          <span><span class="name">Usuário Online:</span><span data-testid="online-user" id="onlineUser"></span></span>
+      </div>
+      <div class="chat-container">
+        <ul class="chat-box chatContainerScroll" id="messages">
+        </ul>
+        <div class="form-group mt-3 mb-0">
+            <input class="form-control" data-testid="message-box" id="messageInput" type="text" placeholder="Digite sua mensagem aqui..." />
+            <button type="submit" data-testid="send-button" id="messageBtn"> Enviar </button>
+        </div>
+      </div>
+    </div>
+    </div>
+  </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src='./chatEngine.js'></script>
+</html>
