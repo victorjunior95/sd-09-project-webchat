@@ -8,22 +8,21 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="client.js" defer></script>
 </head>
-<body>
-  <!-- <p id="nickuserParagraph">Olá, <span data-testid="online-user" id="nickUserSpan"></span></p> -->
-  <ul id="onlineUsers"></ul>
-  
+<body> 
+
   <form action="" id="form">
     <fieldset>
       <legend>Apelido</legend>
       <input data-testid="nickname-box" id="nickname" placeholder="Escolha um apelido" />
-      <button data-testid="nickname-button" id="saveNickname">Salvar</button>
+      <button type="button" data-testid="nickname-button" id="saveNickname">Alterar</button>
     </fieldset>
     <fieldset>
       <legend>Mensagem</legend>
       <input data-testid="message-box" id="messageInput" placeholder="Digite uma mensagem" />
-      <button data-testid="send-button" id="sendMessage">Enviar</button>
+      <button type="submit" data-testid="send-button" id="sendMessage">Enviar</button>
     </fieldset>
 
+    <ul id="onlineUsers"></ul>
     <ul id="messages"></ul>
 </form>
 </body>
