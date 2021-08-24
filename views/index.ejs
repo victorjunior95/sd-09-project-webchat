@@ -50,7 +50,6 @@
     <script>
       const socket = window.io();
       let user = {};
-      console.log(user);
       
       const renderMessage = (message) => {
         document.querySelector('#messages-container').insertAdjacentHTML('beforeend', `<div data-testid="message"> ${message} </div>`);
@@ -66,7 +65,6 @@
       };
 
       socket.on('onlineUsers', (users) => {
-        console.log('foi')
         document.querySelector('#online-users').innerHTML = '';
 
         !user.nickname ? renderOnlineUser(user.id) : renderOnlineUser(user.nickname);
@@ -88,7 +86,6 @@
         e.preventDefault();
         user['nickname'] = document.querySelector('input[name=nickname]').value;
         socket.emit('customNickname', user);
-        console.log(user)
       })
       
       document.querySelector('#message-form').addEventListener('submit', (e) => {

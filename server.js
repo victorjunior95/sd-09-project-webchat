@@ -38,29 +38,24 @@ const sendMessage = async ({ nickname, chatMessage }) => {
 };
 
 const userObject = (user) => {
-  users.unshift(user);
-  io.emit('onlineUsers', users);
-};
-
-const customNickname = (data) => {
-  const map = users.map((item) => {
-    if (item.id === data.id) {
-      return { ...item, nickname: data.nickname };
-    }
-    return item;
-  });
-  console.log('map', map);
-  users = map;
+  users.push(user);
   io.emit('onlineUsers', users);
 };
 
 io.on('connection', (socket) => {
-  console.log('users', users);
   const id = socket.id.slice(0, 16);
   socket.emit('userId', id);
   socket.on('userObject', userObject);
 
-  socket.on('customNickname', customNickname);
+  socket.on('customNickname', (data) => {
+    const usersMap = users.map((item) => {
+      if (item.id === data.id) {
+        return { ...item, nickname: data.nickname };
+      } return item;
+    });
+    users = usersMap;
+    io.emit('onlineUsers', users);
+  });
   
   socket.on('message', sendMessage);
 
