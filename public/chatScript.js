@@ -11,6 +11,19 @@ handleNick.addEventListener('click', () => {
   socket.emit('customizeNick', newNick.value);
 });
 
+const createMessage = (message) => {
+  const newLi = document.createElement('li');
+  newLi.setAttribute('data-testid', 'message');
+  newLi.innerText = message;
+  messagesUl.appendChild(newLi);
+};
+
+const loadingUsers = (nickname) => {
+  const newLi = document.createElement('li');
+  newLi.setAttribute('data-testid', 'online-user');
+  usersList.appendChild(newLi).innerText = nickname;
+};
+
 socket.on('customizeNick', (nickname) => {
   usersList.firstElementChild.innerText = nickname;
 });
@@ -26,17 +39,20 @@ handleMessage.addEventListener('click', (e) => {
   messageBox.focus();
 });
 
-socket.on('initNick', (nickname) => {
-  const newLi = document.createElement('li');
-  newLi.setAttribute('data-testid', 'online-user');
-  usersList.appendChild(newLi).innerText = nickname;
+socket.on('initNick', (nickname) => loadingUsers(nickname));
+
+socket.on('onlineUsers', (users) => {
+  usersList.innerHTML = '';
+  const client = users.find(({ id }) => id === socket.id);
+  loadingUsers(client.nickname);
+  users.forEach((user) => {
+    if (user.id !== socket.id) loadingUsers(user.nickname);
+  });
 });
 
-const createMessage = (message) => {
-  const newLi = document.createElement('li');
-  newLi.setAttribute('data-testid', 'message');
-  newLi.innerText = message;
-  messagesUl.appendChild(newLi);
-};
+socket.on('usersAfterDisconnect', (users) => {
+  usersList.innerHTML = '';
+  users.forEach(({ nickname }) => loadingUsers(nickname));
+});
 
 socket.on('message', (message) => createMessage(message));
