@@ -1,42 +1,55 @@
 const socket = window.io();
 
 const messageBtn = document.querySelector('#messageBtn');
-const user = document.querySelector('#user');
+const userPlace = document.querySelector('#user');
 const messageInput = document.querySelector('#messageInput');
 const nickNameInput = document.querySelector('#nickName');
 const messages = document.querySelector('#messages');
 const onlineUser = document.querySelector('#onlineUser');
+let nick = '';
 
-// https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
-const getNickName = (length) => {
-  const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  for (let i = 0; i < length; i += 1) {
-      result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
-  }
-  return result;
+const nickName = (str) => {
+  const userNick = document.createElement('li');
+  userNick.innerText = str;  
+  userNick.setAttribute('data-testId', 'online-user');
+  onlineUser.appendChild(userNick);
+  localStorage.setItem(`${socket.id}`, str);
 };
-
-const nickName = getNickName(16);
-localStorage.setItem('nickname', nickName);
-onlineUser.innerText = nickName;
 
 messageBtn.addEventListener('click', async (e) => {
   e.preventDefault();
-  const storeNickname = await localStorage.getItem('nickname');
-  socket.emit('message', { chatMessage: messageInput.value, nickname: storeNickname });
+  socket.emit('message', { chatMessage: messageInput.value, nick });
   messageInput.value = '';
-  return false;
 });
 
-user.addEventListener('click', (e) => {
+userPlace.addEventListener('click', (e) => {
   e.preventDefault();
   const userNickname = nickNameInput.value;
-  onlineUser.innerText = userNickname;
+  nick = userNickname;
   localStorage.setItem('nickname', userNickname);
   socket.emit('nickname', userNickname);
   nickNameInput.value = '';
-  return false;
+});
+
+socket.on('newConnection', (chatHistory) => {
+  chatHistory.forEach((msg) => {
+    const msgItem = document.createElement('li');
+    msgItem.setAttribute('data-testId', 'message');
+    msgItem.innerText = msg;
+    onlineUser.appendChild(msgItem);
+  });
+});
+
+socket.on('onlineUsersUpdate', (users) => {
+  onlineUser.innerHTML = null;
+  if (!nick) {
+    nick = users[users.length - 1];
+  }
+  nickName(nick);
+  const otherUsers = users.filter((user) => user !== nick);
+  otherUsers.forEach((user) => {
+      nickName(user);
+  });
 });
 
 socket.on('message', (message) => {
