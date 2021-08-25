@@ -1,10 +1,12 @@
 const socket = window.io();
+window.onbeforeunload = () => socket.disconnect(sessionStorage.nickname);
 
+const DATA_TESTID = 'data-testid';
 let nickname;
 const renameNickname = (newNickname) => {
   nickname = newNickname;
 
-  localStorage.setItem('nickname', nickname);
+  sessionStorage.setItem('nickname', nickname);
 };
 
 const form = document.querySelector('form');
@@ -17,27 +19,27 @@ const usersOnline = document.querySelector('#usersOnline');
 const renderMessage = (msg) => {
   const div = document.createElement('div');
   div.innerText = msg;
-  div.setAttribute('data-testid', 'message');
+  div.setAttribute(DATA_TESTID, 'message');
   messagesSent.appendChild(div);
 };
 
 const renderUsers = (user) => {
   const div = document.createElement('li');
   div.innerText = user;
-  div.setAttribute('data-testid', 'online-user');
+  div.setAttribute(DATA_TESTID, 'online-user');
   usersOnline.appendChild(div);
 };
 
 nicknameButton.addEventListener('click', () => {
   renameNickname(inputNickname.value);
 
-  socket.emit('nickname', localStorage.nickname);
+  socket.emit('nickname', sessionStorage.nickname);
 });
 
 socket.on('nickname', (guestRandom) => {
   renameNickname(guestRandom);
 
-  socket.emit('nickname', localStorage.nickname);
+  socket.emit('nickname', sessionStorage.nickname);
 });
 
 form.addEventListener('submit', (event) => {
@@ -53,13 +55,18 @@ socket.on('message', (data) => {
 
 socket.on('usersOnline', (data) => {
   usersOnline.innerHTML = '';
-  data.forEach((user) => {
-    renderUsers(user);
-  });
+  renderUsers(nickname);
+  data.forEach((user) => user !== nickname && renderUsers(user));
 });
 
 socket.on('history', (data) => {
   data.forEach((msg) => {
     renderMessage(msg);
   });
+});
+
+// Escuta broadcast.emit
+socket.on('offline', (data) => {
+  usersOnline.innerHTML = '';
+  data.map((user) => (renderUsers(user)));
 });

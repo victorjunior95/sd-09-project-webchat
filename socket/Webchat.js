@@ -5,8 +5,21 @@ const webchatController = require('../controllers/Webchat');
 // Array de users online
 let users = [];
 
+// Funções auxiliares
 const defaultMsg = (obj) => `${obj.timestamp} - ${obj.nickname}: ${obj.message}`;
+// Transforma o array de obj do DB em array de strings
 const arrayMsgString = (arr) => arr.map((obj) => defaultMsg(obj));
+// Nickname aleatório a partir do socket.id
+const nicknameRandom = (soc) => {
+  const guestRandom = soc.slice(0, 16);
+  users.push(guestRandom);
+  return guestRandom;
+};
+const userOffline = (socket) => {
+  const index = users.indexOf(socket);
+  users.splice(index, 1);
+  return users;
+};
 
 const socketWebchat = (io) => {
   // Conexão do client com o nosso server (socket.io)
@@ -14,8 +27,7 @@ const socketWebchat = (io) => {
   io.on('connection', async (socket) => {
     const messages = await webchatController.getAllMessages();
 
-    const guestRandom = socket.id.slice(0, 16);
-    users.push(guestRandom);
+    const guestRandom = nicknameRandom(socket.id);
     socket.emit('nickname', guestRandom);
 
     socket.emit('history', arrayMsgString(messages));
@@ -38,6 +50,8 @@ const socketWebchat = (io) => {
       // para renderizar os nicknames
       io.emit('usersOnline', users);
     });
+
+    socket.on('disconnect', (nick) => socket.broadcast.emit('offline', userOffline(nick)));
   });
 };
 
