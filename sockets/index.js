@@ -6,9 +6,8 @@ const connectedUsers = [];
 // baseado no código de Luciano Lodi
 module.exports = (io) => io.on('connection', async (socket) => {
   const chatHistory = await controller.getAll().then((chat) =>
-    chat.map(({ time, nickname, messages }) => socket.emit('message', `${time} - ${nickname}: ${messages}`)));
-  
-    console.log(`connected ${socket.id}`);
+    chat.map(({ time, nick, msg }) => socket.emit('message', `${time} - ${nick}: ${msg}`)));
+
   socket.emit('newConnection', chatHistory);
   connectedUsers[socket.id] = socket.id.substring(0, 16);
   io.emit('onlineUsersUpdate', Object.values(connectedUsers));
@@ -16,13 +15,12 @@ module.exports = (io) => io.on('connection', async (socket) => {
   socket.on('disconnect', () => {
     delete connectedUsers[socket.id];
     io.emit('onlineUsersUpdate', Object.values(connectedUsers));
-    console.log(`disconn ${socket.id}`);
   });
 
-  socket.on('message', ({ chatMessage, nickname }) => {
-    const newMessage = `${moment().format('DD-MM-yyyy HH:mm:ss')} - ${nickname}: ${chatMessage}`;
+  socket.on('message', ({ chatMessage, nick }) => {
+    const newMessage = `${moment().format('DD-MM-yyyy HH:mm:ss')} - ${nick}: ${chatMessage}`;
     io.emit('message', newMessage);
-    controller.saveMessage(chatMessage, nickname, moment().format('DD-MM-yyyy HH:mm:ss'));
+    controller.saveMessage(chatMessage, nick, moment().format('DD-MM-yyyy HH:mm:ss'));
   });
 
   socket.on('nickname', (user) => {

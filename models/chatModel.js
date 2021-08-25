@@ -6,10 +6,10 @@ const getMessages = () => {
   return messages;
 };
 
-const saveMessage = (message, nickname, time) => connection()
+const saveMessage = (messages, nickname, time) => connection()
     .then((db) => db.collection('messages').insertOne({
-      messages: message,
-      nickname,
+      msg: messages,
+      nick: nickname,
       time,
     }));
 
