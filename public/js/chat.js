@@ -1,5 +1,6 @@
 const socket = window.io();
 
+const START_EVENT = 'start';
 const MESSAGE_EVENT = 'message';
 const SET_NICKNAME_EVENT = 'setNickname';
 const ONLINE_USERS_EVENT = 'onlineUsers';
@@ -47,7 +48,10 @@ const renderOnlineUsers = (users) => {
   otherUsers.forEach((user) => createUserElement(user, 'others'));
 };
 
-socket.on(SET_NICKNAME_EVENT, (givenNickname) => renderClientNickname(givenNickname));
+socket.on(START_EVENT, ({ nickname, messageHistory }) => {
+  messageHistory.forEach((message) => createMessage(message));
+  renderClientNickname(nickname);
+});
 socket.on(MESSAGE_EVENT, (message) => createMessage(message));
 socket.on(ONLINE_USERS_EVENT, (onlineUsers) => renderOnlineUsers(onlineUsers));
 
