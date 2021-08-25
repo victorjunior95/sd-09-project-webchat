@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const rescue = require('rescue');
 
 const app = express();
 const http = require('http').createServer(app);
@@ -8,8 +9,6 @@ const io = require('socket.io')(http, {
     origin: 'http://localhost:3000/',
     methods: ['GET', 'POST'],
 } });
-
-const Message = require('./models');
 
 const PORT = 3000;
 
@@ -22,8 +21,7 @@ app.use(express.static(`${__dirname}/public`));
 require('./sockets/chat')(io);
 
 app.get('/', async (_req, res) => {
-  const messages = await Message.getAll();
-  res.status(200).render('index', { messages });
+  res.status(200).render('index');
 });
 
 http.listen(PORT, () => {

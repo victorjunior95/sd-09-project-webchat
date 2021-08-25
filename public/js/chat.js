@@ -60,7 +60,6 @@ messageForm.addEventListener('submit', (event) => {
   const chatMessage = inputMessage.value;
   socket.emit(MESSAGE_EVENT, { nickname: clientNickname, chatMessage });
   inputMessage.value = '';
-  return false;
 });
 
 nicknameForm.addEventListener('submit', (event) => {
@@ -69,7 +68,6 @@ nicknameForm.addEventListener('submit', (event) => {
   socket.emit(SET_NICKNAME_EVENT, newNickname);
   renderClientNickname(newNickname);
   inputNickname.value = '';
-  return false;
 });
 
-window.onbeforeunload = () => socket.disconnect();
+// window.onbeforeunload = () => socket.disconnect();
