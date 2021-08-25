@@ -6,8 +6,8 @@ localStorage.setItem('nickname', nickname);
 socket.emit('login', nickname);
 
 const sendMessage = document.querySelector('#send-button');
-const inputMessage = document.querySelector('#message-input');
-const nickNameForm = document.querySelector('#nick-name-form');
+const inputMessage = document.querySelector('.message-input');
+const nickNameForm = document.querySelector('.nick-name-form');
 const inputNickName = document.querySelector('#nick-name-input');
 
 const createNickNameList = (users) => {
@@ -48,3 +48,6 @@ const createMessage = (message) => {
 
 socket.on('message', (message) => createMessage(message));
 socket.on('onlineUsers', (users) => createNickNameList(users));
+socket.on('history', (historyMessages) => {
+  historyMessages.forEach((message) => createMessage(message));
+});
