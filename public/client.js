@@ -53,10 +53,16 @@ socket.on('userOnline', (user) => {
 /* Mostra todos os usuários na tela */
 socket.on('allUsers', (userList) => {
   ulUsers.innerHTML = '';
+  const user = document.createElement('li');
+  user.innerText = userNickname;
+  user.setAttribute(datatestid, 'online-user');
+  ulUsers.appendChild(user);
   userList.forEach((userName) => {
+    if (userName !== userNickname) {
     const liUser = document.createElement('li');
     liUser.innerText = userName;
     liUser.setAttribute(datatestid, 'online-user');
     ulUsers.appendChild(liUser);
+    }
   });
 });

@@ -15,7 +15,7 @@ app.use(express.static('public'));
 let users = [];
 
 io.on('connection', async (socket) => {
-  const user = socket.id.slice(0, 16);
+  let user = socket.id.slice(0, 16);
   users.push(user);
   socket.emit('userOnline', user);
 
@@ -24,6 +24,7 @@ io.on('connection', async (socket) => {
 
   socket.on('newNick', (nickname) => { 
     users = users.map((el) => (el === user ? nickname : el));
+    user = nickname;
     io.emit('allUsers', users);
   });
   // LTS pega o horário no formato 2:35:09 PM
@@ -36,7 +37,7 @@ io.on('connection', async (socket) => {
   });
 
   socket.on('disconnect', () => {
-    console.log(`${socket.id} saiu`);
+    users = users.filter((u) => u !== user); io.emit('allUsers', users);
   });
 });
 
