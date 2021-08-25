@@ -7,7 +7,7 @@ const users = {};
 module.exports = (io) => io.on('connection', async (socket) => {
   const chatHistory = await controller.getAll().then((chat) => chat
     .map(({ time, nickname, message }) => 
-      socket.emit('message', `${time} - ${nickname}: ${message}`)));
+      `${time} - ${nickname}: ${message}`));
 
   socket.emit('newConnection', chatHistory);
   users[socket.id] = socket.id.substring(0, 16);

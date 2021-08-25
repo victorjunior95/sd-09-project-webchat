@@ -36,7 +36,7 @@ socket.on('newConnection', (chatHistory) => {
     const msgItem = document.createElement('li');
     msgItem.setAttribute('data-testId', 'message');
     msgItem.innerText = msg;
-    onlineUser.appendChild(msgItem);
+    messages.appendChild(msgItem);
   });
 });
 
