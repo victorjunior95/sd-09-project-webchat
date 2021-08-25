@@ -1,28 +1,25 @@
 const socket = window.io();
-// referencia: https://www.ti-enxame.com/pt/javascript/gere-stringcaracteres-aleatorios-em-javascript/967048592/
-// const crypto = require('crypto'); 
 
-const nickname = `user-${Math.random().toString().slice(2, 13)}`; // crypto.randomBytes(20).toString('hex');
+const nickname = `user-${Math.random().toString().slice(2, 13)}`;
 
 localStorage.setItem('nickname', nickname);
+socket.emit('login', nickname);
 
 const sendMessage = document.querySelector('#send-button');
 const inputMessage = document.querySelector('#message-input');
 const nickNameForm = document.querySelector('#nick-name-form');
 const inputNickName = document.querySelector('#nick-name-input');
-console.log(sendMessage);
 
-const createNickNameList = (nickName) => {
+const createNickNameList = (users) => {
   const nickNameUl = document.querySelector('#nick-name');
-  const li = document.createElement('li');
-  li.innerText = nickName;
-  li.setAttribute('data-testid', 'online-user');
-  nickNameUl.appendChild(li);
-  return nickName;
+  users.forEach((user) => {
+    const li = document.createElement('li');
+    li.innerText = user;
+    li.setAttribute('data-testid', 'online-user');
+    nickNameUl.appendChild(li);  
+  });
+  return false;
 };
-
-socket.emit('login', nickname);
-socket.on('onlineUsers', (users) => createNickNameList(users));
 
 nickNameForm.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -50,3 +47,4 @@ const createMessage = (message) => {
 };
 
 socket.on('message', (message) => createMessage(message));
+socket.on('onlineUsers', (users) => createNickNameList(users));
