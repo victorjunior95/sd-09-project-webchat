@@ -16,8 +16,8 @@ let users = [];
 
 io.on('connection', async (socket) => {
   let user = socket.id.slice(0, 16);
-  users.push(user); io.emit('allUsers', users);
   socket.emit('userOnline', user);
+  users.push(user); io.emit('allUsers', users);
 
   const messages = await searchAllMessages();
   socket.emit('history', messages);

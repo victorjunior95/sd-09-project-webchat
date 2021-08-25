@@ -47,7 +47,7 @@ socket.on('history', (msg) => historyMessage(msg));
 /* Cria user */
 socket.on('userOnline', (user) => {
   userNickname = user;
-  socket.emit('newNick', userNickname);
+  // socket.emit('newNick', userNickname);
 });
 
 /* Mostra todos os usuários na tela */
