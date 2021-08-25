@@ -16,7 +16,8 @@ module.exports = (io) => io.on('connection', async (socket) => {
     users = users.map((user) => {
       if (user.socketId === socket.id) return { ...user, nickname };
         return user;
-    }); io.emit('listUsers', users);
+    });
+    io.emit('listUsers', users);
   });
   socket.on('disconnect', () => { 
     users = users.filter((user) => user.socketId !== socket.id); io.emit('listUsers', users);
