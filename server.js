@@ -38,6 +38,7 @@ io.on('connection', async (socket) => {
 
   socket.on('disconnect', () => {
     users = users.filter((u) => u !== user); io.emit('allUsers', users);
+    // console.log(users);
   });
 });
 
