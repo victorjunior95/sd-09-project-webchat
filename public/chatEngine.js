@@ -6,9 +6,9 @@ const messageInput = document.querySelector('#messageInput');
 const nickNameInput = document.querySelector('#nickName');
 const messages = document.querySelector('#messages');
 const onlineUser = document.querySelector('#onlineUser');
-let nick = '';
+let nickname = '';
 
-const nickName = (str) => {
+const getNickName = (str) => {
   const userNick = document.createElement('li');
   userNick.innerText = str;  
   userNick.setAttribute('data-testId', 'online-user');
@@ -18,14 +18,14 @@ const nickName = (str) => {
 
 messageBtn.addEventListener('click', async (e) => {
   e.preventDefault();
-  socket.emit('message', { chatMessage: messageInput.value, nick });
+  socket.emit('message', { chatMessage: messageInput.value, nickname });
   messageInput.value = '';
 });
 
 userPlace.addEventListener('click', (e) => {
   e.preventDefault();
   const userNickname = nickNameInput.value;
-  nick = userNickname;
+  nickname = userNickname;
   localStorage.setItem('nickname', userNickname);
   socket.emit('nickname', userNickname);
   nickNameInput.value = '';
@@ -42,13 +42,13 @@ socket.on('newConnection', (chatHistory) => {
 
 socket.on('onlineUsersUpdate', (users) => {
   onlineUser.innerHTML = null;
-  if (!nick) {
-    nick = users[users.length - 1];
+  if (!nickname) {
+    nickname = users[users.length - 1];
   }
-  nickName(nick);
-  const otherUsers = users.filter((user) => user !== nick);
+  getNickName(nickname);
+  const otherUsers = users.filter((user) => user !== nickname);
   otherUsers.forEach((user) => {
-      nickName(user);
+      getNickName(user);
   });
 });
 

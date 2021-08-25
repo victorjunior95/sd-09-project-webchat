@@ -1,7 +1,7 @@
 const moment = require('moment');
 const controller = require('../controllers/chatController');
 
-const connectedUsers = [];
+const connectedUsers = {};
 
 // baseado no código de Luciano Lodi
 module.exports = (io) => io.on('connection', async (socket) => {
@@ -17,10 +17,10 @@ module.exports = (io) => io.on('connection', async (socket) => {
     io.emit('onlineUsersUpdate', Object.values(connectedUsers));
   });
 
-  socket.on('message', ({ chatMessage, nick }) => {
-    const newMessage = `${moment().format('DD-MM-yyyy HH:mm:ss')} - ${nick}: ${chatMessage}`;
+  socket.on('message', ({ chatMessage, nickname }) => {
+    const newMessage = `${moment().format('DD-MM-yyyy HH:mm:ss A')} - ${nickname}: ${chatMessage}`;
     io.emit('message', newMessage);
-    controller.saveMessage(chatMessage, nick, moment().format('DD-MM-yyyy HH:mm:ss'));
+    controller.saveMessage(chatMessage, nickname, moment().format('DD-MM-yyyy HH:mm:ss A'));
   });
 
   socket.on('nickname', (user) => {
