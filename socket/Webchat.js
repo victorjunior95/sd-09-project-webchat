@@ -15,30 +15,29 @@ const nicknameRandom = (soc) => {
   users.push(guestRandom);
   return guestRandom;
 };
-const userOffline = (socket) => {
-  const index = users.indexOf(socket);
-  users.splice(index, 1);
-  return users;
-};
+// const userOffline = (socket) => {
+//   const index = users.indexOf(socket);
+//   users.splice(index, 1);
+//   return users;
+// };
 
 const socketWebchat = (io) => {
   // Conexão do client com o nosso server (socket.io)
   // cada socket é um client que se conecta
   io.on('connection', async (socket) => {
+    let guestRandom = nicknameRandom(socket.id);
+
     const messages = await webchatController.getAllMessages();
 
-    const guestRandom = nicknameRandom(socket.id);
-    socket.emit('nickname', guestRandom);
-
-    socket.emit('history', arrayMsgString(messages));
+    socket.emit('history', arrayMsgString(messages)); socket.emit('nickname', guestRandom);
 
     // Escuta o evento message do front-end
       // data é um obj { chatMessage, nickname }
-    socket.on('message', (data) => {
-      const timestamp = moment().format('DD-MM-yyyy HH:mm:ss A');
+    socket.on('message', async (data) => {
+      const timestamp = moment().format('DD-MM-yyyy HH:mm:ss');
       const defaultData = { message: data.chatMessage, nickname: data.nickname, timestamp };
 
-      webchatController.registerSocket(defaultData);
+      await webchatController.registerSocket(defaultData);
 
       // para renderizar as msg
       io.emit('message', defaultMsg(defaultData));
@@ -46,12 +45,13 @@ const socketWebchat = (io) => {
 
     socket.on('nickname', (nickname) => {
       users = users.map((user) => (user === guestRandom ? nickname : user));
-
+      guestRandom = nickname; io.emit('usersOnline', users);
       // para renderizar os nicknames
-      io.emit('usersOnline', users);
     });
 
-    socket.on('disconnect', (nick) => socket.broadcast.emit('offline', userOffline(nick)));
+    socket.on('disconnect', () => {
+      users = users.filter((nickname) => nickname !== guestRandom); io.emit('usersOnline', users);
+    });
   });
 };
 

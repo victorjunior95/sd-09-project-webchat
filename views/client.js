@@ -1,5 +1,5 @@
 const socket = window.io();
-window.onbeforeunload = () => socket.disconnect(sessionStorage.nickname);
+// window.onbeforeunload = () => socket.disconnect(sessionStorage.nickname);
 
 const DATA_TESTID = 'data-testid';
 let nickname;
@@ -65,8 +65,8 @@ socket.on('history', (data) => {
   });
 });
 
-// Escuta broadcast.emit
-socket.on('offline', (data) => {
-  usersOnline.innerHTML = '';
-  data.map((user) => (renderUsers(user)));
-});
+// // Escuta broadcast.emit
+// socket.on('offline', (data) => {
+//   usersOnline.innerHTML = '';
+//   data.map((user) => (renderUsers(user)));
+// });
