@@ -45,9 +45,9 @@ button {
   height: 100%;
   margin: 1vh 0;
   max-height: 100%;
-  width: 100%;
   overflow: auto;
   padding: 1vh 0 1vh 2vw;
+  width: 100%;
 }
 
 .messages li {

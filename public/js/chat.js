@@ -3,7 +3,6 @@ const socket = window.io();
 const MESSAGE_EVENT = 'message';
 const SET_NICKNAME_EVENT = 'setNickname';
 const ONLINE_USERS_EVENT = 'onlineUsers';
-const DISCONNECT_EVENT = 'disconnect';
 
 const messageForm = document.querySelector('#messageForm');
 const inputMessage = document.querySelector('#messageInput');
@@ -42,10 +41,9 @@ const createMessage = (message) => {
 };
 
 const renderOnlineUsers = (users) => {
-  let otherUsers = users.filter((user) => user !== clientNickname);
+  const otherUsers = users.filter((user) => user !== clientNickname);
   const rendered = document.querySelectorAll('.others');
   rendered.forEach((el) => el.remove());
-  // const otherUsers = users.filter((user) => user !== clientNickname);
   otherUsers.forEach((user) => createUserElement(user, 'others'));
 };
 
