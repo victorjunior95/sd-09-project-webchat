@@ -1,5 +1,8 @@
 const express = require('express');
 const moment = require('moment');
+const path = require('path');
+
+const publics = path.join(__dirname, 'public');
 
 const app = express();
 
@@ -12,41 +15,36 @@ const io = require('socket.io')(serverSocket, {
 });
 
 const chatController = require('./controllers/webchat');
+const generateNickname = require('./utils/generateNick');
+const chatModel = require('./models/chatModel');
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
 
 app.use('/', chatController);
+app.use(express.static(publics));
 
-// função para geração de nickname aleatório que encontrei no link:
-// https://qastack.com.br/programming/1349404/generate-random-string-characters-in-javascript
-// onde fiz algumas modificações depois de entender o algoritmo.
-const generateNickname = () => {
-  let nickname = '';
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  const charactersLength = characters.length;
-  for (let i = 0; i < 16; i += 1) {
-    nickname += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return nickname;
-};
+// const users = [];
 
 io.on('connection', (socket) => {
   console.log(`Usuário conectado. ID: ${socket.id}`);
 
   const initNickname = generateNickname();
+  // const userId = socket.id;
 
   socket.emit('initNick', initNickname);
+  // users.push({ userId, initNickname });
 
-  socket.on('message', ({ chatMessage, nickname }) => {
+  socket.on('message', async ({ chatMessage, nickname }) => {
     const timestamp = moment().format('DD-MM-YYYY HH:mm:ss A');
     const message = `${timestamp} - ${nickname}: ${chatMessage}`;
+
+    await chatModel.saveHistory({ nickname, chatMessage, timestamp });
 
     io.emit('message', message);
   });
 
   socket.on('customizeNick', (nickname) => {
-    console.log(nickname);
     io.emit('customizeNick', nickname);
   });
 
