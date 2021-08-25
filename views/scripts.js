@@ -1,19 +1,25 @@
 const socket = window.io();
 
+let USERNAME = '';
+
 const NICKNAMEBOX = document.querySelector('.nickname-box');
-const ONLINEUSER = document.querySelector('.online-user');
+const ALL_USERS = document.querySelector('.all-users');
 const MESSAGEBOX = document.querySelector('.message-box');
 
 // adicionando nickname no input
 const inputNickname = (nickname) => {
-  const onlineUserLi = document.querySelectorAll('.online-user li');
-  NICKNAMEBOX.value = nickname;
+  const allUsersLi = document.querySelectorAll('.all-users li');
+  USERNAME = NICKNAMEBOX.value;
 
-  if (onlineUserLi.length) {
-    ONLINEUSER.innerHTML = '';
+  if (allUsersLi.length) {
+    ALL_USERS.innerHTML = '';
   }
 
-  ONLINEUSER.insertAdjacentHTML('beforeend', `<li>${nickname}</li>`);
+  // renderUser(nickname);
+
+  NICKNAMEBOX.value = '';
+
+  socket.emit('users', nickname);
 };
 
 // gera nickname com 16 caracteres alfanumérico
@@ -30,7 +36,17 @@ const nicknameGenerator = () => {
     );
   }
 
-  inputNickname(nickname);
+  USERNAME = nickname;
+
+  socket.emit('users', nickname);
+};
+
+// exibe usuario na tela
+const renderUser = (user) => {
+  ALL_USERS.insertAdjacentHTML(
+    'beforeend',
+    `<li data-testid="online-user">${user}</li>`,
+  );
 };
 
 // exibindo a mensagem na tela
@@ -60,6 +76,17 @@ socket.on('message', (message) => {
   renderMessage(message);
 });
 
+// renderiza todos os usuarios logados
+socket.on('users', (users) => {
+  ALL_USERS.innerHTML = '';
+
+  users.forEach(({ nickname }) => {
+    if (nickname) {
+      renderUser(nickname);
+    }
+  });
+});
+
 document.getElementById('form-nickname').addEventListener('submit', (event) => {
   event.preventDefault();
 
@@ -73,7 +100,7 @@ document.getElementById('form-nickname').addEventListener('submit', (event) => {
 document.getElementById('form-chat').addEventListener('submit', (event) => {
   event.preventDefault();
 
-  const nickname = NICKNAMEBOX.value;
+  const nickname = USERNAME;
   let chatMessage = MESSAGEBOX.value;
 
   if (nickname.length && chatMessage.length) {

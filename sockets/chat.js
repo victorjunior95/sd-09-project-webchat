@@ -15,28 +15,86 @@ const allPreviousMessages = async () => {
   return formated;
 };
 
+let allUsers = [];
+
+const addUpdateUser = (socketId, nickname) => {
+  const array = allUsers.find((user) => user.id === socketId);
+
+  if (!array) {
+    allUsers.push({ id: socketId, nickname });
+  } else {
+    const newArray = allUsers.map((user) => {
+      if (user.id === socketId) {
+        return {
+          id: user.id,
+          nickname,
+        };
+      }
+      
+      return user;
+    });
+
+    allUsers = newArray;
+  }
+};
+
+const allMessagesDB = async (socket) => {
+  const allMessages = await allPreviousMessages();
+
+  socket.emit('allMessages', allMessages);
+};
+
+const addMessageDB = (socket) => {
+  socket.on('message', async ({ chatMessage, nickname }) => {
+    const objMessage = {
+      message: chatMessage,
+      nickname,
+      timestamp: getDateTimeNow(),
+    };
+
+    await MessageModel.addMessage(objMessage);
+
+    const messageString = formatedMessage(objMessage);
+
+    // retorna a mensagem para todos os usuarios conectados
+    socket.emit('message', messageString);
+    socket.broadcast.emit('message', messageString);
+  });
+};
+
+const userDisconnect = (socket, socketId) => {
+  socket.on('disconnect', () => {
+    allUsers = allUsers.filter((user) => user.id !== socketId);
+
+    socket.emit('users', allUsers);
+    socket.broadcast.emit('users', allUsers);
+  });
+};
+
 module.exports = (io) =>
-  io.on('connection', async (socket) => {
+  io.on('connection', (socket) => {
     console.log(`Usuário conectado. ID: ${socket.id} `);
-    const allMessages = await allPreviousMessages();
+
+    let socketId = '';
 
     // exibe mensagens anteriores ao login
-    socket.emit('allMessages', allMessages);
+    allMessagesDB(socket);
 
     // recebe as mensagens do frontend
-    socket.on('message', async ({ chatMessage, nickname }) => {
-      const objMessage = {
-        message: chatMessage,
-        nickname,
-        timestamp: getDateTimeNow(),
-      };
+    addMessageDB(socket);
 
-      await MessageModel.addMessage(objMessage);
+    // recebendo usuario logado e retornando a lista com todos
+    socket.on('users', (nickname) => {
+      socketId = socket.id;
 
-      const messageString = formatedMessage(objMessage);
+      addUpdateUser(socketId, nickname);
 
-      // retorna a mensagem para todos os usuarios conectados
-      socket.emit('message', messageString);
-      socket.broadcast.emit('message', messageString);
+      const changeFirst = allUsers.filter((user) => user.id !== socketId);
+      changeFirst.unshift({ id: socketId, nickname });
+
+      socket.emit('users', changeFirst);
+      socket.broadcast.emit('users', allUsers);
+
+      userDisconnect(socket, socketId);
     });
   });
