@@ -40,7 +40,7 @@ socket.on('newConnection', (chatHistory) => {
   });
 });
 
-socket.on('onlineUsersUpdate', (users) => {
+socket.on('upd', (users) => {
   onlineUser.innerHTML = null;
   if (!nickname) {
     nickname = users[users.length - 1];

@@ -1,21 +1,19 @@
 const moment = require('moment');
 const controller = require('../controllers/chatController');
 
-const connectedUsers = {};
+const users = {};
 
 // baseado no código de Luciano Lodi
 module.exports = (io) => io.on('connection', async (socket) => {
-  const chatHistory = await controller.getAll().then((chat) =>
-    chat.map(({ time, nick, msg }) => socket.emit('message', `${time} - ${nick}: ${msg}`)));
+  const chatHistory = await controller.getAll().then((chat) => chat
+    .map(({ time, nickname, message }) => 
+      socket.emit('message', `${time} - ${nickname}: ${message}`)));
 
   socket.emit('newConnection', chatHistory);
-  connectedUsers[socket.id] = socket.id.substring(0, 16);
-  io.emit('onlineUsersUpdate', Object.values(connectedUsers));
+  users[socket.id] = socket.id.substring(0, 16);
+  io.emit('upd', Object.values(users));
 
-  socket.on('disconnect', () => {
-    delete connectedUsers[socket.id];
-    io.emit('onlineUsersUpdate', Object.values(connectedUsers));
-  });
+  socket.on('disconnect', () => { delete users[socket.id]; io.emit('upd', Object.values(users)); });
 
   socket.on('message', ({ chatMessage, nickname }) => {
     const newMessage = `${moment().format('DD-MM-yyyy HH:mm:ss A')} - ${nickname}: ${chatMessage}`;
@@ -24,7 +22,7 @@ module.exports = (io) => io.on('connection', async (socket) => {
   });
 
   socket.on('nickname', (user) => {
-    connectedUsers[socket.id] = user;
-    io.emit('onlineUsersUpdate', Object.values(connectedUsers)); 
+    users[socket.id] = user;
+    io.emit('upd', Object.values(users)); 
   });
 });
