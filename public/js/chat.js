@@ -36,12 +36,14 @@ socket.on('listUsers', (users) => {
   myLi.innerText = nickname || socket.id.slice(0, 16);
   listUl.appendChild(myLi);
   users.forEach((user) => {
-    if (user.nickname !== nickname) {
-     const li = document.createElement('li');
-     li.setAttribute(dataTestId, 'online-user');
-     li.innerText = user.nickname;
-     listUl.appendChild(li);
-   }
+    console.log(user.nickname);
+    console.log(nickname);
+    if (user.nickname !== (nickname || socket.id.slice(0, 16))) {
+      const li = document.createElement('li');
+      li.setAttribute(dataTestId, 'online-user');
+      li.innerText = user.nickname;
+      listUl.appendChild(li);
+    }
   });
 });
 
