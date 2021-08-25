@@ -4,14 +4,19 @@ const sendMessage = document.querySelector('#sendMessage');
 const saveNickname = document.querySelector('#saveNickname');
 const messages = document.querySelector('#messages');
 
+let onlineUser;
+
 const createUserName = (users) => {
-  users.forEach((user) => {
+  document.querySelector('#users').innerHTML = '';
+  const firstUser = users.find((user) => user.id === onlineUser.id);
+  const othersUsers = users.filter((user) => user.id !== onlineUser.id);
+  [firstUser, ...othersUsers].forEach((user) => {
     const li = document.createElement('li');
-    li.innerHTML = user;
-    li.id = 'nickname';
-    li.setAttribute('data-testid', 'online-user');   
+    if (onlineUser.id === user.id) li.id = 'nickname';
+    li.innerHTML = user.nickname;
+    li.setAttribute('data-testid', 'online-user'); 
     document.querySelector('#users').appendChild(li);
-});  
+  });  
 };
 
 sendMessage.addEventListener('submit', (event) => {
@@ -40,7 +45,8 @@ const createMessage = (message) => {
   return msg;
 };
 
-const allMessages = (msgs) => {    
+const allMessages = (msgs) => {
+  document.querySelector('#messages').innerHTML = ''; 
   msgs.forEach((message) => {        
     const msg = document.createElement('div');
     msg.innerHTML = ` 
@@ -55,4 +61,7 @@ client.on('connectUser', ({ users, msgs }) => {
   createUserName(users);
   allMessages(msgs);
 });
+client.on('onlineUser', (user) => { onlineUser = user; });
+client.on('updateNickname', (users) => { createUserName(users); });
+client.on('disconnectClient', (users) => { createUserName(users); });
 client.on('message', (message) => messages.append(createMessage(message)));
