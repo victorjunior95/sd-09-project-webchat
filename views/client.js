@@ -57,3 +57,9 @@ socket.on('usersOnline', (data) => {
     renderUsers(user);
   });
 });
+
+socket.on('history', (data) => {
+  data.forEach((msg) => {
+    renderMessage(msg);
+  });
+});
