@@ -21,3 +21,8 @@ app.get('/', (_req, res) => res.render('chat'));
 http.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });
+
+// https://momentjs.com/docs/#/displaying/
+// https://www.youtube.com/watch?v=jD7FnbI76Hg&t=1262s
+// https://www.w3schools.com/jsref/jsref_substring.asp
+// https://developer.mozilla.org/pt-BR/docs/Learn/HTML/Howto/Use_data_attributes
