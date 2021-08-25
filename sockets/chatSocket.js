@@ -34,7 +34,7 @@ const chatConfig = async (io, socket) => {
 
   const newUserInfo = { nickname: socket.id.slice(0, 16), userId: socket.id };
   allOnlineUsers.push(newUserInfo);
-  io.emit('login', newUserInfo.nickname);
+  socket.emit('login', newUserInfo.nickname);
   updateOnlineUsersList(io);
 };
 
