@@ -50,9 +50,4 @@ socket.on('onlineUsers', (users) => {
   });
 });
 
-socket.on('usersAfterDisconnect', (users) => {
-  usersList.innerHTML = '';
-  users.forEach(({ nickname }) => loadingUsers(nickname));
-});
-
 socket.on('message', (message) => createMessage(message));
