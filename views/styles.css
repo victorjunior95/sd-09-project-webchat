@@ -1,0 +1,67 @@
+html , body {
+  height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+}
+
+.head {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.head .input-nickname {
+  display: flex;
+  flex: flow;
+
+  /* grid-template-columns: 1fr; */
+}
+
+.head .input-nickname .nickname {
+  border: 1px solid #ddd;
+  font-size: 14px;
+  height: 50px;
+  width: 400px;
+}
+
+.head .input-nickname .savebtn {
+  border: 1px solid #ddd;
+  font-size: 14px;
+  height: 50px;
+  width: 100px;
+}
+
+.head .usersOnline {
+  border: 1px solid #ddd;
+  height: 500px;
+  width: 500px;
+}
+
+.head .messages {
+  border: 1px solid #ddd;
+  height: 550px;
+  width: 851px;
+}
+
+.tail .text {
+  border: 1px solid #ddd;
+  font-size: 14px;
+  height: 50px;
+  width: 1247px;
+}
+
+.tail .sendbtn {
+  border: 1px solid #ddd;
+  font-size: 14px;
+  height: 50px;
+  width: 100px;
+}
